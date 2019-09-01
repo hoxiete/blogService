@@ -8,4 +8,6 @@ public interface UserService {
     List<User>selectUserList(Integer pageNum, Integer pageSize);
 
     User getUserInfo(String loginName);
+
+    List<User> getAllUser();
 }

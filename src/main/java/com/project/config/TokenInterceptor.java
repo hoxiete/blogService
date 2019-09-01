@@ -31,7 +31,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         // 获取 HTTP HEAD 中的 TOKEN
         String token = request.getHeader("token");
         // 校验 TOKEN
-        flag = StringUtils.isNotBlank(token) ? JwtUtil.checkJWT(token) : false;
+//        flag = StringUtils.isNotBlank(token) ? JwtUtil.checkJWT(token) : false;
         // 如果校验未通过，返回 401 状态
         if (!flag)
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

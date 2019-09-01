@@ -44,6 +44,14 @@ public class loginController {
         return JSONUtils.toJson(Results.OK(data));
 
     }
+    @GetMapping("/getAllUser")
+    public String gerAllUser(){
+        Map<String,Object> data = new HashMap<>();
+        List<User> list=userService.getAllUser();
+        data.put("user",list);
+        return JSONUtils.toJson(Results.OK(data));
+    }
+
     @GetMapping("/getUserList")
     public String loginUser(@RequestParam(required = true,defaultValue = "1") Integer pageNum,@RequestParam(required = true,defaultValue = "5") Integer pageSize){
         Map<String,Object> data = new HashMap<>();
@@ -54,6 +62,7 @@ public class loginController {
         data.put("size",page.getSize());
         return JSONUtils.toJson(Results.OK(data));
     }
+
 }
 
 
