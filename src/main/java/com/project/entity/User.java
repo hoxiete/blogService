@@ -12,7 +12,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Table(name = "t_sys_user")
 public class User implements Serializable {
-    private int userId;
+    private Integer userId;
+    private Integer roleId;
     private String userName;
     private String loginName;
     private String tel;

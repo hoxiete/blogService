@@ -34,6 +34,7 @@ public class loginController {
             if(user!=null && user.getPassWord().equals(MD5Utils.md5(passWord))){
                 String token = JwtUtil.buildJWT(user.getUserName());
                 data.put("token",token);
+                data.put("expires_in",3600);   //过期时间1小时
                 data.put("userInfo",user);
             }else {
                 return JSONUtils.toJson(Results.BAD_REQUEST());
@@ -50,6 +51,7 @@ public class loginController {
     public String getMenuList(Integer roleId){
         Map<String,Object> data = new HashMap<>();
         Menu router = userService.getMenuList(roleId);
+        data.put("router",router);
         return JSONUtils.toJson(Results.OK(data));
     }
 

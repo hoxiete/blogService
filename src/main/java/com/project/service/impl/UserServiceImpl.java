@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         for(int i = 0; i < menus.size(); i++){
             Menu menu = menus.get(i);
             menu.setMeta(new Meta(menu.getName()));
-            if(menu.getPath()=="/"){
+            if(menu.getParentId()==0){
                 routers.add(menu);
                 skipIndex.add(i);
             }
@@ -83,12 +83,15 @@ public class UserServiceImpl implements UserService {
             for(int j = 0; j < menus.size(); j++) {
                 if (!skipIndex.contains(j)) {
                     if (router.getPermId().equals(menus.get(j).getParentId())) {
+                        router.setPath("-");
                         children.add(menus.get(j));
                     }
                 }
             }
             if(!children.isEmpty()){
                router.setChildren(children);
+            }else {
+               router.setChildren(null);
             }
         }
         return  routers;
