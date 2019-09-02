@@ -2,6 +2,7 @@ package com.project.controller;
 
 
 import com.github.pagehelper.PageInfo;
+import com.project.entity.Menu;
 import com.project.entity.User;
 import com.project.service.UserService;
 import com.project.util.JSONUtils;
@@ -44,6 +45,18 @@ public class loginController {
         return JSONUtils.toJson(Results.OK(data));
 
     }
+
+    @GetMapping("/getRouter")
+    public String getMenuList(Integer roleId){
+        Map<String,Object> data = new HashMap<>();
+        Menu router = userService.getMenuList(roleId);
+        return JSONUtils.toJson(Results.OK(data));
+    }
+
+
+
+
+
     @GetMapping("/getAllUser")
     public String gerAllUser(){
         Map<String,Object> data = new HashMap<>();
@@ -58,6 +71,7 @@ public class loginController {
         List<User> list=userService.selectUserList(pageNum ,pageSize);
         PageInfo page = new PageInfo(list);
         data.put("user",list);
+        int i =1/0;
         data.put("total",page.getTotal());
         data.put("size",page.getSize());
         return JSONUtils.toJson(Results.OK(data));

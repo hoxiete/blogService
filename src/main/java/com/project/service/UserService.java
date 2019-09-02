@@ -1,6 +1,8 @@
 package com.project.service;
 
 import java.util.List;
+
+import com.project.entity.Menu;
 import com.project.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -10,4 +12,6 @@ public interface UserService {
     User getUserInfo(String loginName);
 
     List<User> getAllUser();
+
+    Menu getMenuList(Integer roleId);
 }
