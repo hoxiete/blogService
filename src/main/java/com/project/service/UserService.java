@@ -13,5 +13,5 @@ public interface UserService {
 
     List<User> getAllUser();
 
-    Menu getMenuList(Integer roleId);
+    List<Menu> getMenuList(Integer roleId);
 }

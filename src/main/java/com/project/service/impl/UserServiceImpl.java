@@ -8,8 +8,6 @@ import com.project.mapper.UserMapper;
 import com.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -60,11 +58,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Menu getMenuList(Integer roleId) {
+    public List<Menu> getMenuList(Integer roleId) {
         List<Menu> menus = usermapper.getMenuList(roleId);
         List<Menu> router = createRouter(menus);
-        Menu menu = new Menu(router);
-        return menu;
+        return router;
     }
 
     private List<Menu> createRouter(List<Menu> menus) {
@@ -73,7 +70,7 @@ public class UserServiceImpl implements UserService {
         for(int i = 0; i < menus.size(); i++){
             Menu menu = menus.get(i);
             menu.setMeta(new Meta(menu.getName()));
-            if(menu.getParentId()==0){
+            if(menu.getPid()==0){
                 routers.add(menu);
                 skipIndex.add(i);
             }
@@ -82,7 +79,7 @@ public class UserServiceImpl implements UserService {
             List<Menu> children = new ArrayList<>();
             for(int j = 0; j < menus.size(); j++) {
                 if (!skipIndex.contains(j)) {
-                    if (router.getPermId().equals(menus.get(j).getParentId())) {
+                    if (router.getId().equals(menus.get(j).getPid())) {
                         router.setPath("-");
                         children.add(menus.get(j));
                     }
@@ -90,8 +87,6 @@ public class UserServiceImpl implements UserService {
             }
             if(!children.isEmpty()){
                router.setChildren(children);
-            }else {
-               router.setChildren(null);
             }
         }
         return  routers;

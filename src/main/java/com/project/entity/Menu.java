@@ -10,8 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Menu {
-    private Integer permId;
-    private Integer parentId;
+    private Integer id;
+    private Integer pid;
     private String name;
     private String path;
     private String iconCls;
@@ -19,10 +19,4 @@ public class Menu {
     private Meta meta;
     private List<Menu> children;
 
-    public Menu(List<Menu> children) {
-        this.children = children;
-        this.meta = new Meta();
-        this.name = "根节点";
-        this.path = "";
-    }
 }

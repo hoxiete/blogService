@@ -50,7 +50,7 @@ public class loginController {
     @GetMapping("/getRouter")
     public String getMenuList(Integer roleId){
         Map<String,Object> data = new HashMap<>();
-        Menu router = userService.getMenuList(roleId);
+        List<Menu> router = userService.getMenuList(roleId);
         data.put("router",router);
         return JSONUtils.toJson(Results.OK(data));
     }
@@ -73,7 +73,6 @@ public class loginController {
         List<User> list=userService.selectUserList(pageNum ,pageSize);
         PageInfo page = new PageInfo(list);
         data.put("user",list);
-        int i =1/0;
         data.put("total",page.getTotal());
         data.put("size",page.getSize());
         return JSONUtils.toJson(Results.OK(data));

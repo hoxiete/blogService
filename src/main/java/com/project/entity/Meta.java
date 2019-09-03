@@ -11,11 +11,6 @@ public class Meta {
     private boolean requireAuth;
     private boolean NoTabPage;
 
-    public Meta() {
-        this.title = null;
-        this.requireAuth = true;
-        this.NoTabPage = false;
-    }
     public Meta(String title) {
         this.title = title;
         this.requireAuth = true;

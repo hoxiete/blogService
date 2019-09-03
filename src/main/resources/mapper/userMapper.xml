@@ -8,8 +8,8 @@
     </select>
 
     <select id="getMenuList" resultType="Menu">
-        SELECT name,parent_id ,perm_id ,icon_cls ,path
+        SELECT name,parent_id as pid,perm_id as id,icon_cls ,path
         FROM t_sys_permission
-        WHERE FIND_IN_SET(perm_id,(SELECT GROUP_CONCAT(permission_id) FROM t_role_permission WHERE role_id=#{roleId}))
+        WHERE FIND_IN_SET(perm_id,(SELECT GROUP_CONCAT(permission_id) FROM t_role_permission WHERE role_id=#{roleId})) and delete_flag=0
     </select>
 </mapper>
