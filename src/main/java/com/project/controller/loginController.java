@@ -9,8 +9,7 @@ import com.project.util.JSONUtils;
 import com.project.util.JwtUtil;
 import com.project.util.MD5Utils;
 import com.project.util.Results;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import io.jsonwebtoken.JwtBuilder;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +57,7 @@ public class loginController {
 
 
 
-
+    @ApiOperation("获取所有用户")
     @GetMapping("/getAllUser")
     public String gerAllUser(){
         Map<String,Object> data = new HashMap<>();

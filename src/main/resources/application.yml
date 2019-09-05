@@ -1,12 +1,14 @@
 server:
-  port: 8087
+  port: 8088
 spring:
-
+  devtools:
+    restart:
+      enabled: false  #设置开启热部署
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
-    password: root
+    password: 123456
   redis:
     host: 192.168.1.250
     port: 6379
@@ -15,10 +17,10 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    map-underscore-to-camel-case: true
-    jdbc-type-for-null: null
-  type-aliases-package: com.project.entity
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl    #控制台输出sql语句情况
+    map-underscore-to-camel-case: true                       #开启驼峰功能
+    jdbc-type-for-null: null                                 #解决插入语句字段为空的报错
+  type-aliases-package: com.project.entity                   #指定扫描实体类包，resultType不用加全限定名
 
 pagehelper:
 
