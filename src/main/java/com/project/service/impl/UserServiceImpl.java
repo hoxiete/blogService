@@ -6,6 +6,7 @@ import com.project.entity.Meta;
 import com.project.entity.User;
 import com.project.mapper.UserMapper;
 import com.project.service.UserService;
+import com.project.util.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
         Page<User> list =usermapper.selectUserList();
         return list;
     }
+
 
     @Override
     public User getUserInfo(String loginName) {
@@ -62,6 +64,23 @@ public class UserServiceImpl implements UserService {
         List<Menu> menus = usermapper.getMenuList(roleId);
         List<Menu> router = createRouter(menus);
         return router;
+    }
+
+    @Override
+    public User updateUserSelf(User user) {
+        User oldUser = usermapper.selectByPrimaryKey(user.getUserId());
+        User userNew = new User();
+        if(user.getOldPassWord().equals(MD5Utils.md5(oldUser.getPassWord()))) {
+            User userUpadate = new User();
+            userUpadate.setUserId(user.getUserId());
+            userUpadate.setUserName(user.getUserName());
+            userUpadate.setPassWord(user.getNewPassWord());
+            int flag = usermapper.updateByPrimaryKeySelective(userUpadate);
+            if (flag != 0) {
+                userNew = usermapper.selectByPrimaryKey(user.getUserId());
+            }
+        }
+        return userNew;
     }
 
     private List<Menu> createRouter(List<Menu> menus) {

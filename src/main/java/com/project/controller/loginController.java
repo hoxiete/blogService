@@ -54,6 +54,14 @@ public class loginController {
         return JSONUtils.toJson(Results.OK(data));
     }
 
+    @PutMapping("/editSelf")
+    public String editUserSelf(User user){
+        Map<String,Object> data = new HashMap<>();
+        User userNow = userService.updateUserSelf(user);
+        data.put("user",userNow);
+        return JSONUtils.toJson(Results.OK(data));
+    }
+
 
 
 

@@ -14,4 +14,6 @@ public interface UserService {
     List<User> getAllUser();
 
     List<Menu> getMenuList(Integer roleId);
+
+    User updateUserSelf(User user);
 }

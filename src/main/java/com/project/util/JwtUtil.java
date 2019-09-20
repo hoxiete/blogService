@@ -37,7 +37,7 @@ public class JwtUtil {
     /**
      * JWT 生成密钥使用的密码
      */
-    private static final String JWT_RULE = "zhang.hao";
+    private static final String JWT_RULE = "zhang.hao111";
 
     /**
      * JWT 添加至HTTP HEAD中的前缀
