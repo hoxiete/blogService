@@ -1,23 +1,31 @@
 package com.project.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.project.entity.Menu;
-import com.project.entity.Meta;
+import com.project.entity.Image;
 import com.project.entity.User;
+import com.project.mapper.UploadMapper;
 import com.project.mapper.UserMapper;
 import com.project.service.UserService;
-import com.project.util.MD5Utils;
+import com.project.util.SaveImgUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import org.springframework.web.multipart.MultipartFile;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper usermapper;
+    @Autowired
+    private UploadMapper uploadMapper;
+
+    @Value("${baseUrl.img}")
+    private String baseUrl;
 
     //注入springboot自动配置好的redisTemplate
     @Autowired
@@ -30,13 +38,6 @@ public class UserServiceImpl implements UserService {
         return list;
     }
 
-
-    @Override
-    public User getUserInfo(String loginName) {
-        User user = new User();
-        user.setLoginName(loginName);
-        return usermapper.selectOne(user);
-    }
 
     @Override
     public List<User> getAllUser() {
@@ -59,55 +60,63 @@ public class UserServiceImpl implements UserService {
         return userList;
     }
 
-    @Override
-    public List<Menu> getMenuList(Integer roleId) {
-        List<Menu> menus = usermapper.getMenuList(roleId);
-        List<Menu> router = createRouter(menus);
-        return router;
-    }
 
     @Override
-    public User updateUserSelf(User user) {
-        User oldUser = usermapper.selectByPrimaryKey(user.getUserId());
-        User userNew = new User();
-        if(user.getOldPassWord().equals(MD5Utils.md5(oldUser.getPassWord()))) {
-            User userUpadate = new User();
-            userUpadate.setUserId(user.getUserId());
-            userUpadate.setUserName(user.getUserName());
-            userUpadate.setPassWord(user.getNewPassWord());
-            int flag = usermapper.updateByPrimaryKeySelective(userUpadate);
-            if (flag != 0) {
-                userNew = usermapper.selectByPrimaryKey(user.getUserId());
+    public User updateUserSelf(User user,  MultipartFile img) {
+        String recourseId = null;
+        //用户上传了头像,先上传图片至服务器
+        if(null!=img){
+            String fileName = SaveImgUtil.upload(img,baseUrl);
+            //用户已有头像，则先删除原有头像
+            if(!user.getHeadimg().isEmpty()) {
+                Image imgInfo = usermapper.getHeadUrl(user.getUserId());
+                SaveImgUtil.delete(baseUrl+ imgInfo.getImageUrl());
+                //更新图片路径
+                userHeadImgUpdate(fileName,imgInfo.getImageId());
+            }else {
+                //新增图片路径
+                recourseId = userHeadImgInsert(fileName);
             }
         }
-        return userNew;
+        User userUpadate = new User();
+        userUpadate.setUserId(user.getUserId());
+        userUpadate.setUserName(user.getUserName());
+        userUpadate.setSex(user.getSex());
+        userUpadate.setBirthDay(user.getBirthDay());
+        userUpadate.setBz(user.getBz());
+        if(null!=recourseId) {
+            userUpadate.setHeadimg(recourseId);
+        }
+        usermapper.updateByPrimaryKeySelective(userUpadate);
+        User reUser = usermapper.selectUserById(user.getUserId());
+        return reUser;
     }
 
-    private List<Menu> createRouter(List<Menu> menus) {
-        List<Menu> routers = new ArrayList<>();
-        List<Integer> skipIndex = new ArrayList<>();
-        for(int i = 0; i < menus.size(); i++){
-            Menu menu = menus.get(i);
-            menu.setMeta(new Meta(menu.getName()));
-            if(menu.getPid()==0){
-                routers.add(menu);
-                skipIndex.add(i);
-            }
-        }
-        for(Menu router : routers){
-            List<Menu> children = new ArrayList<>();
-            for(int j = 0; j < menus.size(); j++) {
-                if (!skipIndex.contains(j)) {
-                    if (router.getId().equals(menus.get(j).getPid())) {
-                        router.setPath("-");
-                        children.add(menus.get(j));
-                    }
-                }
-            }
-            if(!children.isEmpty()){
-               router.setChildren(children);
-            }
-        }
-        return  routers;
+
+
+    //新增图片表的记录，返回id给用户表当外键
+    private String userHeadImgInsert(String fullPath) {
+        Image image = new Image();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String createTime =formatter.format(new Date());
+        Long recourseId =System.currentTimeMillis();
+        image.setImageUrl(fullPath);
+        image.setImageType("1");
+        image.setRecourseId(recourseId);
+        image.setDeleteFlag(0);
+        image.setCreateTime(createTime);
+        image.setCreateUser("sys");
+        image.setUpdateUser("sys");
+        this.uploadMapper.insert(image);
+
+        return String.valueOf(recourseId);
+    }
+
+    //更新图片表图片地址
+    private void userHeadImgUpdate(String fullPath, Long imageId) {
+        Image image = new Image();
+        image.setImageId(imageId);
+        image.setImageUrl(fullPath);
+        this.uploadMapper.updateByPrimaryKeySelective(image);
     }
 }

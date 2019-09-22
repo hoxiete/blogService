@@ -4,6 +4,7 @@ package com.project.controller;
 import com.github.pagehelper.PageInfo;
 import com.project.entity.Menu;
 import com.project.entity.User;
+import com.project.service.LoginService;
 import com.project.service.UserService;
 import com.project.util.JSONUtils;
 import com.project.util.JwtUtil;
@@ -11,7 +12,9 @@ import com.project.util.MD5Utils;
 import com.project.util.Results;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,14 +25,14 @@ import java.util.Map;
 public class loginController {
 
     @Autowired
-    private UserService userService;
+    private LoginService loginService;
 
 
     @PostMapping("/login")
     public String login(String loginName,String passWord){
         Map<String,Object> data = new HashMap<>();
         try {
-            User user = userService.getUserInfo(loginName);
+            User user = loginService.getUserInfo(loginName);
             if(user!=null && user.getPassWord().equals(MD5Utils.md5(passWord))){
                 String token = JwtUtil.buildJWT(user.getUserName());
                 data.put("token",token);
@@ -49,41 +52,11 @@ public class loginController {
     @GetMapping("/getRouter")
     public String getMenuList(Integer roleId){
         Map<String,Object> data = new HashMap<>();
-        List<Menu> router = userService.getMenuList(roleId);
+        List<Menu> router = loginService.getMenuList(roleId);
         data.put("router",router);
         return JSONUtils.toJson(Results.OK(data));
     }
 
-    @PutMapping("/editSelf")
-    public String editUserSelf(User user){
-        Map<String,Object> data = new HashMap<>();
-        User userNow = userService.updateUserSelf(user);
-        data.put("user",userNow);
-        return JSONUtils.toJson(Results.OK(data));
-    }
-
-
-
-
-    @ApiOperation("获取所有用户")
-    @GetMapping("/getAllUser")
-    public String gerAllUser(){
-        Map<String,Object> data = new HashMap<>();
-        List<User> list=userService.getAllUser();
-        data.put("user",list);
-        return JSONUtils.toJson(Results.OK(data));
-    }
-
-    @GetMapping("/getUserList")
-    public String loginUser(@RequestParam(required = true,defaultValue = "1") Integer pageNum,@RequestParam(required = true,defaultValue = "5") Integer pageSize){
-        Map<String,Object> data = new HashMap<>();
-        List<User> list=userService.selectUserList(pageNum ,pageSize);
-        PageInfo page = new PageInfo(list);
-        data.put("user",list);
-        data.put("total",page.getTotal());
-        data.put("size",page.getSize());
-        return JSONUtils.toJson(Results.OK(data));
-    }
 
 }
 

@@ -1,17 +1,25 @@
 server:
   port: 8088
+
+baseUrl:
+  img: F:/baseUrl/headImg/
+
 spring:
   devtools:
     restart:
       enabled: false  #设置开启热部署
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
-    password: 123456
+    password: root
   redis:
     host: 192.168.1.250
     port: 6379
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
 
 
 mybatis:
@@ -31,4 +39,7 @@ pagehelper:
 mapper:
   mappers: com.project.config.BaseMapper
   identity: MYSQL
+
+
+
 

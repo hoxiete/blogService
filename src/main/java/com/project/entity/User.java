@@ -3,8 +3,8 @@ package com.project.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -20,8 +20,11 @@ public class User implements Serializable {
     private String loginName;
     private String tel;
     private String passWord;
-    private String oldPassWord;
-    private String newPassWord;
+    private String headimg;
+    private String birthDay;
+    private Integer sex;
+    private String bz;
+
 
 
 }
