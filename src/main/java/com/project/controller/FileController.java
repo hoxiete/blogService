@@ -3,6 +3,7 @@ package com.project.controller;
 
 
 import com.project.util.JSONUtils;
+import com.project.util.QiniuCloudUtil;
 import com.project.util.Results;
 import com.project.util.SaveImgUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.crypto.Data;
+import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,15 +33,16 @@ public class FileController {
     @PostMapping("/uploadImg")
     public String uploadImg(MultipartFile image){
         Map<String,Object> map = new HashMap<>();
-        String msg="";
-        if (!"".equals(SaveImgUtil.upload(image, baseUrl))){
-            // 上传成功，给出页面提示
-            msg = "上传成功！";
-        }else {
-            msg = "上传失败！";
+        String key ="";
+        try {
+             key = QiniuCloudUtil.put64image(image);
+//             QiniuCloudUtil.delete("56969d0b873a47d6a41d3c2d7e3a51bd.png");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         // 显示图片
-        map.put("msg", msg);
+        map.put("key", key);
         map.put("fileName", image.getOriginalFilename());
        return JSONUtils.toJson(Results.OK(map));
     }
