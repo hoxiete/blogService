@@ -4,6 +4,7 @@ server:
 baseUrl:
   img: F:/baseUrl/headImg/
 
+
 spring:
   devtools:
     restart:

@@ -6,6 +6,7 @@ import com.project.entity.User;
 import com.project.mapper.UploadMapper;
 import com.project.mapper.UserMapper;
 import com.project.service.UserService;
+import com.project.util.QiniuCloudUtil;
 import com.project.util.SaveImgUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,11 +67,18 @@ public class UserServiceImpl implements UserService {
         String recourseId = null;
         //用户上传了头像,先上传图片至服务器
         if(null!=img){
-            String fileName = SaveImgUtil.upload(img,baseUrl);
+//            String fileName = SaveImgUtil.upload(img,baseUrl);
+            String fileName = null;
+            try {
+                fileName = QiniuCloudUtil.put64image(img);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //用户已有头像，则先删除原有头像
             if(!user.getHeadimg().isEmpty()) {
                 Image imgInfo = usermapper.getHeadUrl(user.getUserId());
-                SaveImgUtil.delete(baseUrl+ imgInfo.getImageUrl());
+//                SaveImgUtil.delete(baseUrl+ imgInfo.getImageUrl());
+                QiniuCloudUtil.delete(imgInfo.getImageUrl());
                 //更新图片路径
                 userHeadImgUpdate(fileName,imgInfo.getImageId());
             }else {

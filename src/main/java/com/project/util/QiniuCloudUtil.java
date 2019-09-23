@@ -10,7 +10,6 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
@@ -61,7 +60,7 @@ public class QiniuCloudUtil {
                 DefaultPutRet putRet;
                 putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
                 //如果不需要对图片进行样式处理，则使用以下方式即可
-                return  DOMAIN +"/"+putRet.key;
+                return  putRet.key;
 //                return DOMAIN + ret.key + "?" + style;
             }
         } catch (QiniuException e) {
@@ -98,7 +97,7 @@ public class QiniuCloudUtil {
                 //解析上传成功的结果
                 DefaultPutRet putRet;
                 putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                return DOMAIN + putRet.key;
+                return putRet.key;
 
             } catch (QiniuException ex) {
                 Response r = ex.response;
