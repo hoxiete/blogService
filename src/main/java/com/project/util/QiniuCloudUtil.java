@@ -113,7 +113,7 @@ public class QiniuCloudUtil {
         return null;
 
     }
-    // 普通删除(暂未使用以下方法，未测试)
+    // 普通删除
     public static void delete(String key){
         // 实例化一个BucketManager对象
         BucketManager bucketManager = new BucketManager(auth,configuration);
