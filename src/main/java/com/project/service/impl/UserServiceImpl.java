@@ -128,6 +128,16 @@ public class UserServiceImpl implements UserService {
         return i;
     }
 
+    @Override
+    public int editUser(User user) {
+        return usermapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public int addUser(User user) {
+        return usermapper.insertSelective(user);
+    }
+
 
     //新增图片表的记录，返回id给用户表当外键
     private String userHeadImgInsert(String fullPath) {

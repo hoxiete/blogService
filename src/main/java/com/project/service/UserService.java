@@ -20,4 +20,8 @@ public interface UserService {
     int deleteUserById(Integer userId);
 
     int deleteUserByBatchId(Integer[] userIds);
+
+    int editUser(User user);
+
+    int addUser(User user);
 }

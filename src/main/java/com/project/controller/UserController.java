@@ -6,7 +6,6 @@ import com.project.entity.User;
 import com.project.entity.UserViewDto;
 import com.project.service.UserService;
 import com.project.util.JSONUtils;
-import com.project.util.Result;
 import com.project.util.ResultConstants;
 import com.project.util.Results;
 import io.swagger.annotations.ApiOperation;
@@ -73,15 +72,30 @@ public class UserController {
     @PutMapping("/delete")
     public String deleteUser(Integer userId){
         if(userService.deleteUserById(userId)==0){
-        throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"删除失败");
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"删除失败");
         }
         return JSONUtils.toJson(Results.OK());
     }
 
     @PutMapping("/batchDelete")
     public String deleteUserBatch(Integer[] userIds){
-//        userService.deleteUserByBatchId(userIds);
+        userService.deleteUserByBatchId(userIds);
 
+        return JSONUtils.toJson(Results.OK());
+    }
+
+    @PutMapping("/editUser")
+    public String editUser(User user){
+        if(userService.editUser(user)==0) {
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"更新失败");
+        }
+        return JSONUtils.toJson(Results.OK());
+    }
+    @PostMapping("/addUser")
+    public String addUser(User user){
+        if(userService.addUser(user)==0) {
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"更新失败");
+        }
         return JSONUtils.toJson(Results.OK());
     }
 
