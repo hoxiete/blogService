@@ -2,16 +2,20 @@ package com.project.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.project.entity.Image;
+import com.project.entity.MyException;
 import com.project.entity.User;
+import com.project.entity.UserViewDto;
 import com.project.mapper.UploadMapper;
 import com.project.mapper.UserMapper;
 import com.project.service.UserService;
 import com.project.util.QiniuCloudUtil;
+import com.project.util.ResultConstants;
 import com.project.util.SaveImgUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,9 +37,9 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate<Object,Object> redisTemplate;
 
     @Override
-    public List<User> selectUserList(Integer pageNum, Integer pageSize) {
+    public List<UserViewDto> selectUserList(User user ,Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
-        Page<User> list =usermapper.selectUserList();
+        Page<UserViewDto> list =usermapper.selectUserList(user);
         return list;
     }
 
@@ -72,7 +76,7 @@ public class UserServiceImpl implements UserService {
             try {
                 fileName = QiniuCloudUtil.put64image(img);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
             }
             //用户已有头像，则先删除原有头像
             if(!user.getHeadimg().isEmpty()) {
@@ -100,6 +104,29 @@ public class UserServiceImpl implements UserService {
         return reUser;
     }
 
+    @Override
+    public int deleteUserById(Integer userId) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setDeleteFlag(1);
+        return usermapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Transactional
+    @Override
+    public int deleteUserByBatchId(Integer[] userIds) {
+        int i=0;
+        for( ;i<userIds.length;i++){
+            User user = new User();
+            user.setUserId(userIds[i]);
+            user.setDeleteFlag(1);
+            usermapper.updateByPrimaryKeySelective(user);
+        }
+        if(i!=userIds.length){
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"删除未生效");
+        }
+        return i;
+    }
 
 
     //新增图片表的记录，返回id给用户表当外键

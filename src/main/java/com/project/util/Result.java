@@ -3,6 +3,9 @@ package com.project.util;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -12,7 +15,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * author     liuxin
  */
 
-public class Result {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Result{
 
 	/***
 	 *@Return    返回状态码，为空则默认200.前端需要拦截一些常见的状态码如403、404、500等
@@ -21,7 +27,7 @@ public class Result {
 	 *@Time 22:10
 	 */
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String status;
+	private int status;
 
 	/***
 	 *@Return    相关消息
@@ -30,7 +36,7 @@ public class Result {
 	 *@Time 22:17
 	 */
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private String msg;
+	private String message;
 
 	/***
 	 *@Return 相关数据
@@ -41,37 +47,9 @@ public class Result {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Object data;
 
-	public Result() {
-	}
-
-	public Result(String status, String msg, Object data) {
+	public Result(int status,String message){
 		this.status = status;
-		this.msg = msg;
-		this.data = data;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
-	public Object getData() {
-		return data;
-	}
-
-	public void setData(Object data) {
-		this.data = data;
+		this.message = message;
 	}
 
 }

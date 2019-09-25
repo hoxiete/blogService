@@ -1,16 +1,13 @@
 package com.project.util;
 
-import com.project.util.Result;
-import com.project.util.ResultConstants;
-import com.project.util.ResultMsg;
-
 /**
  * ClassName: Results
  * Function:  TODO  Result生成工具类
  * Date:      2019/6/11 22:23
  * author     zhanghao
  */
-public class Results {
+public class Results{
+
     protected Results(){}
 
     //

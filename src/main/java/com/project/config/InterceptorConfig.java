@@ -18,7 +18,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //本地资源映射至服务器端口，解决浏览器不支持访问硬盘文件
-        registry.addResourceHandler("/image/**").addResourceLocations("file:F://baseUrl//headImg/");
+        registry.addResourceHandler("/image/**").addResourceLocations("file:D://baseUrl//headImg/");
 
     }
 

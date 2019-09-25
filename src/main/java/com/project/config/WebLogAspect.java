@@ -22,6 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Component
 public class WebLogAspect {
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Pointcut("execution(public * com.project.controller..*.*(..))")

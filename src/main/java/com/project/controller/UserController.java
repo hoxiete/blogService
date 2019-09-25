@@ -1,9 +1,13 @@
 package com.project.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.project.entity.MyException;
 import com.project.entity.User;
+import com.project.entity.UserViewDto;
 import com.project.service.UserService;
 import com.project.util.JSONUtils;
+import com.project.util.Result;
+import com.project.util.ResultConstants;
 import com.project.util.Results;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,16 +50,39 @@ public class UserController {
         data.put("user",list);
         return JSONUtils.toJson(Results.OK(data));
     }
+    @ApiOperation("获取所有用户")
+    @GetMapping("/getAllUser1")
+    public String gerAll1User(){
+
+        throw new MyException(ResultConstants.BAD_REQUEST,"12212");
+
+    }
 
     @GetMapping("/getUserList")
-    public String loginUser(@RequestParam(required = true,defaultValue = "1") Integer pageNum, @RequestParam(required = true,defaultValue = "5") Integer pageSize){
+    public String loginUser(User user,@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
         Map<String,Object> data = new HashMap<>();
-        List<User> list=userService.selectUserList(pageNum ,pageSize);
+        List<UserViewDto> list = null;
+        list = userService.selectUserList(user,pageNum, pageSize);
         PageInfo page = new PageInfo(list);
         data.put("user",list);
         data.put("total",page.getTotal());
         data.put("size",page.getSize());
         return JSONUtils.toJson(Results.OK(data));
+    }
+
+    @PutMapping("/delete")
+    public String deleteUser(Integer userId){
+        if(userService.deleteUserById(userId)==0){
+        throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"删除失败");
+        }
+        return JSONUtils.toJson(Results.OK());
+    }
+
+    @PutMapping("/batchDelete")
+    public String deleteUserBatch(Integer[] userIds){
+//        userService.deleteUserByBatchId(userIds);
+
+        return JSONUtils.toJson(Results.OK());
     }
 
 }

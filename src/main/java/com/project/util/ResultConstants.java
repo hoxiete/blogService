@@ -13,27 +13,27 @@ public class ResultConstants {
     /**
      * 请求已经成功处理
      */
-    public static final String OK = "200";
+    public static final int OK = 200;
 
     /**
      * 请求错误，请修正请求
      */
-    public static final String BAD_REQUEST = "400";
+    public static final int BAD_REQUEST = 400;
 
     /**
      * Token验证失败
      */
-    public static final String SC_UNAUTHORIZED = "401";
+    public static final int SC_UNAUTHORIZED = 401;
 
     /**
      * 资源未找到
      */
-    public static final String NOT_FOUND = "404";
+    public static final int NOT_FOUND = 404;
 
     /**
      * 服务器内部错误
      */
-    public static final String INTERNAL_SERVER_ERROR = "500";
+    public static final int INTERNAL_SERVER_ERROR = 500;
 
 
 }
