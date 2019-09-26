@@ -1,5 +1,6 @@
 package com.project.controller;
 
+import com.project.entity.Menu;
 import com.project.entity.MyException;
 import com.project.entity.Router;
 import com.project.service.RouterService;
@@ -23,10 +24,18 @@ public class RouterController {
     @Autowired
     private RouterService routerService;
 
+    @GetMapping("/getRouter")
+    public String getMenuList(Integer roleId){
+        Map<String,Object> data = new HashMap<>();
+        List<Menu> router = routerService.getMenuList(roleId);
+        data.put("router",router);
+        return JSONUtils.toJson(Results.OK(data));
+    }
+
     @GetMapping("/getRouterList")
     public String getRouterList(){
         Map<String,Object> data = new HashMap<>();
-        List<Router> routerList = routerService.getRouterList();
+        List<Menu> routerList = routerService.getRouterList();
         if( null == routerList && routerList.size() == 0 ){
          throw new MyException(ResultConstants.NOT_FOUND,"路由未找到");
         }

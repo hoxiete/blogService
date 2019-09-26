@@ -36,40 +36,4 @@ public class LoginServiceImpl implements LoginService {
     }
 
 
-
-    @Override
-    public List<Menu> getMenuList(Integer roleId) {
-        List<Menu> menus = usermapper.getMenuList(roleId);
-        List<Menu> router = createRouter(menus);
-        return router;
-    }
-
-    private List<Menu> createRouter(List<Menu> menus) {
-        List<Menu> routers = new ArrayList<>();
-        List<Integer> skipIndex = new ArrayList<>();
-        for(int i = 0; i < menus.size(); i++){
-            Menu menu = menus.get(i);
-            menu.setMeta(new Meta(menu.getName()));
-            if(menu.getPid()==0){
-                routers.add(menu);
-                skipIndex.add(i);
-            }
-        }
-        for(Menu router : routers){
-            List<Menu> children = new ArrayList<>();
-            for(int j = 0; j < menus.size(); j++) {
-                if (!skipIndex.contains(j)) {
-                    if (router.getId().equals(menus.get(j).getPid())) {
-                        router.setPath("-");
-                        children.add(menus.get(j));
-                    }
-                }
-            }
-            if(!children.isEmpty()){
-               router.setChildren(children);
-            }
-        }
-        return  routers;
-    }
-
 }

@@ -1,10 +1,13 @@
 package com.project.mapper;
 
+import com.project.entity.Menu;
 import com.project.entity.Router;
 
 import java.util.List;
 
 public interface RouterMapper {
 
-    List<Router> getRouterList();
+    List<Menu> getMenuList(Integer roleId);
+
+    List<Menu> getRouterList();
 }

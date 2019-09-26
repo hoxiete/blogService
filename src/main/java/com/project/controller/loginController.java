@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/index")
 public class loginController {
 
     @Autowired
@@ -49,13 +49,7 @@ public class loginController {
 
     }
 
-    @GetMapping("/getRouter")
-    public String getMenuList(Integer roleId){
-        Map<String,Object> data = new HashMap<>();
-        List<Menu> router = loginService.getMenuList(roleId);
-        data.put("router",router);
-        return JSONUtils.toJson(Results.OK(data));
-    }
+
 
 
 }

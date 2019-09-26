@@ -10,11 +10,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Menu {
-    private Integer id;
-    private Integer pid;
+    private Integer permId;
+    private Integer parentId;
     private String name;
     private String path;
     private String iconCls;
+    private Integer deleteFlag;
+    private Integer orderSort;
 
     private Meta meta;
     private List<Menu> children;

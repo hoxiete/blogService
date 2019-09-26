@@ -18,9 +18,6 @@ public interface UserMapper extends Mapper<User> {
 
     Page<UserViewDto> selectUserList(User user);
 
-
-    List<Menu> getMenuList(Integer roleId);
-
     Image getHeadUrl(Integer userId);
 
     User selectUserById(Integer userId);
