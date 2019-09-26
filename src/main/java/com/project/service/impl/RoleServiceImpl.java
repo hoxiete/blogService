@@ -5,6 +5,7 @@ import com.project.mapper.RoleMapper;
 import com.project.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
@@ -14,6 +15,8 @@ public class RoleServiceImpl implements RoleService {
     private RoleMapper roleMapper;
     @Override
     public List<Role> getAllRole() {
-        return roleMapper.selectAll();
+        Example example = new Example(Role.class);
+        example.setOrderByClause("order_sort asc");
+        return roleMapper.selectByExample(example);
     }
 }

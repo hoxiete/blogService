@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -25,6 +26,11 @@ public class User implements Serializable {
     private Integer sex;
     private String bz;
     private Integer deleteFlag;
+    private String createUser;
+    private String createTime;
+    private String updateUser;
+    private Date updateTime;
+
 
 
 

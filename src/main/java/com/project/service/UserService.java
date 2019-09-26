@@ -21,7 +21,7 @@ public interface UserService {
 
     int deleteUserByBatchId(Integer[] userIds);
 
-    int editUser(User user);
+    int editUser(User user,String operator);
 
-    int addUser(User user);
+    int addUser(User user,String operator);
 }

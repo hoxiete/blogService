@@ -85,16 +85,16 @@ public class UserController {
     }
 
     @PutMapping("/editUser")
-    public String editUser(User user){
-        if(userService.editUser(user)==0) {
+    public String editUser(User user,String operator){
+        if(userService.editUser(user,operator)==0) {
             throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"更新失败");
         }
         return JSONUtils.toJson(Results.OK());
     }
     @PostMapping("/addUser")
-    public String addUser(User user){
-        if(userService.addUser(user)==0) {
-            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"更新失败");
+    public String addUser(User user,String operator){
+        if(userService.addUser(user,operator)==0) {
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"新增失败");
         }
         return JSONUtils.toJson(Results.OK());
     }

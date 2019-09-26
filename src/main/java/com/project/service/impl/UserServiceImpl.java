@@ -8,6 +8,7 @@ import com.project.entity.UserViewDto;
 import com.project.mapper.UploadMapper;
 import com.project.mapper.UserMapper;
 import com.project.service.UserService;
+import com.project.util.MD5Utils;
 import com.project.util.QiniuCloudUtil;
 import com.project.util.ResultConstants;
 import com.project.util.SaveImgUtil;
@@ -129,13 +130,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int editUser(User user) {
-        return usermapper.updateByPrimaryKeySelective(user);
+    public int editUser(User user,String operator) {
+        User editUser = new User();
+        editUser.setUserId(user.getUserId());
+        editUser.setUserName(user.getUserName());
+        editUser.setLoginName(user.getLoginName());
+        editUser.setRoleId(user.getRoleId());
+        editUser.setBirthDay(user.getBirthDay());
+        editUser.setSex(user.getSex());
+        editUser.setTel(user.getTel());
+        editUser.setUpdateUser(operator);
+        editUser.setUpdateTime(new Date());
+        return usermapper.updateByPrimaryKeySelective(editUser);
     }
 
     @Override
-    public int addUser(User user) {
-        return usermapper.insertSelective(user);
+    public int addUser(User user,String operator) {
+        User insertUser = new User();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String createTime =formatter.format(new Date());
+        insertUser.setUserName(user.getUserName());
+        insertUser.setLoginName(user.getLoginName());
+        insertUser.setPassWord(MD5Utils.md5(user.getPassWord()));
+        insertUser.setRoleId(1);
+        insertUser.setBirthDay(user.getBirthDay());
+        insertUser.setSex(user.getSex());
+        insertUser.setTel(user.getTel());
+        insertUser.setDeleteFlag(0);
+        insertUser.setCreateUser(operator);
+        insertUser.setCreateTime(createTime);
+        insertUser.setUpdateUser(operator);
+        insertUser.setUpdateTime(new Date());
+        return usermapper.insert(insertUser);
     }
 
 
@@ -162,6 +188,7 @@ public class UserServiceImpl implements UserService {
         Image image = new Image();
         image.setImageId(imageId);
         image.setImageUrl(fullPath);
+        image.setUpdateTime(new Date());
         this.uploadMapper.updateByPrimaryKeySelective(image);
     }
 }
