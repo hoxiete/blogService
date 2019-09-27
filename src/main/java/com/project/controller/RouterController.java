@@ -29,6 +29,7 @@ public class RouterController {
         Map<String,Object> data = new HashMap<>();
         List<Menu> router = routerService.getMenuList(roleId);
         data.put("router",router);
+
         return JSONUtils.toJson(Results.OK(data));
     }
 

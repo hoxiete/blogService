@@ -10,4 +10,6 @@ public interface RouterService {
     List<Menu> getMenuList(Integer roleId);
 
     List<Menu> getRouterList();
+
+
 }

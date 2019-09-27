@@ -17,6 +17,7 @@ public class Menu {
     private String iconCls;
     private Integer deleteFlag;
     private Integer orderSort;
+    private String description;
 
     private Meta meta;
     private List<Menu> children;
