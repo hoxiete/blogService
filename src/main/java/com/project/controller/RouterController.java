@@ -29,7 +29,6 @@ public class RouterController {
         Map<String,Object> data = new HashMap<>();
         List<Menu> router = routerService.getMenuList(roleId);
         data.put("router",router);
-
         return JSONUtils.toJson(Results.OK(data));
     }
 
@@ -43,4 +42,21 @@ public class RouterController {
         data.put("router",routerList);
         return JSONUtils.toJson(Results.OK(data));
     }
+
+    @GetMapping("/getPermissionTree")
+    public String getPermissionTree(){
+        Map<String,Object> data = new HashMap<>();
+        Menu permissionTree = routerService.getPermissionTree();
+        data.put("tree",permissionTree);
+        return JSONUtils.toJson(Results.OK(data));
+    }
+
+    @GetMapping("/addPermission")
+    public String addPermission(Router router){
+       if(routerService.addPermissionBranch(router)==0){
+           throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"新增失败");
+       }
+        return JSONUtils.toJson(Results.OK());
+    }
+
 }

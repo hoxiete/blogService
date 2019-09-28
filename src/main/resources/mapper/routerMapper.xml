@@ -14,8 +14,17 @@
        SELECT name,parent_id ,perm_id ,icon_cls ,path,description,delete_flag,order_sort
         FROM t_sys_permission
        WHERE
-        delete_flag=0 AND is_button = 0
+          is_button = 0
        order by order_sort asc
+    </select>
+
+    <select id="getPermissionTree" resultType="Menu">
+        SELECT
+          name ,
+          perm_id
+        FROM
+            t_sys_permission
+        where parent_id = 0
     </select>
 
 </mapper>
