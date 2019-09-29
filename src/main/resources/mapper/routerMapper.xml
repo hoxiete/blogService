@@ -27,4 +27,13 @@
         where parent_id = 0
     </select>
 
+    <select id="getLastPermId" resultType="integer">
+        select
+          perm_id
+        from
+          t_sys_permission
+        order by perm_id desc
+        limit 1
+    </select>
+
 </mapper>

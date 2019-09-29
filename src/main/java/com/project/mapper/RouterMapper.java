@@ -14,4 +14,6 @@ public interface RouterMapper extends Mapper<Router> {
     List<Menu> getRouterList();
 
     List<Menu> getPermissionTree();
+
+    Integer getLastPermId();
 }

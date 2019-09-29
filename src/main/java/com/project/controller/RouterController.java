@@ -8,9 +8,7 @@ import com.project.util.JSONUtils;
 import com.project.util.ResultConstants;
 import com.project.util.Results;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,11 +49,34 @@ public class RouterController {
         return JSONUtils.toJson(Results.OK(data));
     }
 
-    @GetMapping("/addPermission")
-    public String addPermission(Router router){
-       if(routerService.addPermissionBranch(router)==0){
+    @PostMapping("/addPermission")
+    public String addPermission(Router router,String operator){
+       if(routerService.addPermissionBranch(router,operator)==0){
            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"新增失败");
        }
+        return JSONUtils.toJson(Results.OK());
+    }
+
+    @PutMapping("/editPermission")
+    public String editPermission(Router router,String operator){
+        if(routerService.editPermissionBranch(router,operator)==0){
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"修改失败");
+        }
+        return JSONUtils.toJson(Results.OK());
+    }
+    @PutMapping("/removePermission")
+    public String deleteUser(Integer permId){
+        if(routerService.deleteByPermId(permId)==0){
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"删除失败");
+        }
+        return JSONUtils.toJson(Results.OK());
+    }
+
+    @PutMapping("/batchRemovePermissions")
+    public String deleteUserBatch(Integer[] permIds){
+        if(permIds.length!=0) {
+            routerService.deleteByBatchPermId(permIds);
+        }
         return JSONUtils.toJson(Results.OK());
     }
 

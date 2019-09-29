@@ -15,5 +15,11 @@ public interface RouterService {
 
     Menu getPermissionTree();
 
-    int addPermissionBranch(Router router);
+    int addPermissionBranch(Router router,String operator);
+
+    int editPermissionBranch(Router router, String operator);
+
+    int deleteByPermId(Integer userId);
+
+    void deleteByBatchPermId(Integer[] userIds);
 }

@@ -79,8 +79,9 @@ public class UserController {
 
     @PutMapping("/batchDelete")
     public String deleteUserBatch(Integer[] userIds){
-        userService.deleteUserByBatchId(userIds);
-
+        if(userIds.length!=0) {
+            userService.deleteUserByBatchId(userIds);
+        }
         return JSONUtils.toJson(Results.OK());
     }
 

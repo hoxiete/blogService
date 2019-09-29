@@ -23,7 +23,6 @@ public class Menu implements Serializable {
     private Meta meta;
     private List<Menu> children;
 
-    private String label;
-    private Integer value;
+
 
 }
