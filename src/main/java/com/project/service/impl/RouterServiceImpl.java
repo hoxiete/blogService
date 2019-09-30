@@ -1,9 +1,6 @@
 package com.project.service.impl;
 
-import com.project.entity.Menu;
-import com.project.entity.Meta;
-import com.project.entity.MyException;
-import com.project.entity.Router;
+import com.project.entity.*;
 import com.project.mapper.RouterMapper;
 import com.project.service.RouterService;
 import com.project.util.ResultConstants;
@@ -14,10 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RouterServiceImpl implements RouterService {
@@ -88,15 +82,46 @@ public class RouterServiceImpl implements RouterService {
         return routerMapper.insert(newPermission);
     }
 
+    @Transactional
     @Override
-    public int editPermissionBranch(Router router, String operator) {
+    public int editPermissionBranch(Router router, String operator, OrderSortDto sortDto) {
+        Integer startEditSort = null;
+        Integer endEditSort = null;
+        if(null != sortDto){
+           List<Router> routerList =  routerMapper.selectAll();
+           List<Integer> permIds = new ArrayList<>();
+           List<Integer> sorts = new ArrayList<>();
+          for(Router permmision : routerList){
+              if(sortDto.getFirstPermId() == permmision.getPermId()){
+                  startEditSort = permmision.getOrderSort();
+              }
+              if(sortDto.getSecondPermId() == permmision.getPermId()){
+                  endEditSort = permmision.getOrderSort();
+              }
+          }
+            for(Router permmision : routerList){
+                Integer sort  = permmision.getOrderSort();
+                if( sort == endEditSort){     //将要修改的sort 与 其他sort重复 则进行sort重排
+                    int minSort = 100;
+                   for(int i = 0;i< routerList.size() ; i++){
+                       Router allEditRouter = new Router();
+                       minSort=minSort+3;
+                       allEditRouter.setOrderSort(minSort);
+                       allEditRouter.setPermId(routerList.get(i).getPermId());
+                       routerMapper.updateByPrimaryKeySelective(allEditRouter);
+                   }
+                }
+            }
+        }
         Router editPermission = new Router();
         editPermission.setPermId(router.getPermId());
         editPermission.setName(router.getName());
         editPermission.setParentId(router.getParentId());
         editPermission.setPath(router.getPath());
         editPermission.setDescription(router.getDescription());
-        editPermission.setOrderSort(router.getOrderSort());
+//        if(editSort!= null) {
+//            editPermission.setOrderSort(editSort);
+//        }
         editPermission.setIconCls(router.getIconCls());
         editPermission.setDeleteFlag(router.getDeleteFlag());
         editPermission.setUpdateTime(new Date());
@@ -105,10 +130,10 @@ public class RouterServiceImpl implements RouterService {
     }
 
     @Override
-    public int deleteByPermId(Integer permId) {
+    public int deleteByPermId(Router router) {
         Router user = new Router();
-        user.setPermId(permId);
-        user.setDeleteFlag(1);
+        user.setPermId(router.getPermId());
+        user.setDeleteFlag(router.getDeleteFlag());
         return routerMapper.updateByPrimaryKeySelective(user);
     }
 

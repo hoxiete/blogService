@@ -2,6 +2,7 @@ package com.project.controller;
 
 import com.project.entity.Menu;
 import com.project.entity.MyException;
+import com.project.entity.OrderSortDto;
 import com.project.entity.Router;
 import com.project.service.RouterService;
 import com.project.util.JSONUtils;
@@ -58,15 +59,15 @@ public class RouterController {
     }
 
     @PutMapping("/editPermission")
-    public String editPermission(Router router,String operator){
-        if(routerService.editPermissionBranch(router,operator)==0){
+    public String editPermission(Router router, String operator, OrderSortDto sortDto){
+        if(routerService.editPermissionBranch(router,operator,sortDto)==0){
             throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"修改失败");
         }
         return JSONUtils.toJson(Results.OK());
     }
     @PutMapping("/removePermission")
-    public String deleteUser(Integer permId){
-        if(routerService.deleteByPermId(permId)==0){
+    public String deleteUser(Router router){
+        if(routerService.deleteByPermId(router)==0){
             throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"删除失败");
         }
         return JSONUtils.toJson(Results.OK());

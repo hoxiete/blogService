@@ -1,6 +1,7 @@
 package com.project.service;
 
 import com.project.entity.Menu;
+import com.project.entity.OrderSortDto;
 import com.project.entity.Router;
 
 import java.util.List;
@@ -17,9 +18,9 @@ public interface RouterService {
 
     int addPermissionBranch(Router router,String operator);
 
-    int editPermissionBranch(Router router, String operator);
+    int editPermissionBranch(Router router, String operator, OrderSortDto dto);
 
-    int deleteByPermId(Integer userId);
+    int deleteByPermId(Router router);
 
     void deleteByBatchPermId(Integer[] userIds);
 }
