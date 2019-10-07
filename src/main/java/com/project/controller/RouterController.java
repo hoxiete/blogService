@@ -1,11 +1,11 @@
 package com.project.controller;
 
-import com.project.entity.Menu;
-import com.project.entity.MyException;
-import com.project.entity.OrderSortDto;
-import com.project.entity.Router;
+import com.project.entity.*;
+import com.project.service.AssignService;
+import com.project.service.RoleService;
 import com.project.service.RouterService;
 import com.project.util.JSONUtils;
+import com.project.util.Result;
 import com.project.util.ResultConstants;
 import com.project.util.Results;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,17 @@ public class RouterController {
 
     @Autowired
     private RouterService routerService;
+    @Autowired
+    private AssignService assignService;
+    @Autowired
+    private RoleService roleService;
 
     @GetMapping("/getRouter")
     public String getMenuList(Integer roleId){
         Map<String,Object> data = new HashMap<>();
+        if(!roleService.enableCheck(roleId)){
+            throw new MyException(ResultConstants.SC_UNAUTHORIZED,"当前用户角色已停用");
+        }
         List<Menu> router = routerService.getMenuList(roleId);
         data.put("router",router);
         return JSONUtils.toJson(Results.OK(data));
@@ -39,14 +46,6 @@ public class RouterController {
          throw new MyException(ResultConstants.NOT_FOUND,"路由未找到");
         }
         data.put("router",routerList);
-        return JSONUtils.toJson(Results.OK(data));
-    }
-
-    @GetMapping("/getPermissionTree")
-    public String getPermissionTree(){
-        Map<String,Object> data = new HashMap<>();
-        Menu permissionTree = routerService.getPermissionTree();
-        data.put("tree",permissionTree);
         return JSONUtils.toJson(Results.OK(data));
     }
 
@@ -65,6 +64,7 @@ public class RouterController {
         }
         return JSONUtils.toJson(Results.OK());
     }
+
     @PutMapping("/removePermission")
     public String deleteUser(Router router){
         if(routerService.deleteByPermId(router)==0){
@@ -81,4 +81,21 @@ public class RouterController {
         return JSONUtils.toJson(Results.OK());
     }
 
+    @GetMapping("/getPermissionTree")
+    public Result getPermissionTree(){
+        List<Menu> permissionTree = routerService.getPermissionTree();
+        return Results.OK(permissionTree);
+    }
+    @GetMapping("/getPermissionIdByRoleId")
+    public Result getPermissionIdByRoleId(Integer roleId){
+        List<Integer> list = assignService.getPermissionIdByRoleId(roleId);
+        return Results.OK(list);
+    }
+    @PostMapping("/addRoleAssgin")
+    public Result addRoleAssgin(Integer[] permIds ,Integer roleId,String operater){
+        if(assignService.addRoleAssgin(permIds,roleId,operater)==0){
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"修改失败");
+         }
+        return Results.OK();
+    }
 }

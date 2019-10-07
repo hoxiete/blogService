@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.mapper.RoleMapper">
+
+
+    <select id="enableCheck" resultType="Integer">
+        select delete_flag from t_sys_role where id = #{roleId}
+    </select>
+
+
+    <select id="getRoleListPage" resultType="Role">
+      SELECT
+       *
+      FROM t_sys_role
+      <where>
+          <if test="name!=null and name!=''">
+              name like "%"#{name}"%"
+          </if>
+      </where>
+      order by order_sort
+    </select>
+
+    <select id="getMaxSort" resultType="Integer">
+     select max(order_sort) from t_sys_role
+    </select>
+
+
+</mapper>

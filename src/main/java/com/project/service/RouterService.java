@@ -2,6 +2,7 @@ package com.project.service;
 
 import com.project.entity.Menu;
 import com.project.entity.OrderSortDto;
+import com.project.entity.PermDto;
 import com.project.entity.Router;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface RouterService {
     List<Menu> getRouterList();
 
 
-    Menu getPermissionTree();
+    List<Menu> getPermissionTree();
 
     int addPermissionBranch(Router router,String operator);
 

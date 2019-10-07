@@ -1,5 +1,6 @@
 package com.project.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class OrderSortDto {
 
-    private Integer firstPermId;
-    private Integer secondPermId;
+    private Integer moveId;
+    private Integer placeId;
+    private Integer isBefore;
+    private Integer isChangeParentId;
 
 }

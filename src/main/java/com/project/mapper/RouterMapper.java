@@ -1,6 +1,7 @@
 package com.project.mapper;
 
 import com.project.entity.Menu;
+import com.project.entity.PermDto;
 import com.project.entity.Router;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -13,7 +14,7 @@ public interface RouterMapper extends Mapper<Router> {
 
     List<Menu> getRouterList();
 
-    List<Menu> getPermissionTree();
+    List<Integer>  getLastPermIdAndSort(Integer parentId);
 
-    Integer getLastPermId();
+    List<Router> selectSameLevelPermisson(Integer parentId);
 }

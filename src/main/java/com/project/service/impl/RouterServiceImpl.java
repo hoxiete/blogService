@@ -4,12 +4,14 @@ import com.project.entity.*;
 import com.project.mapper.RouterMapper;
 import com.project.service.RouterService;
 import com.project.util.ResultConstants;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.*;
 
@@ -54,24 +56,29 @@ public class RouterServiceImpl implements RouterService {
     }
 
     @Override
-    public Menu getPermissionTree() {
+    public List<Menu> getPermissionTree() {
+        List<Menu> list = routerMapper.getRouterList();
+        boolean showMenus = false;
+        List<Menu> router = createRouter(list,showMenus);
         Menu menu = new Menu();
-        menu.setChildren(routerMapper.getPermissionTree());
+        menu.setChildren(router);
         menu.setPermId(0);
         menu.setName("根节点");
-        return menu;
+        List<Menu> tree = new ArrayList<>();
+        tree.add(menu);
+        return tree;
     }
 
     @Override
     public int addPermissionBranch(Router router,String operator) {
-        Integer lastPermId = routerMapper.getLastPermId();
+        List<Integer> list = routerMapper.getLastPermIdAndSort(router.getParentId());
         Router newPermission = new Router();
-        newPermission.setPermId(lastPermId+1);
+        newPermission.setPermId(list.get(0)+1);
         newPermission.setName(router.getName());
         newPermission.setPath(router.getPath());
         newPermission.setParentId(router.getParentId());
         newPermission.setDescription(router.getDescription());
-        newPermission.setOrderSort(router.getOrderSort());
+        newPermission.setOrderSort(list.get(1)+1);
         newPermission.setIconCls(router.getIconCls());
         newPermission.setIsButton(0);
         newPermission.setDeleteFlag(router.getDeleteFlag());
@@ -87,46 +94,70 @@ public class RouterServiceImpl implements RouterService {
     public int editPermissionBranch(Router router, String operator, OrderSortDto sortDto) {
         Integer startEditSort = null;
         Integer endEditSort = null;
-        if(null != sortDto){
-           List<Router> routerList =  routerMapper.selectAll();
-           List<Integer> permIds = new ArrayList<>();
-           List<Integer> sorts = new ArrayList<>();
+        //如果有排序的变更
+        if(sortDto.getMoveId()!=null){
+            //如果该菜单行又变更了父级菜单
+            if(sortDto.getIsChangeParentId()==1){
+               //先变更父级菜单
+                Router beforRouter = new Router();
+                beforRouter.setPermId(router.getPermId());
+                beforRouter.setParentId(router.getParentId());
+                beforRouter.setOrderSort(router.getOrderSort());
+                routerMapper.updateByPrimaryKeySelective(beforRouter);
+            }
+               List<Router> routerList =  routerMapper.selectSameLevelPermisson(router.getParentId());
+               List<Integer> permIds = new ArrayList<>();
+               List<Integer> sorts = new ArrayList<>();
           for(Router permmision : routerList){
-              if(sortDto.getFirstPermId() == permmision.getPermId()){
+              permIds.add(permmision.getPermId());
+              sorts.add(permmision.getOrderSort());
+              if(sortDto.getMoveId() == permmision.getPermId()){
                   startEditSort = permmision.getOrderSort();
               }
-              if(sortDto.getSecondPermId() == permmision.getPermId()){
+              if(sortDto.getPlaceId() == permmision.getPermId()){
                   endEditSort = permmision.getOrderSort();
               }
           }
-            for(Router permmision : routerList){
-                Integer sort  = permmision.getOrderSort();
-                if( sort == endEditSort){     //将要修改的sort 与 其他sort重复 则进行sort重排
-                    int minSort = 100;
-                   for(int i = 0;i< routerList.size() ; i++){
-                       Router allEditRouter = new Router();
-                       minSort=minSort+3;
-                       allEditRouter.setOrderSort(minSort);
-                       allEditRouter.setPermId(routerList.get(i).getPermId());
-                       routerMapper.updateByPrimaryKeySelective(allEditRouter);
-                   }
+                //该菜单行下移
+            if(startEditSort<endEditSort) {
+                if(sortDto.getIsBefore()==1) {
+                    permIds = permIds.subList(permIds.indexOf(sortDto.getMoveId()), permIds.indexOf(sortDto.getPlaceId()));
+                    sorts = sorts.subList(sorts.indexOf(startEditSort), sorts.indexOf(endEditSort));
+                }else {
+                    //如果是下移到最后那么要多包含最后一个
+                    permIds = permIds.subList(permIds.indexOf(sortDto.getMoveId()), permIds.indexOf(sortDto.getPlaceId())+1);
+                    sorts = sorts.subList(sorts.indexOf(startEditSort), sorts.indexOf(endEditSort)+1);
                 }
+                Collections.rotate(sorts, 1); //左移数组
+            }else {
+                //该菜单行上移
+                permIds = permIds.subList(permIds.indexOf(sortDto.getPlaceId()), permIds.indexOf(sortDto.getMoveId())+1);
+                sorts = sorts.subList(sorts.indexOf(endEditSort),sorts.indexOf(startEditSort)+1);
+                Collections.rotate(sorts,-1);  //右移数组
             }
+            for(int i = 0 ; i < permIds.size(); i++) {
+                Router allEditRouter = new Router();
+                allEditRouter.setPermId(permIds.get(i));
+                allEditRouter.setOrderSort(sorts.get(i));
+                routerMapper.updateByPrimaryKeySelective(allEditRouter);
+             }
         }
+
         Router editPermission = new Router();
         editPermission.setPermId(router.getPermId());
         editPermission.setName(router.getName());
-        editPermission.setParentId(router.getParentId());
+        if(sortDto.getMoveId()==null) {
+            editPermission.setParentId(router.getParentId());
+            editPermission.setOrderSort(router.getOrderSort());
+        }
         editPermission.setPath(router.getPath());
         editPermission.setDescription(router.getDescription());
-//        if(editSort!= null) {
-//            editPermission.setOrderSort(editSort);
-//        }
         editPermission.setIconCls(router.getIconCls());
         editPermission.setDeleteFlag(router.getDeleteFlag());
         editPermission.setUpdateTime(new Date());
         editPermission.setUpdateUser(operator);
         return routerMapper.updateByPrimaryKeySelective(editPermission);
+
     }
 
     @Override

@@ -24,5 +24,4 @@ public class Menu implements Serializable {
     private List<Menu> children;
 
 
-
 }
