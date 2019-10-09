@@ -12,6 +12,10 @@
      </where>
     </select>
 
+    <select id="getBlogType" resultType="Dict">
+        select value , label from t_sys_dict where dict_type = "blogType"
+    </select>
+
 
 
 </mapper>

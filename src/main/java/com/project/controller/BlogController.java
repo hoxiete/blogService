@@ -4,6 +4,7 @@ package com.project.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.project.entity.Blog;
+import com.project.entity.Dict;
 import com.project.entity.MyException;
 import com.project.service.BlogService;
 import com.project.util.Result;
@@ -38,15 +39,25 @@ public class BlogController {
         data.put("total",page.getTotal());
         data.put("size",page.getSize());
         return Results.OK(data);
-
     }
 
-    @PostMapping("/addBlog")
-    public Result saveBlog(Blog blog,String operator){
-        if(blogService.addBlog(blog,operator)==0){
-            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"新增失败");
-        }
+    @GetMapping("/getBlogType")
+    public Result getBlogType(){
+        List<Dict> TypeList = blogService.getBlogType();
+        return Results.OK(TypeList);
+    }
 
+    @PostMapping("/saveBlog")
+    public Result saveBlog(Blog blog,String operator){
+        if(null!=blog.getId()){
+            if(blogService.editBlog(blog,operator)==0){
+                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"修改失败");
+            }
+        }else {
+            if (blogService.addBlog(blog, operator) == 0) {
+                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR, "新增失败");
+            }
+        }
         return Results.OK();
     }
 

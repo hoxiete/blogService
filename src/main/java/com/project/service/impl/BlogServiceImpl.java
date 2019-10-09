@@ -3,6 +3,7 @@ package com.project.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.project.entity.Blog;
+import com.project.entity.Dict;
 import com.project.mapper.BlogMapper;
 import com.project.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,19 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public int editBlog(Blog blog, String operator) {
+        Blog editBlog = new Blog();
+        editBlog.setId(blog.getId());
+        editBlog.setTitle(blog.getTitle());
+        editBlog.setTypeId(blog.getTypeId());
+        editBlog.setBody(blog.getBody());
+        editBlog.setBodyHtml(blog.getBodyHtml());
+        editBlog.setUpdateTime(new Date());
+        editBlog.setUpdateUser(operator);
+        return blogMapper.updateByPrimaryKeySelective(editBlog);
+    }
+
+    @Override
     public int addBlog(Blog blog,String operator) {
         blog.setCreateTime(new Date());
         blog.setCreateUser(operator);
@@ -32,5 +46,10 @@ public class BlogServiceImpl implements BlogService {
         blog.setUpdateTime(new Date());
         blog.setUpdateUser(operator);
         return blogMapper.insert(blog);
+    }
+
+    @Override
+    public List<Dict> getBlogType() {
+        return blogMapper.getBlogType();
     }
 }
