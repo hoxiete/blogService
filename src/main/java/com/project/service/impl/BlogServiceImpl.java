@@ -4,19 +4,25 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.project.entity.Blog;
 import com.project.entity.Dict;
+import com.project.entity.MyException;
 import com.project.mapper.BlogMapper;
 import com.project.service.BlogService;
+import com.project.util.QiniuCloudUtil;
+import com.project.util.ResultConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BlogServiceImpl implements BlogService {
     @Autowired
     private BlogMapper blogMapper;
+
+    @Value("${qiniu.domain}")
+    private String domain;
 
     @Override
     public List<Blog> searchBlog(Blog blog,Integer pageNum,Integer pageSize) {
@@ -46,6 +52,37 @@ public class BlogServiceImpl implements BlogService {
         blog.setUpdateTime(new Date());
         blog.setUpdateUser(operator);
         return blogMapper.insert(blog);
+    }
+
+    @Override
+    public List<Map<String, String>> uploadImg(MultipartFile[] imgs) {
+        List<Map<String, String>> list = new ArrayList<>();
+        if(imgs.length!=0){
+            String fileName = null;
+            try {
+                for(MultipartFile img : imgs) {
+                    Map<String,String> data = new HashMap<>();
+                    fileName = QiniuCloudUtil.put64image(img);
+                    data.put("pos",img.getOriginalFilename());
+                    data.put("url",domain + fileName);
+                    list.add(data);
+                }
+            } catch (Exception e) {
+                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
+            }
+
+        }else{
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"没有识别到图片");
+        }
+        return list;
+    }
+
+    @Override
+    public int removeBlog(Blog blog) {
+        Blog coverBlog = new Blog();
+        coverBlog.setId(blog.getId());
+        coverBlog.setDeleteFlag(blog.getDeleteFlag());
+        return blogMapper.updateByPrimaryKeySelective(coverBlog);
     }
 
     @Override

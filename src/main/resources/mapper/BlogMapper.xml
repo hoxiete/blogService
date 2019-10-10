@@ -7,7 +7,7 @@
      SELECT * FROM `t_sys_blog`
      <where>
          <if test="title != null and title != ''">
-             title= #{title}
+             title like "%"#{title}"%"
          </if>
      </where>
     </select>

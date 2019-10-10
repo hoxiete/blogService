@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Dict {
     private Integer dictId;
     private String dictType;
-    private String value;
+    private Integer value;
     private String label;
 
 }

@@ -9,7 +9,11 @@ public class FileNameUtils {
      * @return
      */
     public static String getSuffix(String fileName){
-        return fileName.substring(fileName.lastIndexOf("."));
+        if(fileName.lastIndexOf(".")!=-1) {
+            return fileName.substring(fileName.lastIndexOf("."));
+        }else {
+            return ".blog";
+        }
     }
 
     /**

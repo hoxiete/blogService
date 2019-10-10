@@ -12,7 +12,9 @@ import com.project.util.ResultConstants;
 import com.project.util.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,12 @@ public class BlogController {
         return Results.OK(TypeList);
     }
 
+
+    @PostMapping("/saveBlogImg")
+    public Result saveBlogImg(MultipartFile[] img){
+        List<Map<String,String>> imgUrl = blogService.uploadImg(img);
+        return Results.OK();
+    }
     @PostMapping("/saveBlog")
     public Result saveBlog(Blog blog,String operator){
         if(null!=blog.getId()){
@@ -57,6 +65,14 @@ public class BlogController {
             if (blogService.addBlog(blog, operator) == 0) {
                 throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR, "新增失败");
             }
+        }
+        return Results.OK();
+    }
+
+    @PutMapping("/removeBlog")
+    public Result removeBlog(Blog blog){
+        if(blogService.removeBlog(blog)==0){
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"隐藏失败");
         }
         return Results.OK();
     }
