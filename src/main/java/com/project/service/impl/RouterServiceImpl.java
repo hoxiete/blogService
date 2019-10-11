@@ -1,17 +1,14 @@
 package com.project.service.impl;
 
+import com.project.config.redis.DelRedis;
+import com.project.config.redis.PutRedis;
 import com.project.entity.*;
 import com.project.mapper.RouterMapper;
 import com.project.service.RouterService;
 import com.project.util.ResultConstants;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.*;
 
@@ -20,39 +17,25 @@ public class RouterServiceImpl implements RouterService {
     @Autowired
     private RouterMapper routerMapper;
 
-    //注入springboot自动配置好的redisTemplate
-    @Autowired
-    private RedisTemplate<Object,Object> redisTemplate;
 
-    @Override
-    public List<Menu> getMenuList(Integer roleId) {
-        //字符串序列化器
-//        RedisSerializer redisSerializer = new StringRedisSerializer();
-//        redisTemplate.setKeySerializer(redisSerializer);
-//        String key = "Menu"+roleId;
 
-        //先查redis，如果没有就查数据库并存在redis中
-//        List<Menu> menus = (List<Menu>) redisTemplate.opsForValue().get(key);
-        //双重检测
-//        if(null == menus) {
-//            synchronized (this) {
-//                menus = (List<Menu>) redisTemplate.opsForValue().get(key);
-//                if (null == menus) {
-                    List<Menu> menus = routerMapper.getMenuList(roleId);
-//                    redisTemplate.opsForValue().set(key, menus);
-//                }
-//            }
-//        }
-        boolean showMenus = true;
-        List<Menu> router = createRouter(menus,showMenus);
-        return router;
-    }
     @Override
     public List<Menu> getRouterList() {
         List<Menu> list = routerMapper.getRouterList();
         boolean showMenus = false;
         List<Menu> treeRouter = createRouter(list,showMenus);
         return treeRouter;
+    }
+
+//    @PutRedis(key = "router",fieldKey ="#roleId")
+    @Override
+    public List<Menu> getMenuList(Integer roleId) {
+
+        List<Menu> menus = routerMapper.getMenuList(roleId);
+
+        boolean showMenus = true;
+        List<Menu> router = createRouter(menus,showMenus);
+        return router;
     }
 
     @Override
@@ -69,6 +52,7 @@ public class RouterServiceImpl implements RouterService {
         return tree;
     }
 
+//    @DelRedis(key = "router")
     @Override
     public int addPermissionBranch(Router router,String operator) {
         List<Integer> list = routerMapper.getLastPermIdAndSort(router.getParentId());
@@ -89,6 +73,7 @@ public class RouterServiceImpl implements RouterService {
         return routerMapper.insert(newPermission);
     }
 
+//    @DelRedis(key = "router")
     @Transactional
     @Override
     public int editPermissionBranch(Router router, String operator, OrderSortDto sortDto) {
@@ -160,6 +145,7 @@ public class RouterServiceImpl implements RouterService {
 
     }
 
+//    @DelRedis(key = "router")
     @Override
     public int deleteByPermId(Router router) {
         Router user = new Router();
@@ -168,6 +154,7 @@ public class RouterServiceImpl implements RouterService {
         return routerMapper.updateByPrimaryKeySelective(user);
     }
 
+//    @DelRedis(key = "router")
     @Transactional
     @Override
     public void deleteByBatchPermId(Integer[] permIds) {

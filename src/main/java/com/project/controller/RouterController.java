@@ -28,14 +28,14 @@ public class RouterController {
     private RoleService roleService;
 
     @GetMapping("/getRouter")
-    public String getMenuList(Integer roleId){
+    public Result getMenuList(Integer roleId){
         Map<String,Object> data = new HashMap<>();
         if(!roleService.enableCheck(roleId)){
             throw new MyException(ResultConstants.SC_UNAUTHORIZED,"当前用户角色已停用");
         }
         List<Menu> router = routerService.getMenuList(roleId);
         data.put("router",router);
-        return JSONUtils.toJson(Results.OK(data));
+        return Results.OK(data);
     }
 
     @GetMapping("/getRouterList")
