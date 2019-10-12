@@ -78,7 +78,7 @@ public class QiniuCloudUtil {
     }
 
     //base64方式上传
-    public static String put64image(MultipartFile file) throws Exception {
+    public static String put64image(MultipartFile file,String filePath) throws Exception {
         try {
             InputStream inputStream = file.getInputStream();
             ByteArrayOutputStream swapStream = new ByteArrayOutputStream();
@@ -89,7 +89,7 @@ public class QiniuCloudUtil {
             }
             byte[] uploadBytes = swapStream.toByteArray();
             //生成文件名
-            String filename = FileNameUtils.getFileName(file.getOriginalFilename());
+            String filename = filePath + FileNameUtils.getFileName(file.getOriginalFilename());
             //创建上传对象
              UploadManager uploadManager = new UploadManager(configuration);
             try {

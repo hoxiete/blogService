@@ -16,6 +16,9 @@
         select value , label from t_sys_dict where dict_type = "blogType"
     </select>
 
+    <select id="getImageListByBlog" resultType="Image">
+       SELECT recourse_id , image_url FROM t_sys_image WHERE FIND_IN_SET( recourse_id,(SELECT imgs FROM t_sys_blog WHERE id= #{id} ))
+    </select>
 
 
 </mapper>

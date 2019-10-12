@@ -19,8 +19,10 @@ public class Blog {
     private Integer id;
     private String title;
     private Integer typeId;
+    private Integer userId;
     private String body;
     private String bodyHtml;
+    private String imgs;
     private Integer deleteFlag;
     private String createUser;
     private Date createTime;

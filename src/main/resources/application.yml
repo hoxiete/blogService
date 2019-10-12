@@ -7,6 +7,14 @@ baseUrl:
 qiniu:
   domain: http://py8m27zxx.bkt.clouddn.com/
 
+imgPath:
+  head: /head/
+  blog: /blog/
+imgType:
+  head: 1
+  blog: 2
+
+
 spring:
   devtools:
     restart:
@@ -17,7 +25,7 @@ spring:
     username: root
     password: 123456
   redis:
-    host: 192.168.1.250
+    host: 192.168.188.26
     port: 6379
   servlet:
     multipart:

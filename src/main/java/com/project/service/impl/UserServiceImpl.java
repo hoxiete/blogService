@@ -32,6 +32,10 @@ public class UserServiceImpl implements UserService {
 
     @Value("${baseUrl.img}")
     private String baseUrl;
+    @Value("${imgPath.head}")
+    private String prex;
+    @Value("${imgType.head}")
+    private String fileType;
 
     //注入springboot自动配置好的redisTemplate
     @Autowired
@@ -47,22 +51,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUser() {
-        //字符串序列化器
-//        RedisSerializer redisSerializer = new StringRedisSerializer();
-//        redisTemplate.setKeySerializer(redisSerializer);
-
-        //先查redis，如果没有就查数据库并存在redis中
-//        List<User> userList = (List<User>) redisTemplate.opsForValue().get("allUser");
-        //双重检测
-//        if(null == userList) {
-//            synchronized (this) {
-//                userList = (List<User>) redisTemplate.opsForValue().get("allUser");
-//                if (null == userList) {
           List<User> userList =  usermapper.selectAll();
-//                    redisTemplate.opsForValue().set("allUser", userList);
-//                }
-//            }
-//        }
         return userList;
     }
 
@@ -75,7 +64,8 @@ public class UserServiceImpl implements UserService {
 //            String fileName = SaveImgUtil.upload(img,baseUrl);
             String fileName = null;
             try {
-                fileName = QiniuCloudUtil.put64image(img);
+                String filePath = user.getUserId() + prex;
+                fileName = QiniuCloudUtil.put64image(img,filePath);
             } catch (Exception e) {
                 throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
             }
@@ -88,7 +78,7 @@ public class UserServiceImpl implements UserService {
                 userHeadImgUpdate(fileName,imgInfo.getImageId());
             }else {
                 //新增图片路径
-                recourseId = userHeadImgInsert(fileName);
+                recourseId = userHeadImgInsert(fileName,fileType,user.getUserName());
             }
         }
         User userUpadate = new User();
@@ -166,18 +156,18 @@ public class UserServiceImpl implements UserService {
 
 
     //新增图片表的记录，返回id给用户表当外键
-    private String userHeadImgInsert(String fullPath) {
+    private String userHeadImgInsert(String fullPath,String fileType,String operator) {
         Image image = new Image();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String createTime =formatter.format(new Date());
         Long recourseId =System.currentTimeMillis();
         image.setImageUrl(fullPath);
-        image.setImageType("1");
+        image.setImageType(fileType);
         image.setRecourseId(recourseId);
         image.setDeleteFlag(0);
         image.setCreateTime(createTime);
-        image.setCreateUser("sys");
-        image.setUpdateUser("sys");
+        image.setCreateUser(operator);
+        image.setUpdateUser(operator);
         this.uploadMapper.insert(image);
 
         return String.valueOf(recourseId);

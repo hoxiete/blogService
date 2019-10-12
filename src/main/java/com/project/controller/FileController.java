@@ -35,7 +35,7 @@ public class FileController {
         Map<String,Object> map = new HashMap<>();
         String key ="";
         try {
-             key = QiniuCloudUtil.put64image(image);
+//             key = QiniuCloudUtil.put64image(image);
 //             QiniuCloudUtil.delete("56969d0b873a47d6a41d3c2d7e3a51bd.png");
         } catch (Exception e) {
             e.printStackTrace();

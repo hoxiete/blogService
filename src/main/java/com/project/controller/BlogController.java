@@ -51,9 +51,9 @@ public class BlogController {
 
 
     @PostMapping("/saveBlogImg")
-    public Result saveBlogImg(MultipartFile[] img){
-        List<Map<String,String>> imgUrl = blogService.uploadImg(img);
-        return Results.OK();
+    public Result saveBlogImg(MultipartFile[] img,Integer userId,String operator){
+        List<Map<String,String>> imgUrl = blogService.uploadImg(img,userId,operator);
+        return Results.OK(imgUrl);
     }
     @PostMapping("/saveBlog")
     public Result saveBlog(Blog blog,String operator){
