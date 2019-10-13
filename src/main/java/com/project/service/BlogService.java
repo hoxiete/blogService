@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface BlogService {
-    List<Blog> searchBlog(Blog blog,Integer pageNum,Integer pageSize);
+    List<Blog> searchBlog(Blog blog,Integer pageNum,Integer pageSize,Integer operatorId);
 
     int editBlog(Blog blog,String operator);
 

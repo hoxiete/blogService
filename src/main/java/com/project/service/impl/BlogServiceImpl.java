@@ -37,9 +37,9 @@ public class BlogServiceImpl implements BlogService {
     private String fileType;
 
     @Override
-    public List<Blog> searchBlog(Blog blog,Integer pageNum,Integer pageSize) {
+    public List<Blog> searchBlog(Blog blog,Integer pageNum,Integer pageSize,Integer operatorId) {
         PageHelper.startPage(pageNum,pageSize);
-        Page<Blog> page = blogMapper.selectBlogListPage(blog);
+        Page<Blog> page = blogMapper.selectBlogListPage(blog,operatorId);
         return page;
     }
 

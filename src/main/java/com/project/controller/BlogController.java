@@ -33,9 +33,9 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping("/searchBlog")
-    public Result searchBlog(Blog blog, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
+    public Result searchBlog(Blog blog, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize,Integer operatorId){
         Map<String,Object> data = new HashMap<>();
-        List<Blog> blogs = blogService.searchBlog(blog,pageNum,pageSize);
+        List<Blog> blogs = blogService.searchBlog(blog,pageNum,pageSize,operatorId);
         PageInfo<Blog> page = new PageInfo<>(blogs);
         data.put("blogs",blogs);
         data.put("total",page.getTotal());
