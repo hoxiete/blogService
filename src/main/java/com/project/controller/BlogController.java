@@ -3,9 +3,7 @@ package com.project.controller;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import com.project.entity.Blog;
-import com.project.entity.Dict;
-import com.project.entity.MyException;
+import com.project.entity.*;
 import com.project.service.BlogService;
 import com.project.util.Result;
 import com.project.util.ResultConstants;
@@ -35,8 +33,8 @@ public class BlogController {
     @GetMapping("/searchBlog")
     public Result searchBlog(Blog blog, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize,Integer operatorId){
         Map<String,Object> data = new HashMap<>();
-        List<Blog> blogs = blogService.searchBlog(blog,pageNum,pageSize,operatorId);
-        PageInfo<Blog> page = new PageInfo<>(blogs);
+        List<BlogShowDto> blogs = blogService.searchBlog(blog,pageNum,pageSize,operatorId);
+        PageInfo<BlogShowDto> page = new PageInfo<>(blogs);
         data.put("blogs",blogs);
         data.put("total",page.getTotal());
         data.put("size",page.getSize());

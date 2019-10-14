@@ -3,8 +3,8 @@
 <mapper namespace="com.project.mapper.BlogMapper">
 
 
-    <select id="selectBlogListPage" resultType="Blog">
-        SELECT * FROM `t_sys_blog` t1 LEFT JOIN t_sys_user t2 ON t1.user_id = t2.user_id
+    <select id="selectBlogListPage" resultType="BlogShowDto">
+        SELECT t1.*,t2.user_name FROM `t_sys_blog` t1 LEFT JOIN t_sys_user t2 ON t1.user_id = t2.user_id
      <where>
          <if test="blog.title != null and blog.title != ''">
              title like "%"#{blog.title}"%"

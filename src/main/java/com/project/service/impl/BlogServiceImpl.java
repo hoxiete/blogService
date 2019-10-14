@@ -2,10 +2,7 @@ package com.project.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.project.entity.Blog;
-import com.project.entity.Dict;
-import com.project.entity.Image;
-import com.project.entity.MyException;
+import com.project.entity.*;
 import com.project.mapper.BlogMapper;
 import com.project.mapper.UploadMapper;
 import com.project.service.BlogService;
@@ -37,9 +34,9 @@ public class BlogServiceImpl implements BlogService {
     private String fileType;
 
     @Override
-    public List<Blog> searchBlog(Blog blog,Integer pageNum,Integer pageSize,Integer operatorId) {
+    public List<BlogShowDto> searchBlog(Blog blog, Integer pageNum, Integer pageSize, Integer operatorId) {
         PageHelper.startPage(pageNum,pageSize);
-        Page<Blog> page = blogMapper.selectBlogListPage(blog,operatorId);
+        Page<BlogShowDto> page = blogMapper.selectBlogListPage(blog,operatorId);
         return page;
     }
 
