@@ -130,6 +130,7 @@ public class BlogServiceImpl implements BlogService {
         return blogMapper.updateByPrimaryKeySelective(coverBlog);
     }
 
+
     @Override
     public List<Dict> getBlogType() {
         return blogMapper.getBlogType();

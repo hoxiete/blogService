@@ -21,4 +21,5 @@ public interface BlogService {
     List<Map<String, String>> uploadImg(MultipartFile[] file,Integer userId,String operator);
 
     int removeBlog(Blog blog);
+
 }

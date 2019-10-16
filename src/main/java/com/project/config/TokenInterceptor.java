@@ -19,12 +19,13 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         boolean flag = true;
         //排除过滤的 uri 地址
          String LOGIN_URI = "/user/login";
+        String Show_URI = "/blogShow/";
 
         //无权限时的提示语
          String INVALID_TOKEN = "invalid token";
          String INVALID_USERID = "invalid userId";
 
-        if (LOGIN_URI.equals(request.getRequestURI())) {
+        if (LOGIN_URI.equals(request.getRequestURI())|| request.getRequestURI().indexOf(Show_URI)!=-1) {
             return true;
         }
 

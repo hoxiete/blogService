@@ -22,4 +22,5 @@ public class BlogShowDto {
     private String updateUser;
     private Date updateTime;
     private String userName;
+    private String typeName;
 }
