@@ -14,4 +14,7 @@ public interface BlogMapper extends Mapper<Blog> {
     List<Dict> getBlogType();
 
     List<Image> getImageListByBlog(Integer id);
+
+    Image getCoverImageByBlog(Integer id);
+
 }

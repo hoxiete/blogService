@@ -73,6 +73,15 @@ public class BlogServiceImpl implements BlogService {
             //没有新图片，删掉最后一位 ，
             newImages = newImages.substring(0,newImages.length()-1);
         }
+        if(blog.getCoverImg()!=null) {
+            Image img = blogMapper.getCoverImageByBlog(blog.getId());
+            if(img!=null) {
+                QiniuCloudUtil.delete(img.getImageUrl());
+                uploadMapper.delete(img);
+            }
+            editBlog.setCoverImg(blog.getCoverImg());
+        }
+        editBlog.setSummary(blog.getSummary());
         editBlog.setImgs(newImages);
         editBlog.setId(blog.getId());
         editBlog.setTitle(blog.getTitle());
@@ -96,28 +105,37 @@ public class BlogServiceImpl implements BlogService {
 
     @Transactional
     @Override
-    public List<Map<String, String>> uploadImg(MultipartFile[] imgs,Integer userId,String operator) {
+    public List<Map<String, String>> uploadImg(MultipartFile frontCoverImg,MultipartFile[] imgs,Integer userId,String operator) {
         List<Map<String, String>> list = new ArrayList<>();
+        String fileName = null;
+        String resourceId = null;
+        String filePath = userId + prex;
+        if(frontCoverImg!=null) {
+            Map<String, String> data = new HashMap<>();
+            try {
+                fileName = QiniuCloudUtil.put64image(frontCoverImg, filePath);
+            } catch (Exception e) {
+                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
+            }
+            resourceId = blogImgInsert(fileName, fileType, operator);
+            data.put("resourceId", resourceId);
+            list.add(data);
+        }
         if(imgs.length!=0){
-            String fileName = null;
-            String resourceId = null;
             try {
                 for(MultipartFile img : imgs) {
-                    Map<String,String> data = new HashMap<>();
-                    String filePath = userId + prex;
+                    Map<String,String> data1 = new HashMap<>();
                     fileName = QiniuCloudUtil.put64image(img,filePath);
                     resourceId = blogImgInsert(fileName,fileType,operator);
-                    data.put("pos",img.getOriginalFilename());
-                    data.put("url",domain + fileName);
-                    data.put("resourceId",resourceId);
-                    list.add(data);
+                    data1.put("pos",img.getOriginalFilename());
+                    data1.put("url",domain + fileName);
+                    data1.put("resourceId",resourceId);
+                    list.add(data1);
                 }
             } catch (Exception e) {
                 throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
             }
 
-        }else{
-            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"没有识别到图片");
         }
         return list;
     }

@@ -4,7 +4,8 @@
 
 
     <select id="selectBlogListPage" resultType="BlogShowDto">
-        SELECT t1.*,t2.user_name FROM `t_sys_blog` t1 LEFT JOIN t_sys_user t2 ON t1.user_id = t2.user_id
+        SELECT t1.*,t2.user_name,t3.image_url FROM `t_sys_blog` t1 LEFT JOIN t_sys_user t2 ON t1.user_id = t2.user_id
+                         LEFT JOIN t_sys_image t3 ON t1.cover_img = t3.recourse_id
      <where>
          <if test="blog.title != null and blog.title != ''">
              title like "%"#{blog.title}"%"
@@ -22,6 +23,10 @@
 
     <select id="getImageListByBlog" resultType="Image">
        SELECT recourse_id , image_url FROM t_sys_image WHERE FIND_IN_SET( recourse_id,(SELECT imgs FROM t_sys_blog WHERE id= #{id} ))
+    </select>
+
+    <select id="getCoverImageByBlog" resultType="Image">
+       SELECT recourse_id , image_url FROM t_sys_image WHERE FIND_IN_SET( recourse_id,(SELECT cover_img FROM t_sys_blog WHERE id= #{id} ))
     </select>
 
 

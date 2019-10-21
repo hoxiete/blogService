@@ -11,6 +11,9 @@ import java.util.Date;
 public class BlogShowDto {
     private Integer id;
     private String title;
+    private String coverImg;
+    private String imageUrl;
+    private String summary;
     private Integer typeId;
     private Integer userId;
     private String body;
