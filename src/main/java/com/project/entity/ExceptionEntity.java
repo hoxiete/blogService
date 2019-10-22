@@ -29,4 +29,6 @@ public class ExceptionEntity {
     private String ip;
 
     private Date recordTime;
+
+    private Integer resolveFlag;
 }

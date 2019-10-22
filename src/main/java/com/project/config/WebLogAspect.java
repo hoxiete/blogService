@@ -83,6 +83,7 @@ public class WebLogAspect {
        exception.setUrl(request.getRequestURL().toString());
        exception.setIp(request.getRemoteAddr());
        exception.setRecordTime(new Date());
+       exception.setResolveFlag(0);
        exceptionSaveService.saveException(exception);
 
     }
