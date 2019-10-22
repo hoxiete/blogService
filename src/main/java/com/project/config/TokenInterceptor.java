@@ -1,6 +1,7 @@
 package com.project.config;
 
 
+import com.project.entity.Requests;
 import com.project.util.JwtUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         boolean flag = true;
         //排除过滤的 uri 地址
-         String LOGIN_URI = "/user/login";
+         String LOGIN_URI = "/index/login";
         String Show_URI = "/blogShow/";
 
         //无权限时的提示语
@@ -32,7 +33,17 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         // 获取 HTTP HEAD 中的 TOKEN
         String token = request.getHeader("token");
         // 校验 TOKEN
-//        flag = StringUtils.isNotBlank(token) ? JwtUtil.checkJWT(token) : false;
+        if(StringUtils.isNotBlank(token)){
+            String userName = JwtUtil.checkJWT(token) ;
+            if(userName!=null){
+               flag = true;
+               request.setAttribute(Requests.currentUser, userName);  //解析token 设置 用户名
+           }else {
+               flag = false;
+            }
+        }else{
+            flag = false;
+        }
         // 如果校验未通过，返回 401 状态
         if (!flag)
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

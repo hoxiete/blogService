@@ -1,17 +1,11 @@
 package com.project.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.project.entity.Image;
-import com.project.entity.MyException;
-import com.project.entity.User;
-import com.project.entity.UserViewDto;
+import com.project.entity.*;
 import com.project.mapper.UploadMapper;
 import com.project.mapper.UserMapper;
 import com.project.service.UserService;
-import com.project.util.MD5Utils;
-import com.project.util.QiniuCloudUtil;
-import com.project.util.ResultConstants;
-import com.project.util.SaveImgUtil;
+import com.project.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -51,6 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUser() {
+        String name = UserRequest.getCurrentUser();
           List<User> userList =  usermapper.selectAll();
         return userList;
     }

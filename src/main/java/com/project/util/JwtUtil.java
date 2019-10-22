@@ -140,7 +140,7 @@ public class JwtUtil {
      * @return JWT字符串
      */
     public static String buildJWT(String sub) {
-        return buildJWT(sub, null, UUID.randomUUID().toString(), null, null, 600);
+        return buildJWT(sub, null, UUID.randomUUID().toString(), null, null, 3600);
     }
 
     /**
@@ -164,16 +164,35 @@ public class JwtUtil {
      * @param claimsJws jwt 内容文本
      * @return ture or false
      */
-    public static Boolean checkJWT(String claimsJws) {
-        boolean flag = false;
+//    public static Boolean checkJWT(String claimsJws) {
+//        boolean flag = false;
+//        try {
+//            SecretKey key = generateKey(JWT_ALG, JWT_RULE);
+//            // 获取 JWT 的 payload 部分
+//            flag = (parseJWT(key, claimsJws).getBody() != null);
+//        } catch (Exception e) {
+//            log.warn("JWT验证出错，错误原因：{}", e.getMessage());
+//        }
+//        return flag;
+//    }
+
+    /**
+     * 校验JWT
+     *
+     * @param claimsJws jwt 内容文本
+     * @return userName
+     */
+    public static String checkJWT(String claimsJws) {
+        String userName = "";
         try {
             SecretKey key = generateKey(JWT_ALG, JWT_RULE);
             // 获取 JWT 的 payload 部分
-            flag = (parseJWT(key, claimsJws).getBody() != null);
+//            flag = (parseJWT(key, claimsJws).getBody() != null);
+             userName = parseJWT(key, claimsJws).getBody().getSubject();
         } catch (Exception e) {
             log.warn("JWT验证出错，错误原因：{}", e.getMessage());
         }
-        return flag;
+        return userName;
     }
 
     /**

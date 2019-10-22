@@ -2,15 +2,11 @@ package com.project.config;
 
 import com.project.entity.MyException;
 import com.project.util.JSONUtils;
-import com.project.util.Result;
-import com.project.util.Results;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Auther: cookie
@@ -21,7 +17,6 @@ import java.util.Map;
 @ControllerAdvice(basePackages ="com.project.controller")
 public class MyControllerAdvice {
     private Logger logger = LoggerFactory.getLogger(getClass());
-
     /**
      * 全局异常处理，反正异常返回统一格式的map
      */
@@ -30,7 +25,6 @@ public class MyControllerAdvice {
     public String MyExceptionHandler(MyException result){
         logger.error(result.getMessage());
         //发生异常进行日志记录，写入数据库或者其他处理，此处省略
-
         return JSONUtils.toJson(result);
     }
 

@@ -1,14 +1,20 @@
 package com.project.config;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
+
+import com.project.entity.ExceptionEntity;
+import com.project.entity.MyException;
+import com.project.service.ExceptionSaveService;
+import com.project.util.AddressUtils;
+import com.project.util.UserRequest;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -24,6 +30,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class WebLogAspect {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private ExceptionSaveService exceptionSaveService;
 
     @Pointcut("execution(public * com.project.controller..*.*(..))")
     public void webLog(){
@@ -43,11 +52,38 @@ public class WebLogAspect {
             String name = (String) enu.nextElement();
             logger.info("name:{},value:{}", name, request.getParameter(name));
         }
+
     }
 
     @AfterReturning(returning = "ret", pointcut = "webLog()")
     public void doAfterReturning(Object ret) throws Throwable {
         // 处理完请求，返回内容
         logger.info("RESPONSE : " + ret);
+    }
+
+    @AfterThrowing(throwing = "ret", pointcut = "webLog()")
+    public void doAfterThrowing(Throwable ret) throws UnsupportedEncodingException {          //先走切面再走全局异常配置
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String userName = UserRequest.getCurrentUser();
+        // 记录异常信息内容
+//        String address = AddressUtils.getAddresses(AddressUtils.getIpAddr(request));
+        ExceptionEntity exception =  new ExceptionEntity();
+        if(ret instanceof MyException) {
+            MyException myException = (MyException) ret;
+            exception.setStatus(myException.getStatus());
+            exception.setMessage(myException.getMessage());
+            if(myException.getMethod()!=null){
+                exception.setMethod(myException.getMethod());
+            }
+        }else{
+            exception.setMessage(ret.getMessage());
+        }
+       exception.setUserName(userName);
+       exception.setUrl(request.getRequestURL().toString());
+       exception.setIp(request.getRemoteAddr());
+       exception.setRecordTime(new Date());
+       exceptionSaveService.saveException(exception);
+
     }
 }
