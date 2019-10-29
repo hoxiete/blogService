@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/index")
+@RequestMapping("/zhwtf/index")
 public class loginController {
 
     @Autowired

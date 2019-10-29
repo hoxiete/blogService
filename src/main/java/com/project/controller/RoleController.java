@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/zhwtf/role")
 public class RoleController {
     @Autowired
     private RoleService roleService;
