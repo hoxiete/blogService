@@ -36,17 +36,17 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         // 获取 HTTP HEAD 中的 TOKEN
         String token = request.getHeader("token");
         // 校验 TOKEN
-//        if(StringUtils.isNotBlank(token)){
-//            String userName = JwtUtil.checkJWT(token) ;
-//            if(userName!=null){
-//               flag = true;
-//               request.setAttribute(Requests.currentUser, userName);  //解析token 设置 用户名
-//           }else {
-//               flag = false;
-//            }
-//        }else{
-//            flag = false;
-//        }
+        if(StringUtils.isNotBlank(token)){
+            String userName = JwtUtil.checkJWT(token) ;
+            if(userName!=null){
+               flag = true;
+               request.setAttribute(Requests.currentUser, userName);  //解析token 设置 用户名
+           }else {
+               flag = false;
+            }
+        }else{
+            flag = false;
+        }
         // 如果校验未通过，返回 401 状态
         if (!flag)
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
