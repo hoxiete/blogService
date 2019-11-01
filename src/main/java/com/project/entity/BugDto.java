@@ -1,6 +1,7 @@
 package com.project.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,9 +22,9 @@ public class BugDto {
 
     private String userName;
 
-    private Date startTime;
+    private String startTime;
 
-    private Date endTime;
+    private String endTime;
 
     private Integer resolveFlag;
 }

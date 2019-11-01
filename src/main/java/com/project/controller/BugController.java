@@ -40,9 +40,9 @@ public class BugController {
 
     }
 
-    @PutMapping("/editBug")
-    public Result editBug(Integer id){
-        if(bugService.editBug(id)==0) {
+    @PutMapping("/removeBug")
+    public Result editBug(BugDto dto){
+        if(bugService.editBug(dto)==0) {
             throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"修改失败");
         }
         return Results.OK();

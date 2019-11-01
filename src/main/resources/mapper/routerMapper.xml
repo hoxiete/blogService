@@ -21,12 +21,12 @@
 
     <select id="getLastPermIdAndSort" resultType="Integer">
       select
-      MAX(perm_id)
+     IFNULL(MAX(perm_id),0)
           from
           t_sys_permission
         UNION
         SELECT
-          MAX(order_sort)
+          IFNULL(MAX(order_sort))
          FROM
           t_sys_permission
          WHERE

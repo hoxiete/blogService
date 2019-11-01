@@ -11,7 +11,7 @@
         <if test="userName != null and userName !=''">
             user_name like "%"#{userName}"%"
         </if>
-         <if test="startTime != null and endTime == null">
+         <if test="startTime!= null and endTime== null ">
              record_time &gt; #{startTime}
          </if>
          <if test="startTime == null and endTime != null">
@@ -19,6 +19,9 @@
          </if>
          <if test="startTime != null and endTime != null">
              record_time between #{startTime} and #{endTime}
+         </if>
+         <if test="resolveFlag != null">
+             resolve_flag = #{resolveFlag}
          </if>
      </where>
 

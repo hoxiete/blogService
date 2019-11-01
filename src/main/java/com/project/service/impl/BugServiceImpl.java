@@ -4,9 +4,11 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.project.entity.BugDto;
 import com.project.entity.ExceptionEntity;
+import com.project.entity.MyException;
 import com.project.entity.Role;
 import com.project.mapper.BugMapper;
 import com.project.service.BugService;
+import com.project.util.ResultConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,12 +34,24 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public int editBug(Integer id) {
-        return 0;
+    public int editBug(BugDto dto) {
+        ExceptionEntity entity = new ExceptionEntity();
+        entity.setId(dto.getId());
+        entity.setResolveFlag(dto.getResolveFlag());
+        return bugMapper.updateByPrimaryKeySelective(entity);
     }
 
     @Override
     public void deleteBugBatch(Integer[] ids) {
-
+        int i=0;
+        for( ;i<ids.length;i++){
+            ExceptionEntity entity = new ExceptionEntity();
+            entity.setId(ids[i]);
+            entity.setResolveFlag(1);
+            bugMapper.updateByPrimaryKeySelective(entity);
+        }
+        if(i!=ids.length){
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"更改未生效");
+        }
     }
 }

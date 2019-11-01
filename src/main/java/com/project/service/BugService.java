@@ -9,7 +9,7 @@ public interface BugService {
 
     List<ExceptionEntity> getBugList(BugDto entity, Integer pageNum, Integer pageSize);
 
-    int editBug(Integer id);
+    int editBug(BugDto dto);
 
     void deleteBugBatch(Integer[] ids);
 }
