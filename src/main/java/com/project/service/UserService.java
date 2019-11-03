@@ -24,4 +24,8 @@ public interface UserService {
     int editUser(User user,String operator);
 
     int addUser(User user,String operator);
+
+    int insertUserByLoginName(User user);
+
+    User checkLoginName(String loginName);
 }

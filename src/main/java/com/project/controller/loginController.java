@@ -3,13 +3,11 @@ package com.project.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.project.entity.Menu;
+import com.project.entity.MyException;
 import com.project.entity.User;
 import com.project.service.LoginService;
 import com.project.service.UserService;
-import com.project.util.JSONUtils;
-import com.project.util.JwtUtil;
-import com.project.util.MD5Utils;
-import com.project.util.Results;
+import com.project.util.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +24,8 @@ public class loginController {
 
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private UserService userService;
 
 
     @PostMapping("/login")
@@ -47,6 +47,20 @@ public class loginController {
         }
         return JSONUtils.toJson(Results.OK(data));
 
+    }
+    @PostMapping("/checkLoginName")
+    public Result checkLoginName(String loginName){
+        if(null != userService.checkLoginName(loginName)){
+            return Results.BAD_REQUEST();
+        }
+        return Results.OK();
+    }
+    @PostMapping("/register")
+    public Result register(User user){
+        if(userService.insertUserByLoginName(user)==0){
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"注册失败");
+        }
+        return Results.OK();
     }
 
 

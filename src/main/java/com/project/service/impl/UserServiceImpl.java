@@ -149,6 +149,27 @@ public class UserServiceImpl implements UserService {
         return usermapper.insert(insertUser);
     }
 
+    @Override
+    public int insertUserByLoginName(User user) {
+        user.setUserName(user.getLoginName());
+        user.setPassWord(MD5Utils.md5(user.getPassWord()));
+        user.setRoleId(1);
+        user.setDeleteFlag(0);
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        user.setCreateTime(sdf.format(new Date()));
+        user.setCreateUser("self");
+        user.setUpdateTime(new Date());
+        user.setUpdateUser("self");
+        return usermapper.insertSelective(user);
+    }
+
+    @Override
+    public User checkLoginName(String loginName) {
+        User user = new User();
+        user.setLoginName(loginName);
+        return usermapper.selectOne(user);
+    }
+
 
     //新增图片表的记录，返回id给用户表当外键
     private String userHeadImgInsert(String fullPath,String fileType,String operator) {
