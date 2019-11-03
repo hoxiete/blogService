@@ -25,15 +25,19 @@ public class QiniuCloudUtil {
     private static String SECRET_KEY ="62N4VmDCQWgt31k1rcGhU7uOflw3uyCJlxDQz91C";
     // 要上传的空间
 
-    private static String bucketname="blogbyzh";
+//    private static String bucketname="blogbyzh";
+    private static String bucketname="hoxite";
 
-    private static String DOMAIN ="py8m27zxx.bkt.clouddn.com";
+//    private static String DOMAIN ="py8m27zxx.bkt.clouddn.com";
+    private static String DOMAIN ="q0de6cmzk.bkt.clouddn.com";
 
     // 密钥
     private static Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
 
     //创建华南访问连接设置
-    private static Configuration configuration = new Configuration(Zone.zone2());
+//    private static Configuration configuration = new Configuration(Zone.zone2());
+    //创建华南访问连接设置
+    private static Configuration configuration = new Configuration(Zone.zone0());
 
     //生成七牛云token
     public static String getUpToken() {
