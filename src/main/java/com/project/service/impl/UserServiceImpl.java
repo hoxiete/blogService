@@ -155,7 +155,8 @@ public class UserServiceImpl implements UserService {
         user.setPassWord(MD5Utils.md5(user.getPassWord()));
         user.setRoleId(1);
         user.setDeleteFlag(0);
-        SimpleDateFormat sdf = new SimpleDateFormat();
+        user.setSex(3);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         user.setCreateTime(sdf.format(new Date()));
         user.setCreateUser("self");
         user.setUpdateTime(new Date());

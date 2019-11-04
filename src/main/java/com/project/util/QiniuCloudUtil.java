@@ -36,7 +36,7 @@ public class QiniuCloudUtil {
 
     //创建华南访问连接设置
 //    private static Configuration configuration = new Configuration(Zone.zone2());
-    //创建华南访问连接设置
+    //创建华东访问连接设置
     private static Configuration configuration = new Configuration(Zone.zone0());
 
     //生成七牛云token
