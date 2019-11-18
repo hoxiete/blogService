@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         userUpadate.setUserId(user.getUserId());
         userUpadate.setUserName(user.getUserName());
         userUpadate.setSex(user.getSex());
-        if(user.getBirthDay()!= "") {
+        if(user.getBirthDay()!= null) {
             userUpadate.setBirthDay(user.getBirthDay());
         }
         userUpadate.setBz(user.getBz());
