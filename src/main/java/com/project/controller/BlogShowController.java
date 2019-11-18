@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/blogShow")
+@RequestMapping("zhwtf/blogShow")
 public class BlogShowController {
     @Autowired
     private BlogShowService blogShowService;

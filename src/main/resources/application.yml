@@ -5,7 +5,7 @@ baseUrl:
   img: D:/baseUrl/headImg/
 
 qiniu:
-  domain: http://py8m27zxx.bkt.clouddn.com/
+  domain: http://q0de6cmzk.bkt.clouddn.com/
 
 imgPath:
   head: /head/
