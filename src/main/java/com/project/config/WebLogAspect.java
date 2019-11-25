@@ -40,18 +40,21 @@ public class WebLogAspect {
     }
 
     @Before("webLog()")
-    public void doBefore(JoinPoint joinPoint){
+    public void doBefore(JoinPoint joinPoint)throws UnsupportedEncodingException {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         // 记录下请求内容
         logger.info("URL : " + request.getRequestURL().toString());
         logger.info("HTTP_METHOD : " + request.getMethod());
+        String address = AddressUtils.getAddresses(AddressUtils.getIpAddr(request));
         logger.info("IP : " + request.getRemoteAddr());
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
             String name = (String) enu.nextElement();
             logger.info("name:{},value:{}", name, request.getParameter(name));
         }
+
+
 
     }
 

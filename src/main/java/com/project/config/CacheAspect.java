@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CacheAspect {
     @Autowired
-    private RedisTemplate<Object,Object> redisClient;
+    private RedisTemplate redisClient;
 
     public static final Logger logger = LoggerFactory.getLogger(CacheAspect.class);
 
@@ -41,7 +41,7 @@ public class CacheAspect {
         //字符串序列化器 ，把插入的key值序列化，否则不加就不能根据key查询到已存在的结果
         RedisSerializer redisSerializer = new StringRedisSerializer();
         redisClient.setKeySerializer(redisSerializer);
-        Set<Object> keys = redisClient.keys(key + "*");      // " * " 模糊匹配记录
+        Set<Object> keys = redisClient.keys(key + "*");      //    " * " 模糊匹配记录
         redisClient.delete(keys);                          //记录全部删除
         logger.info("redis删除key为:"+key+"的所有记录");
 
