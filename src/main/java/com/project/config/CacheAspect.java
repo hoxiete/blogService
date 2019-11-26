@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CacheAspect {
     @Autowired
-    private RedisTemplate redisClient;
+    private RedisTemplate<Object,Object> redisClient;
 
     public static final Logger logger = LoggerFactory.getLogger(CacheAspect.class);
 

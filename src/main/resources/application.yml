@@ -2,7 +2,7 @@ server:
   port: 8088
 
 baseUrl:
-  img: D:/baseUrl/headImg/
+  img: F:/baseUrl/headImg/
 
 qiniu:
   domain: http://q0de6cmzk.bkt.clouddn.com/
@@ -13,6 +13,7 @@ imgPath:
 imgType:
   head: 1
   blog: 2
+interviewKey: interviewKey
 
 
 spring:
@@ -20,12 +21,12 @@ spring:
     restart:
       enabled: false  #设置开启热部署
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8  #时区要为北京时间GMT+8
     username: root
-    password: 123456
+    password: root
   redis:
-    host: 192.168.188.26
+    host: 192.168.1.250
     port: 6379
   servlet:
     multipart:

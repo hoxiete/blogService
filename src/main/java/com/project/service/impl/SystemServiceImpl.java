@@ -6,6 +6,7 @@ import com.project.service.SystemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -22,7 +23,8 @@ public class SystemServiceImpl implements SystemService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final String interviewKey = "interviewKey";
+    @Value("${interviewKey}")
+    private String interviewKey;
 
     @Autowired
     private RedisTemplate redisTemplate;
