@@ -13,7 +13,7 @@ imgPath:
 imgType:
   head: 1
   blog: 2
-interviewKey: interviewKey
+
 
 
 spring:

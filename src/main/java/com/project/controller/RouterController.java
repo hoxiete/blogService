@@ -83,7 +83,7 @@ public class RouterController {
         return JSONUtils.toJson(Results.OK());
     }
 
-    @Log("权限菜单获取")
+    @Log("权限查询")
     @GetMapping("/getPermissionTree")
     public Result getPermissionTree(){
         List<Menu> permissionTree = routerService.getPermissionTree();

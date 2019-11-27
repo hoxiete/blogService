@@ -24,7 +24,7 @@
             AND resolve_flag = #{resolveFlag}
          </if>
      </where>
-
+        order by record_time desc
     </select>
 
 

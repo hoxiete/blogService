@@ -4,12 +4,15 @@
 
 
    <insert id="insertInterviewOfDay" parameterType="InterviewEntity">
-       insert into t_sys_interview values
-       <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+       insert into t_sys_interview (user_name,state,ip,run_time,record_time) values
+       <foreach collection="list" index="index" item="item" separator=",">
+           (
            #{item.userName},
            #{item.state},
            #{item.ip},
+           #{item.runTime},
            #{item.recordTime}
+           )
        </foreach>
    </insert>
 

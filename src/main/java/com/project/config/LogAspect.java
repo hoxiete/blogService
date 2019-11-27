@@ -2,7 +2,6 @@ package com.project.config;
 
 import com.project.config.log.Log;
 import com.project.entity.InterviewEntity;
-import com.project.entity.MyException;
 import com.project.entity.User;
 import com.project.util.*;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,7 +11,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -28,8 +26,8 @@ import java.util.Map;
 @Aspect
 @Component
 @Order(2)
-class LogAsPect {
-    public static final Logger logger = LoggerFactory.getLogger(LogAsPect.class);
+public class LogAspect {
+    public static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -71,7 +69,6 @@ class LogAsPect {
         InterviewEntity record = new InterviewEntity();
         record.setIp(ip);
         record.setUserName(userName);
-//        String module = ModuleCheck.findModule(request.getRequestURL().toString());
         record.setState(action);
         record.setRecordTime(new Date());
         record.setRunTime(time);

@@ -27,7 +27,7 @@ public class RouterServiceImpl implements RouterService {
         return treeRouter;
     }
 
-//    @PutRedis(key = "router",fieldKey ="#roleId")
+    @PutRedis(key = "router",fieldKey ="#roleId")
     @Override
     public List<Menu> getMenuList(Integer roleId) {
 
@@ -52,7 +52,7 @@ public class RouterServiceImpl implements RouterService {
         return tree;
     }
 
-//    @DelRedis(key = "router")
+    @DelRedis(key = "router")
     @Override
     public int addPermissionBranch(Router router,String operator) {
         List<Integer> list = routerMapper.getLastPermIdAndSort(router.getParentId());
@@ -73,7 +73,7 @@ public class RouterServiceImpl implements RouterService {
         return routerMapper.insert(newPermission);
     }
 
-//    @DelRedis(key = "router")
+    @DelRedis(key = "router")
     @Transactional
     @Override
     public int editPermissionBranch(Router router, String operator, OrderSortDto sortDto) {
@@ -145,7 +145,7 @@ public class RouterServiceImpl implements RouterService {
 
     }
 
-//    @DelRedis(key = "router")
+    @DelRedis(key = "router")
     @Override
     public int deleteByPermId(Router router) {
         Router user = new Router();
@@ -154,7 +154,7 @@ public class RouterServiceImpl implements RouterService {
         return routerMapper.updateByPrimaryKeySelective(user);
     }
 
-//    @DelRedis(key = "router")
+    @DelRedis(key = "router")
     @Transactional
     @Override
     public void deleteByBatchPermId(Integer[] permIds) {

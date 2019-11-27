@@ -4,24 +4,17 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
-
 import com.project.entity.ExceptionEntity;
-import com.project.entity.InterviewEntity;
 import com.project.entity.MyException;
 import com.project.service.ExceptionSaveService;
 import com.project.util.AddressUtils;
-import com.project.util.ModuleCheck;
 import com.project.util.UserRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -43,9 +36,6 @@ public class WebLogAspect {
 
     @Autowired
     private ExceptionSaveService exceptionSaveService;
-
-    @Value("${interviewKey}")
-    private String interviewKey;
 
     @Pointcut("execution(public * com.project.controller..*.*(..))")
     public void webLog(){
