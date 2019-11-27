@@ -2,6 +2,7 @@ package com.project.controller;
 
 
 import com.github.pagehelper.PageInfo;
+import com.project.config.log.Log;
 import com.project.entity.Menu;
 import com.project.entity.MyException;
 import com.project.entity.User;
@@ -28,8 +29,9 @@ public class loginController {
     private UserService userService;
 
 
+    @Log("登录")
     @PostMapping("/login")
-    public String login(String loginName,String passWord){
+    public Result login(String loginName,String passWord){
         Map<String,Object> data = new HashMap<>();
         try {
             User user = loginService.getUserInfo(loginName);
@@ -39,13 +41,13 @@ public class loginController {
                 data.put("expires_in",3600);   //过期时间1小时
                 data.put("userInfo",user);
             }else {
-                return JSONUtils.toJson(Results.BAD_REQUEST());
+                return Results.BAD_REQUEST();
             }
         }catch (Exception e){
             e.printStackTrace();
-            return JSONUtils.toJson(Results.INTERNAL_SERVER_ERROR());
+            return Results.INTERNAL_SERVER_ERROR();
         }
-        return JSONUtils.toJson(Results.OK(data));
+        return Results.OK(data);
 
     }
     @PostMapping("/checkLoginName")
@@ -55,6 +57,7 @@ public class loginController {
         }
         return Results.OK();
     }
+    @Log("注册")
     @PostMapping("/register")
     public Result register(User user){
         if(userService.insertUserByLoginName(user)==0){

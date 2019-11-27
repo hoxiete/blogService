@@ -21,7 +21,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         //排除过滤的 uri 地址
          String LOGIN_URI = "/zhwtf/index/login";
         String Show_URI = "/zhwtf/blogShow/";
-        String swagger = "/swagger-ui.html";
+        String swagger = "swagger";
 
         //无权限时的提示语
          String INVALID_TOKEN = "invalid token";
@@ -29,7 +29,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 
 //         String url = request.getRequestURI().substring(6);
           String url = request.getRequestURI();
-        if (LOGIN_URI.equals(url)|| url.indexOf(Show_URI)!=-1|| swagger.equals(url)) {
+        if (LOGIN_URI.equals(url)|| url.indexOf(Show_URI)!=-1|| url.indexOf(swagger)!=-1) {
             return true;
         }
 

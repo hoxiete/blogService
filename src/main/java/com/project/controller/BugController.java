@@ -1,6 +1,7 @@
 package com.project.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.project.config.log.Log;
 import com.project.entity.BugDto;
 import com.project.entity.ExceptionEntity;
 import com.project.entity.MyException;
@@ -28,6 +29,7 @@ public class BugController {
     @Autowired
     private BugService bugService;
 
+    @Log("问题查询")
     @GetMapping("/getBugList")
     public Result getBugList(BugDto entity, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
         Map<String,Object> data = new HashMap<>();
@@ -40,6 +42,7 @@ public class BugController {
 
     }
 
+    @Log("问题修改")
     @PutMapping("/removeBug")
     public Result editBug(BugDto dto){
         if(bugService.editBug(dto)==0) {
@@ -48,6 +51,7 @@ public class BugController {
         return Results.OK();
     }
 
+    @Log("问题批量修改")
     @PutMapping("/batchRemoveException")
     public Result deleteBugBatch(Integer[] ids){
         if(ids.length!=0) {

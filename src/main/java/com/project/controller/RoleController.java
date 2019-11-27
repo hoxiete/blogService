@@ -1,6 +1,7 @@
 package com.project.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.project.config.log.Log;
 import com.project.entity.MyException;
 import com.project.entity.OrderSortDto;
 import com.project.entity.Role;
@@ -27,6 +28,8 @@ public class RoleController {
         List<Role> list = roleService.getAllRole();
         return Results.OK(list);
     }
+
+    @Log("角色列表查询")
     @GetMapping("/getRoleListPage")
     public Result getRoleListPage(Role role , @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
         Map<String,Object> data = new HashMap<>();
@@ -37,6 +40,7 @@ public class RoleController {
         data.put("size",page.getSize());
         return Results.OK(data);
     }
+    @Log("角色编辑")
     @PutMapping("/editRole")
     public Result editRole(Role role, String operator, OrderSortDto sortDto){
         if(roleService.editRole(role,operator,sortDto)==0) {
@@ -44,6 +48,7 @@ public class RoleController {
         }
         return Results.OK();
     }
+    @Log("角色添加")
     @PostMapping("/addRole")
     public Result addRole(Role role,String operator){
         if(roleService.addRole(role,operator)==0) {
@@ -51,6 +56,7 @@ public class RoleController {
         }
         return Results.OK();
     }
+    @Log("角色删除")
     @PutMapping("/delete")
     public Result deleteRole(Integer roleId){
         if(roleService.deleteRole(roleId)==0) {
@@ -58,7 +64,7 @@ public class RoleController {
         }
         return Results.OK();
     }
-
+    @Log("角色批量删除")
     @PutMapping("/batchDelete")
     public String deleteRoleBatch(Integer[] roleIds){
         if(roleIds.length!=0) {

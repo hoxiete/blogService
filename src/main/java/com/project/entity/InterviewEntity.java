@@ -26,7 +26,7 @@ public class InterviewEntity implements Serializable {
 
     private String userName;
 
-    private Integer status;  //异常状态码
+    private Long runTime;  //运行时间
 
     private String state;   //访问的位置
 

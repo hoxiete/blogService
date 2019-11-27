@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -33,12 +34,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  */
 @Aspect
 @Component
+@Order(1)  //指定先走
 public class WebLogAspect {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private RedisTemplate<Object,Object> redisClient;
+    //本切面除异常返回处没有移至controllerAdvice，其它在生产环境均无用，测试切面顺序用
 
     @Autowired
     private ExceptionSaveService exceptionSaveService;
@@ -67,15 +68,7 @@ public class WebLogAspect {
             String name = (String) enu.nextElement();
             logger.info("name:{},value:{}", name, request.getParameter(name));
         }
-        InterviewEntity record = new InterviewEntity();
-        record.setIp(ip);
-        record.setUserName(userName);
-        String module = ModuleCheck.findModule(request.getRequestURL().toString());
-        record.setState(module);
-        record.setRecordTime(new Date());
-        RedisSerializer redisSerializer = new StringRedisSerializer();
-        redisClient.setKeySerializer(redisSerializer);
-        redisClient.opsForList().leftPush(interviewKey,record);
+
     }
 
     @AfterReturning(returning = "ret", pointcut = "webLog()")

@@ -1,5 +1,6 @@
 package com.project.controller;
 
+import com.project.config.log.Log;
 import com.project.entity.MyException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,11 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class helloController {
+
+    @Log("系统异常")
     @GetMapping("/hello")
     public String hello(){
         int i= 1/0;
         return "i";
     }
+    @Log("自定义异常")
     @GetMapping("/hellE")
     public String hello1(){
 

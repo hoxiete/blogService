@@ -1,6 +1,7 @@
 package com.project.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.project.config.log.Log;
 import com.project.entity.Blog;
 import com.project.entity.BlogShowDto;
 import com.project.entity.Dict;
@@ -23,6 +24,7 @@ public class BlogShowController {
     @Autowired
     private BlogShowService blogShowService;
 
+    @Log("前台博客查询")
     @GetMapping("/searchBlog")
     public Result searchBlog(Blog blog, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
         Map<String,Object> data = new HashMap<>();

@@ -1,5 +1,6 @@
 package com.project.controller;
 
+import com.project.config.log.Log;
 import com.project.entity.*;
 import com.project.service.AssignService;
 import com.project.service.RoleService;
@@ -38,6 +39,7 @@ public class RouterController {
         return Results.OK(data);
     }
 
+    @Log("菜单查询")
     @GetMapping("/getRouterList")
     public String getRouterList(){
         Map<String,Object> data = new HashMap<>();
@@ -48,7 +50,7 @@ public class RouterController {
         data.put("router",routerList);
         return JSONUtils.toJson(Results.OK(data));
     }
-
+    @Log("菜单添加")
     @PostMapping("/addPermission")
     public String addPermission(Router router,String operator){
        if(routerService.addPermissionBranch(router,operator)==0){
@@ -56,7 +58,7 @@ public class RouterController {
        }
         return JSONUtils.toJson(Results.OK());
     }
-
+    @Log("菜单修改")
     @PutMapping("/editPermission")
     public String editPermission(Router router, String operator, OrderSortDto sortDto){
         if(routerService.editPermissionBranch(router,operator,sortDto)==0){
@@ -64,7 +66,7 @@ public class RouterController {
         }
         return JSONUtils.toJson(Results.OK());
     }
-
+    @Log("菜单状态修改")
     @PutMapping("/removePermission")
     public String deleteUser(Router router){
         if(routerService.deleteByPermId(router)==0){
@@ -72,7 +74,7 @@ public class RouterController {
         }
         return JSONUtils.toJson(Results.OK());
     }
-
+    @Log("菜单批量停用")
     @PutMapping("/batchRemovePermissions")
     public String deleteUserBatch(Integer[] permIds){
         if(permIds.length!=0) {
@@ -81,6 +83,7 @@ public class RouterController {
         return JSONUtils.toJson(Results.OK());
     }
 
+    @Log("权限菜单获取")
     @GetMapping("/getPermissionTree")
     public Result getPermissionTree(){
         List<Menu> permissionTree = routerService.getPermissionTree();
@@ -91,6 +94,7 @@ public class RouterController {
         List<Integer> list = assignService.getPermissionIdByRoleId(roleId);
         return Results.OK(list);
     }
+    @Log("权限修改")
     @PostMapping("/addRoleAssgin")
     public Result addRoleAssgin(Integer[] permIds ,Integer roleId,String operater){
         if(assignService.addRoleAssgin(permIds,roleId,operater)==0){

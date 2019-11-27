@@ -35,10 +35,10 @@ public class SystemServiceImpl implements SystemService {
     @Scheduled(cron = "0 0 3 * * *")
     public void timeToSaveTrace() {
         logger.info("开启保存访客定时器：" + LocalDateTime.now());
-        List<InterviewEntity> record = (List<InterviewEntity>) redisTemplate.opsForValue().get(interviewKey);
+        List<InterviewEntity> record = redisTemplate.opsForList().range(interviewKey,0,-1);
         if (null != record && record.size() > 0) {
             systemMapper.insertInterviewOfDay(record);
+            redisTemplate.delete(interviewKey);
         }
-
     }
 }

@@ -3,6 +3,7 @@ package com.project.controller;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import com.project.config.log.Log;
 import com.project.entity.*;
 import com.project.service.BlogService;
 import com.project.util.Result;
@@ -30,6 +31,7 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
+    @Log("博客查询")
     @GetMapping("/searchBlog")
     public Result searchBlog(Blog blog, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize,Integer operatorId){
         Map<String,Object> data = new HashMap<>();
@@ -53,6 +55,8 @@ public class BlogController {
         List<Map<String,String>> imgUrl = blogService.uploadImg(frontCoverImg,img,userId,operator);
         return Results.OK(imgUrl);
     }
+
+    @Log("博客新增")
     @PostMapping("/saveBlog")
     public Result saveBlog(Blog blog,String operator){
         if(null!=blog.getId()){
@@ -67,6 +71,7 @@ public class BlogController {
         return Results.OK();
     }
 
+    @Log("博客删除")
     @PutMapping("/removeBlog")
     public Result removeBlog(Blog blog){
         if(blogService.removeBlog(blog)==0){
