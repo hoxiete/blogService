@@ -2,10 +2,10 @@ package com.project.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.project.entity.BugDto;
 import com.project.entity.ExceptionEntity;
 import com.project.entity.MyException;
 import com.project.entity.Role;
+import com.project.entity.SystemInputDto;
 import com.project.mapper.BugMapper;
 import com.project.service.BugService;
 import com.project.util.ResultConstants;
@@ -27,14 +27,14 @@ public class BugServiceImpl implements BugService {
     private BugMapper bugMapper;
 
     @Override
-    public List<ExceptionEntity> getBugList(BugDto entity, Integer pageNum, Integer pageSize) {
+    public List<ExceptionEntity> getBugList(SystemInputDto entity, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         Page<ExceptionEntity> list = bugMapper.getBugList(entity);
         return list;
     }
 
     @Override
-    public int editBug(BugDto dto) {
+    public int editBug(SystemInputDto dto) {
         ExceptionEntity entity = new ExceptionEntity();
         entity.setId(dto.getId());
         entity.setResolveFlag(dto.getResolveFlag());

@@ -50,8 +50,6 @@ public class WebLogAspect {
         // 记录下请求内容
         logger.info("URL : " + request.getRequestURL().toString());
         logger.info("HTTP_METHOD : " + request.getMethod());
-        String ip = AddressUtils.getIpAddr(request);
-        String userName = UserRequest.getCurrentUser();
         logger.info("IP : " + request.getRemoteAddr());
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {

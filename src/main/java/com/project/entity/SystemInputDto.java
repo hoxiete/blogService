@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * ClassName: BugDto
+ * ClassName: SystemInputDto
  * Function:  异常类接受dto
  * Date:      2019/10/30 19:48
  * author     Administrator
@@ -16,7 +16,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BugDto {
+public class SystemInputDto {
 
     private Integer id;
 

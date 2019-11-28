@@ -2,9 +2,9 @@ package com.project.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.project.config.log.Log;
-import com.project.entity.BugDto;
 import com.project.entity.ExceptionEntity;
 import com.project.entity.MyException;
+import com.project.entity.SystemInputDto;
 import com.project.service.BugService;
 import com.project.util.Result;
 import com.project.util.ResultConstants;
@@ -31,7 +31,7 @@ public class BugController {
 
     @Log("问题查询")
     @GetMapping("/getBugList")
-    public Result getBugList(BugDto entity, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
+    public Result getBugList(SystemInputDto entity, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
         Map<String,Object> data = new HashMap<>();
         List<ExceptionEntity> list = bugService.getBugList(entity,pageNum,pageSize);
         PageInfo page = new PageInfo(list);
@@ -44,7 +44,7 @@ public class BugController {
 
     @Log("问题修改")
     @PutMapping("/removeBug")
-    public Result editBug(BugDto dto){
+    public Result editBug(SystemInputDto dto){
         if(bugService.editBug(dto)==0) {
             throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"修改失败");
         }
