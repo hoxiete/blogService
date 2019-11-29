@@ -1,6 +1,7 @@
 package com.project.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.project.config.log.Log;
 import com.project.entity.MyException;
 import com.project.entity.User;
 import com.project.entity.UserViewDto;
@@ -30,6 +31,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Log("用户自设置")
     @PutMapping("/editSelf")
     public String editUserSelf(User userInfo , MultipartFile img){
         Map<String,Object> data = new HashMap<>();
@@ -57,6 +59,7 @@ public class UserController {
 
     }
 
+    @Log("用户列表获取")
     @GetMapping("/getUserList")
     public String loginUser(User user,@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
         Map<String,Object> data = new HashMap<>();
@@ -68,7 +71,7 @@ public class UserController {
         data.put("size",page.getSize());
         return JSONUtils.toJson(Results.OK(data));
     }
-
+    @Log("用户停用")
     @PutMapping("/delete")
     public String deleteUser(Integer userId){
         if(userService.deleteUserById(userId)==0){
@@ -76,7 +79,7 @@ public class UserController {
         }
         return JSONUtils.toJson(Results.OK());
     }
-
+    @Log("用户批量停用")
     @PutMapping("/batchDelete")
     public String deleteUserBatch(Integer[] userIds){
         if(userIds.length!=0) {
@@ -84,7 +87,7 @@ public class UserController {
         }
         return JSONUtils.toJson(Results.OK());
     }
-
+    @Log("用户修改")
     @PutMapping("/editUser")
     public String editUser(User user,String operator){
         if(userService.editUser(user,operator)==0) {
@@ -92,6 +95,7 @@ public class UserController {
         }
         return JSONUtils.toJson(Results.OK());
     }
+    @Log("用户添加")
     @PostMapping("/addUser")
     public String addUser(User user,String operator){
         if(userService.addUser(user,operator)==0) {

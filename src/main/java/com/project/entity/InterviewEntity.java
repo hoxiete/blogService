@@ -20,7 +20,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "t_sys_interview")
 public class InterviewEntity implements Serializable {
-
+    private static final long serialVersionUID = -5645108301917994003L;
     @Id
     private Integer id;
 
