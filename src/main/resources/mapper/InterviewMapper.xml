@@ -11,6 +11,9 @@
         <if test="userName != null and userName !=''">
             user_name like "%"#{userName}"%"
         </if>
+         <if test="state != null and state !=''">
+             state like "%"#{state}"%"
+         </if>
          <if test="startTime!= null and endTime== null ">
             AND record_time &gt; #{startTime}
          </if>

@@ -27,4 +27,6 @@ public class SystemInputDto {
     private String endTime;
 
     private Integer resolveFlag;
+    //访问位置的前缀
+    private String state;
 }

@@ -25,7 +25,7 @@ public class InterviewController {
     @Autowired
     private InterviewService interviewService;
 
-    @Log("访问记录获取")
+    @Log("访客记录获取")
     @GetMapping("/getInterviewRecord")
     public Result getInterviewRecord(SystemInputDto dto, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize){
         Map<String,Object> data = new HashMap<>();
