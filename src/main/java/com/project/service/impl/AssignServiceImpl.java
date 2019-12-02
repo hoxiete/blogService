@@ -1,5 +1,7 @@
 package com.project.service.impl;
 
+import com.project.config.redis.DelRedis;
+import com.project.config.redis.PutRedis;
 import com.project.entity.Assign;
 import com.project.entity.Menu;
 import com.project.entity.MyException;
@@ -24,6 +26,7 @@ import java.util.List;
 public class AssignServiceImpl implements AssignService {
     @Autowired
     private AssignMapper assignMapper;
+
 
     @Override
     public List<Integer> getPermissionIdByRoleId(Integer roleId) {
@@ -51,6 +54,7 @@ public class AssignServiceImpl implements AssignService {
         return permIds;
     }
 
+    @DelRedis(key = "router",fieldKey ="#roleId")
     @Transactional
     @Override
     public int addRoleAssgin(Integer[] permIds, Integer roleId, String operater) {

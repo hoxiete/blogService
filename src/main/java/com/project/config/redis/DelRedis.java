@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface DelRedis {
     String key();
-//    String fieldKey() ;
+    String fieldKey() default "" ;
 }

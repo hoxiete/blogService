@@ -35,15 +35,30 @@ public class CacheAspect {
 
 
     @After("@annotation(delRedis)")
-    private void proceed(JoinPoint joinPoint, DelRedis delRedis) throws Throwable {
+    private void proceed(JoinPoint pjp, DelRedis delRedis) throws Throwable {
 
         StringBuilder key = new StringBuilder(delRedis.key());
-        //字符串序列化器 ，把插入的key值序列化，否则不加就不能根据key查询到已存在的结果
+        String keyExpr = delRedis.fieldKey();
         RedisSerializer redisSerializer = new StringRedisSerializer();
         redisClient.setKeySerializer(redisSerializer);
-        Set<Object> keys = redisClient.keys(key + "*");      //    " * " 模糊匹配记录
-        redisClient.delete(keys);                          //记录全部删除
-        logger.info("redis删除key为:"+key+"的所有记录");
+        if(!keyExpr.equals("")) {
+            //字符串序列化器 ，把插入的key值序列化，否则不加就不能根据key查询到已存在的结果
+            Method m = ((MethodSignature) pjp.getSignature()).getMethod();
+            // this()返回代理对象，target()返回目标对象，目标对象反射获取的method对象才包含注解
+            Method methodWithAnnotations = pjp.getTarget().getClass().getDeclaredMethod(pjp.getSignature().getName(), m.getParameterTypes());
+            // 根据目标方法对象获取注解对象
+            // 解析key
+            Object[] as = pjp.getArgs();
+            String fieldKey = parseKey(keyExpr, methodWithAnnotations, as);
+            key.append(fieldKey);
+            String keys = key.toString();
+            redisClient.delete(keys);
+            logger.info("redis删除key为:"+keys+"的记录");
+        }else{
+            Set<Object> keys = redisClient.keys(key + "*");      //    " * " 模糊匹配记录
+            redisClient.delete(keys);                          //记录全部删除
+            logger.info("redis删除key为:"+key+"的所有记录");
+        }
 
     }
 
