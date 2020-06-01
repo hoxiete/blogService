@@ -3,7 +3,7 @@ package com.project.service.impl;
 import com.project.entity.InterviewEntity;
 import com.project.mapper.SystemMapper;
 import com.project.service.SystemService;
-import com.project.util.RedisKey;
+import com.project.constants.RedisKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class SystemServiceImpl implements SystemService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String interviewKey = RedisKey.getInterviewKey();
+    private String interviewKey = RedisKey.interviewKey;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -35,7 +35,7 @@ public class SystemServiceImpl implements SystemService {
     private SystemMapper systemMapper;
 
     @Override
-//    @Scheduled(cron = "0 0 3 * * ?")
+    @Scheduled(cron = "0 0 3 * * ?")
     public void timeToSaveTrace() {
         logger.info("开启保存访客定时器：" + LocalDateTime.now());
         List<InterviewEntity> record = redisTemplate.opsForList().range(interviewKey,0,-1);

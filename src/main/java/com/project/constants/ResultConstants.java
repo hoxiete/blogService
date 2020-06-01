@@ -1,4 +1,4 @@
-package com.project.util;
+package com.project.constants;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -6,9 +6,9 @@ import com.project.entity.ExceptionEntity;
 import com.project.entity.MyException;
 import com.project.entity.SystemInputDto;
 import com.project.service.BugService;
-import com.project.util.Result;
-import com.project.util.ResultConstants;
-import com.project.util.Results;
+import com.project.constants.Result;
+import com.project.constants.ResultConstants;
+import com.project.constants.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

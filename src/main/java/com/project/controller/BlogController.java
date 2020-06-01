@@ -1,19 +1,17 @@
 package com.project.controller;
 
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.project.config.log.Log;
 import com.project.entity.*;
 import com.project.service.BlogService;
-import com.project.util.Result;
-import com.project.util.ResultConstants;
-import com.project.util.Results;
+import com.project.constants.Result;
+import com.project.constants.ResultConstants;
+import com.project.constants.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +34,7 @@ public class BlogController {
     public Result searchBlog(Blog blog, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize,Integer operatorId){
         Map<String,Object> data = new HashMap<>();
         List<BlogShowDto> blogs = blogService.searchBlog(blog,pageNum,pageSize,operatorId);
+        List<BlogShowDto> blogs1 = blogService.searchBlog(blog,pageNum,pageSize,operatorId);
         PageInfo<BlogShowDto> page = new PageInfo<>(blogs);
         data.put("blogs",blogs);
         data.put("total",page.getTotal());

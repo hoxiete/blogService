@@ -1,5 +1,5 @@
 
-package com.project.util;
+package com.project.constants;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

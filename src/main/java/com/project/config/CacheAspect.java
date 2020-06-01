@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CacheAspect {
     @Autowired
-    private RedisTemplate<Object,Object> redisClient;
+    private RedisTemplate<Object,Object> redisTemplate;
 
     public static final Logger logger = LoggerFactory.getLogger(CacheAspect.class);
 
@@ -39,8 +39,6 @@ public class CacheAspect {
 
         StringBuilder key = new StringBuilder(delRedis.key());
         String keyExpr = delRedis.fieldKey();
-        RedisSerializer redisSerializer = new StringRedisSerializer();
-        redisClient.setKeySerializer(redisSerializer);
         if(!keyExpr.equals("")) {
             //字符串序列化器 ，把插入的key值序列化，否则不加就不能根据key查询到已存在的结果
             Method m = ((MethodSignature) pjp.getSignature()).getMethod();
@@ -52,11 +50,11 @@ public class CacheAspect {
             String fieldKey = parseKey(keyExpr, methodWithAnnotations, as);
             key.append(fieldKey);
             String keys = key.toString();
-            redisClient.delete(keys);
+            redisTemplate.delete(keys);
             logger.info("redis删除key为:"+keys+"的记录");
         }else{
-            Set<Object> keys = redisClient.keys(key + "*");      //    " * " 模糊匹配记录
-            redisClient.delete(keys);                          //记录全部删除
+            Set<Object> keys = redisTemplate.keys(key + "*");      //    " * " 模糊匹配记录
+            redisTemplate.delete(keys);                          //记录全部删除
             logger.info("redis删除key为:"+key+"的所有记录");
         }
 
@@ -84,11 +82,8 @@ public class CacheAspect {
 //        String key = (String) methodOfAnnotation.invoke(a);
         // 到redis中获取缓存
         String stringKey = key.toString();
-        //字符串序列化器 ，把插入的key值序列化，否则不加就不能根据key查询到已存在的结果
-        RedisSerializer redisSerializer = new StringRedisSerializer();
-        redisClient.setKeySerializer(redisSerializer);
 //        Class returnType=((MethodSignature)pjp.getSignature()).getReturnType();
-        Object cache = redisClient.opsForValue().get(stringKey);
+        Object cache = redisTemplate.opsForValue().get(stringKey);
         if (cache == null) {
             // 若不存在，则到数据库中去获取
             Object result = pjp.proceed();
@@ -97,11 +92,11 @@ public class CacheAspect {
 
                 // 从数据库获取后存入redis
                 System.out.println("从数据库获取的结果并存入redis中: "+result);
-                redisClient.opsForValue().set(stringKey, result);
+                redisTemplate.opsForValue().set(stringKey, result);
                 // 若有指定过期时间，则设置
                 int expireTime = putRedis.expire();
                 if (expireTime != 0) {
-                    redisClient.expire(stringKey,expireTime,TimeUnit.DAYS);
+                    redisTemplate.expire(stringKey,expireTime,TimeUnit.DAYS);
                 }
 
             }

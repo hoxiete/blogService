@@ -36,3 +36,7 @@ pagehelper:
 mapper:
   mappers: com.project.config.BaseMapper
   identity: MYSQL
+
+token:
+  expire:
+    seconds: 3600

@@ -1,6 +1,9 @@
 package com.project.config;
 
 import com.project.config.log.Log;
+import com.project.constants.RedisKey;
+import com.project.constants.Result;
+import com.project.constants.UserRequest;
 import com.project.entity.InterviewEntity;
 import com.project.entity.User;
 import com.project.util.*;
@@ -32,7 +35,7 @@ public class LogAspect {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public String interviewKey = RedisKey.getInterviewKey();
+    public String interviewKey = RedisKey.interviewKey;
     //表示匹配带有自定义注解的方法
     @Pointcut("@annotation(com.project.config.log.Log)")
     public void pointcut() {}
@@ -46,7 +49,7 @@ public class LogAspect {
             logger.info("我在目标方法之前执行！");
             result = point.proceed();
             long endTime = System.currentTimeMillis();
-            insertLog(action,endTime-beginTime,result);
+//            insertLog(action,endTime-beginTime,result);
         } catch (Throwable e) {
             throw e;
         }
@@ -72,8 +75,6 @@ public class LogAspect {
         record.setState(action);
         record.setRecordTime(new Date());
         record.setRunTime(time);
-        RedisSerializer redisSerializer = new StringRedisSerializer();
-        redisTemplate.setKeySerializer(redisSerializer);
         redisTemplate.opsForList().rightPush(interviewKey,record);
     }
 }

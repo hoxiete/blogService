@@ -38,6 +38,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.15</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>mysql</groupId>-->
 <!--            <artifactId>mysql-connector-java</artifactId>-->
@@ -133,17 +139,39 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
-
     </dependencies>
-
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>1.5.9.RELEASE</version>
-            </plugin>
-        </plugins>
-    </build>
+    <finalName>blog</finalName>
+    <directory>${project.basedir}/target</directory>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>1.5.9.RELEASE</version>
+        </plugin>
+        <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>1.0.0</version>
+            <configuration>
+                <imageName>blogapi</imageName>
+                <baseImage>jdk8</baseImage>
+                <maintainer>choko</maintainer>
+                <workdir>/</workdir>
+                <entryPoint>["java", "-jar", "${project.build.finalName}.jar"]</entryPoint>
+                <!-- 这里是复制 jar 包到 docker 容器指定目录配置 -->
+                <resources>
+                    <resource>
+                        <targetPath>/</targetPath>
+                        <directory>${project.build.directory}</directory>
+                        <include>${project.build.finalName}.jar</include>
+                    </resource>
+                </resources>
+                <dockerHost>http://localhost:2375</dockerHost>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+
 
 </project>

@@ -8,7 +8,7 @@ import com.project.entity.ExceptionEntity;
 import com.project.entity.MyException;
 import com.project.service.ExceptionSaveService;
 import com.project.util.AddressUtils;
-import com.project.util.UserRequest;
+import com.project.constants.UserRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;

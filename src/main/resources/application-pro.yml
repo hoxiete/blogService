@@ -5,11 +5,11 @@ spring:
       enabled: false  #设置开启热部署
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8  #时区要为北京时间GMT+8
+    url: jdbc:mysql://192.168.2.116:3306/blog?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8  #时区要为北京时间GMT+8
     username: root
     password: root
   redis:
-    host: 192.168.1.132
+    host: 192.168.2.116
     port: 6379
   servlet:
     multipart:

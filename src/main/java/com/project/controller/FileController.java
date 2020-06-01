@@ -3,17 +3,13 @@ package com.project.controller;
 
 
 import com.project.util.JSONUtils;
-import com.project.util.QiniuCloudUtil;
-import com.project.util.Results;
-import com.project.util.SaveImgUtil;
+import com.project.constants.Results;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.crypto.Data;
-import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 

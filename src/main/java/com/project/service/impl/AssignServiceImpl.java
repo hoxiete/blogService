@@ -1,13 +1,12 @@
 package com.project.service.impl;
 
 import com.project.config.redis.DelRedis;
-import com.project.config.redis.PutRedis;
 import com.project.entity.Assign;
 import com.project.entity.Menu;
 import com.project.entity.MyException;
 import com.project.mapper.AssignMapper;
 import com.project.service.AssignService;
-import com.project.util.ResultConstants;
+import com.project.constants.ResultConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

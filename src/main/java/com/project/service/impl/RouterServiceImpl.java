@@ -1,11 +1,10 @@
 package com.project.service.impl;
 
 import com.project.config.redis.DelRedis;
-import com.project.config.redis.PutRedis;
 import com.project.entity.*;
 import com.project.mapper.RouterMapper;
 import com.project.service.RouterService;
-import com.project.util.ResultConstants;
+import com.project.constants.ResultConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public class RouterServiceImpl implements RouterService {
         return treeRouter;
     }
 
-    @PutRedis(key = "router",fieldKey ="#roleId")
+//    @PutRedis(key = "router",fieldKey ="#roleId")
     @Override
     public List<Menu> getMenuList(Integer roleId) {
 
@@ -52,7 +51,7 @@ public class RouterServiceImpl implements RouterService {
         return tree;
     }
 
-    @DelRedis(key = "router")
+//    @DelRedis(key = "router")
     @Override
     public int addPermissionBranch(Router router,String operator) {
         List<Integer> list = routerMapper.getLastPermIdAndSort(router.getParentId());
