@@ -155,7 +155,7 @@
             <version>1.0.0</version>
             <configuration>
                 <imageName>blogapi</imageName>
-                <baseImage>jdk8</baseImage>
+                <baseImage>chouko/jdk8</baseImage>
                 <maintainer>choko</maintainer>
                 <workdir>/</workdir>
                 <entryPoint>["java", "-jar", "${project.build.finalName}.jar"]</entryPoint>
