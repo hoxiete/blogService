@@ -167,7 +167,7 @@
                         <include>${project.build.finalName}.jar</include>
                     </resource>
                 </resources>
-                <dockerHost>http://106.53.223.87:2375</dockerHost>
+                <dockerHost>http://106.53.223.87:9876</dockerHost>
             </configuration>
         </plugin>
     </plugins>
