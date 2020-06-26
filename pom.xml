@@ -165,9 +165,11 @@
                         <targetPath>/</targetPath>
                         <directory>${project.build.directory}</directory>
                         <include>${project.build.finalName}.jar</include>
+
                     </resource>
                 </resources>
                 <dockerHost>http://106.53.223.87:9876</dockerHost>
+                <dockerCertPath>/var/jenkins_home/cert/</dockerCertPath>
             </configuration>
         </plugin>
     </plugins>
