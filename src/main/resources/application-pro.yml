@@ -7,10 +7,11 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://106.53.223.87:3306/blog?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8  #时区要为北京时间GMT+8
     username: root
-    password: root
+    password: park@2020
   redis:
     host: 106.53.223.87
     port: 16379
+    password: park@2020
   servlet:
     multipart:
       max-file-size: 10MB
