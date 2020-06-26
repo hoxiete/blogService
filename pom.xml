@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -11,7 +12,7 @@
     <groupId>com.project</groupId>
     <artifactId>springboot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springboot</name>
+    <name>blogapi</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -151,28 +152,77 @@
             <version>1.5.9.RELEASE</version>
         </plugin>
         <plugin>
-            <groupId>com.spotify</groupId>
+
+            <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
-            <version>1.0.0</version>
+            <version>0.26.0</version>
+
+            <!--全局配置-->
             <configuration>
-                <imageName>blogapi</imageName>
-                <imageTags>${maven.build.timestamp}</imageTags>
-                <baseImage>chouko/jdk8</baseImage>
-                <maintainer>choko</maintainer>
-                <workdir>/</workdir>
-                <entryPoint>["java", "-jar", "${project.build.finalName}.jar"]</entryPoint>
-                <!-- 这里是复制 jar 包到 docker 容器指定目录配置 -->
-                <resources>
-                    <resource>
-                        <targetPath>/</targetPath>
-                        <directory>${project.build.directory}</directory>
-                        <include>${project.build.finalName}.jar</include>
-                    </resource>
-                </resources>
-                <dockerHost>https://106.53.223.87:9876</dockerHost>
-                <dockerCertPath>/var/jenkins_home/cert/</dockerCertPath>
+<!--                <dockerHost>tcp://localhost:2375</dockerHost>-->
+                <dockerHost>tcp://106.53.223.87:9876</dockerHost>
+                <!--docker远程访问所需证书地址,如果docker远程主机没有启用TLS验证则不需要配证书-->
+                <certPath>/var/jenkins_home/cert/</certPath>
+
+                <!--镜像相关配置,支持多镜像-->
+                <images>
+                    <!-- 单个镜像配置 -->
+                    <image>
+                        <!--镜像名(含版本号)-->
+                        <name>blogapi:${maven.build.timestamp}</name>
+                        <!--别名:用于容器命名和在docker-compose.yml文件只能找到对应名字的配置-->
+                        <alias>${project.name}</alias>
+                        <!--镜像build相关配置-->
+                        <build>
+                            <!--使用dockerFile文件-->
+                            <dockerFile>Dockerfile</dockerFile>
+                            <!--将jar包拷贝到docker build目录中-->
+                            <assembly>
+                                <descriptorRef>artifact</descriptorRef>
+                            </assembly>
+                        </build>
+                        <run>
+                            <!---->
+                            <namingStrategy>alias</namingStrategy>
+                            <ports>
+                                <port>8088:8088</port>
+                            </ports>
+                        </run>
+                    </image>
+                </images>
             </configuration>
+            <dependencies>
+                <!--该插件需要这个依赖-->
+                <dependency>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                    <version>1.11</version>
+                </dependency>
+            </dependencies>
         </plugin>
+<!--        <plugin>-->
+<!--            <groupId>com.spotify</groupId>-->
+<!--            <artifactId>docker-maven-plugin</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--            <configuration>-->
+<!--                <imageName>blogapi</imageName>-->
+<!--                <imageTags>${maven.build.timestamp}</imageTags>-->
+<!--                <baseImage>chouko/jdk8</baseImage>-->
+<!--                <maintainer>choko</maintainer>-->
+<!--                <workdir>/</workdir>-->
+<!--                <entryPoint>["java", "-jar", "${project.build.finalName}.jar"]</entryPoint>-->
+<!--                &lt;!&ndash; 这里是复制 jar 包到 docker 容器指定目录配置 &ndash;&gt;-->
+<!--                <resources>-->
+<!--                    <resource>-->
+<!--                        <targetPath>/</targetPath>-->
+<!--                        <directory>${project.build.directory}</directory>-->
+<!--                        <include>${project.build.finalName}.jar</include>-->
+<!--                    </resource>-->
+<!--                </resources>-->
+<!--                <dockerHost>https://106.53.223.87:9876</dockerHost>-->
+<!--                <dockerCertPath>/var/jenkins_home/cert/</dockerCertPath>-->
+<!--            </configuration>-->
+<!--        </plugin>-->
     </plugins>
 </build>
 
