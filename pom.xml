@@ -156,6 +156,7 @@
             <version>1.0.0</version>
             <configuration>
                 <imageName>blogapi</imageName>
+                <imageTags>${maven.build.timestamp}</imageTags>
                 <baseImage>chouko/jdk8</baseImage>
                 <maintainer>choko</maintainer>
                 <workdir>/</workdir>
@@ -164,7 +165,6 @@
                 <resources>
                     <resource>
                         <targetPath>/</targetPath>
-                        <tag>${maven.build.timestamp}</tag>
                         <directory>${project.build.directory}</directory>
                         <include>${project.build.finalName}.jar</include>
                     </resource>
