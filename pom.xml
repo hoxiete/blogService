@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <maven.build.timestamp.format>yyyy_MM_dd_HH</maven.build.timestamp.format>
     </properties>
 
     <dependencies>
@@ -163,6 +164,7 @@
                 <resources>
                     <resource>
                         <targetPath>/</targetPath>
+                        <tag>${maven.build.timestamp}</tag>
                         <directory>${project.build.directory}</directory>
                         <include>${project.build.finalName}.jar</include>
                     </resource>
