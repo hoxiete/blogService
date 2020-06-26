@@ -157,8 +157,8 @@
             <version>0.26.0</version>
             <!--全局配置-->
             <configuration>
-                <dockerHost>tcp://localhost:2375</dockerHost>
-<!--                <dockerHost>https://106.53.223.87:9876</dockerHost>-->
+<!--                <dockerHost>tcp://localhost:2375</dockerHost>-->
+                <dockerHost>https://106.53.223.87:9876</dockerHost>
                 <!--docker远程访问所需证书地址,如果docker远程主机没有启用TLS验证则不需要配证书-->
                 <certPath>/var/jenkins_home/cert/</certPath>
 
