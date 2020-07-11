@@ -9,6 +9,7 @@ import com.project.entity.MyException;
 import com.project.service.ExceptionSaveService;
 import com.project.util.AddressUtils;
 import com.project.constants.UserRequest;
+import com.project.util.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
@@ -70,6 +71,9 @@ public class WebLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         String userName = UserRequest.getCurrentUser();
+        if(StringUtils.isEmpty(userName)){
+            userName = "游客";
+        }
         // 记录异常信息内容
         String address = AddressUtils.getIpAddr(request);
         ExceptionEntity exception =  new ExceptionEntity();
