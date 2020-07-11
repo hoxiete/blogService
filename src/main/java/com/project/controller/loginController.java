@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/zhwtf/index")
+@RequestMapping("/index")
 public class loginController extends BaseController{
 
     private static final Logger logger = LoggerFactory.getLogger(loginController.class);

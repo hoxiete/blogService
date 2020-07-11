@@ -24,7 +24,7 @@ import java.util.Map;
  * author     Administrator
  */
 @RestController
-@RequestMapping("/zhwtf/blog")
+@RequestMapping("/blog")
 public class BlogController {
     @Autowired
     private BlogService blogService;

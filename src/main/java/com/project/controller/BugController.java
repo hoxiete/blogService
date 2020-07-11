@@ -23,7 +23,7 @@ import java.util.Map;
  * author     Administrator
  */
 @RestController
-@RequestMapping("/zhwtf/exception")
+@RequestMapping("/exception")
 public class BugController {
 
     @Autowired

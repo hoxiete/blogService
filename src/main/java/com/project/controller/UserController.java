@@ -25,7 +25,7 @@ import java.util.Map;
  * author     Administrator
  */
 @RestController
-@RequestMapping("/zhwtf/user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired

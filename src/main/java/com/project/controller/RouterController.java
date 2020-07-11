@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/zhwtf/router")
+@RequestMapping("/router")
 public class RouterController {
 
     @Autowired

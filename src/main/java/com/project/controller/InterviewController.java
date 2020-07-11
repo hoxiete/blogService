@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/zhwtf/interview")
+@RequestMapping("/interview")
 public class InterviewController {
 
     @Autowired
