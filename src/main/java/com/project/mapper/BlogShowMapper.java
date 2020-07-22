@@ -15,5 +15,6 @@ public interface BlogShowMapper extends Mapper<Blog> {
     Page<BlogShowDto> selectBlogListPage(@Param("blog") Blog blog);
 
     List<Dict> getBlogType();
-    
+
+    Page<BlogShowDto> loadBlogListPage(@Param("blog") Blog blog);
 }

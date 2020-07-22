@@ -1,6 +1,7 @@
 package com.project.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +27,7 @@ public class Blog {
     private String body;
     private String bodyHtml;
     private String imgs;
+
     private Integer deleteFlag;
     private String createUser;
     private Date createTime;

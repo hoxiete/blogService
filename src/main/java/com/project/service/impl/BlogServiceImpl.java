@@ -6,7 +6,6 @@ import com.project.entity.*;
 import com.project.mapper.BlogMapper;
 import com.project.mapper.UploadMapper;
 import com.project.service.BlogService;
-import com.project.util.QiniuCloudUtil;
 import com.project.constants.ResultConstants;
 import com.project.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,7 @@ public class BlogServiceImpl implements BlogService {
                 newImages += image.getRecourseId() + "," ;
             }else {
                 //如果所有图片里已经没有了上传的图片，那么就把图片服务器上的图片删除
-                QiniuCloudUtil.delete(image.getImageUrl());
+//                QiniuCloudUtil.delete(image.getImageUrl());
                 //并更新图片表
                 Image delImage = new Image();
                 delImage.setRecourseId(image.getRecourseId());
@@ -75,7 +74,7 @@ public class BlogServiceImpl implements BlogService {
         if(blog.getCoverImg()!=null) {
             Image img = blogMapper.getCoverImageByBlog(blog.getId());
             if(img!=null) {
-                QiniuCloudUtil.delete(img.getImageUrl());
+//                QiniuCloudUtil.delete(img.getImageUrl());
                 uploadMapper.delete(img);
             }
             editBlog.setCoverImg(blog.getCoverImg());
@@ -112,7 +111,7 @@ public class BlogServiceImpl implements BlogService {
         if(frontCoverImg!=null) {
             Map<String, String> data = new HashMap<>();
             try {
-                fileName = QiniuCloudUtil.put64image(frontCoverImg, filePath);
+//                fileName = QiniuCloudUtil.put64image(frontCoverImg, filePath);
             } catch (Exception e) {
                 throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
             }
@@ -124,7 +123,7 @@ public class BlogServiceImpl implements BlogService {
             try {
                 for(MultipartFile img : imgs) {
                     Map<String,String> data1 = new HashMap<>();
-                    fileName = QiniuCloudUtil.put64image(img,filePath);
+//                    fileName = QiniuCloudUtil.put64image(img,filePath);
                     resourceId = blogImgInsert(fileName,fileType,operator);
                     data1.put("pos",img.getOriginalFilename());
                     data1.put("url",domain + fileName);

@@ -5,14 +5,13 @@ import com.project.config.log.Log;
 import com.project.entity.Blog;
 import com.project.entity.BlogShowDto;
 import com.project.entity.Dict;
+import com.project.entity.User;
 import com.project.service.BlogShowService;
 import com.project.constants.Result;
 import com.project.constants.Results;
+import com.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +22,8 @@ import java.util.Map;
 public class BlogShowController {
     @Autowired
     private BlogShowService blogShowService;
+    @Autowired
+    private UserService userService;
 
     @Log("前台博客查询")
     @GetMapping("/searchBlog")
@@ -36,10 +37,27 @@ public class BlogShowController {
         return Results.OK(data);
     }
 
-    @GetMapping("/getBlogDetail")
-    public Result getBlogDetail(Integer id){
+    @GetMapping("/getBlogDetail/{id}")
+    public Result getBlogDetail(@PathVariable Integer id){
         Blog info = blogShowService.getBlogDetail(id);
         return Results.OK(info);
+    }
+
+    @GetMapping("/site")
+    public Result getMySite(){
+        User info = userService.getMyInfo();
+        return Results.OK(info);
+    }
+
+    @GetMapping("/loadList")
+    public Result loadBlogList(Blog blog,@RequestParam(defaultValue = "1")Integer pageNum,@RequestParam(defaultValue = "10") Integer pageSize){
+        Map<String,Object> data = new HashMap<>();
+        List<BlogShowDto> blogs = blogShowService.loadBlogList(blog,pageNum,pageSize);
+        PageInfo<BlogShowDto> page = new PageInfo<>(blogs);
+        data.put("blogs",blogs);
+        data.put("page",page.getPageNum());
+        data.put("hasNextPage",page.isHasNextPage());
+        return Results.OK(data);
     }
 
     @GetMapping("/getBlogTypeList")

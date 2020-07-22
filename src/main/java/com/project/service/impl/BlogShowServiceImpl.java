@@ -41,4 +41,11 @@ public class BlogShowServiceImpl implements BlogShowService {
         return blogMapper.select(blog);
     }
 
+    @Override
+    public List<BlogShowDto> loadBlogList(Blog blog,Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        Page<BlogShowDto> page = blogMapper.loadBlogListPage(blog);
+        return page;
+    }
+
 }

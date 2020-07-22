@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
             String fileName = null;
             try {
                 String filePath = user.getUserId() + prex;
-                fileName = QiniuCloudUtil.put64image(img,filePath);
+//                fileName = QiniuCloudUtil.put64image(img,filePath);
             } catch (Exception e) {
                 throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
             }
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
             if(!user.getHeadimg().isEmpty()) {
                 Image imgInfo = usermapper.getHeadUrl(user.getUserId());
 //                SaveImgUtil.delete(baseUrl+ imgInfo.getImageUrl());
-                QiniuCloudUtil.delete(imgInfo.getImageUrl());
+//                QiniuCloudUtil.delete(imgInfo.getImageUrl());
                 //更新图片路径
                 userHeadImgUpdate(fileName,imgInfo.getImageId());
             }else {
@@ -173,6 +173,11 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setLoginName(loginName);
         return usermapper.selectOne(user);
+    }
+
+    @Override
+    public User getMyInfo() {
+        return usermapper.selectUserById(1);
     }
 
 

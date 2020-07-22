@@ -2,8 +2,10 @@ package com.project.controller;
 
 
 
+import com.project.util.FastDFSClient;
 import com.project.util.JSONUtils;
 import com.project.constants.Results;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,19 +28,20 @@ public class FileController {
     @Value("${baseUrl.img}")
     private String baseUrl;
 
+    @Autowired
+    private FastDFSClient fastDFSClient;
+
     @PostMapping("/uploadImg")
     public String uploadImg(MultipartFile image){
         Map<String,Object> map = new HashMap<>();
-        String key ="";
+        String uploadUrl ="";
         try {
-//             key = QiniuCloudUtil.put64image(image);
-//             QiniuCloudUtil.delete("56969d0b873a47d6a41d3c2d7e3a51bd.png");
+             uploadUrl = fastDFSClient.uploadFile(image);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         // 显示图片
-        map.put("key", key);
+        map.put("uploadUrl", uploadUrl);
         map.put("fileName", image.getOriginalFilename());
        return JSONUtils.toJson(Results.OK(map));
     }

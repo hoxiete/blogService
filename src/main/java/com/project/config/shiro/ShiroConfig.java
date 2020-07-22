@@ -50,6 +50,7 @@ public class ShiroConfig {
         // 拦截器.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         filterChainDefinitionMap.put("/index/**", "anon");
+        filterChainDefinitionMap.put("/file/**", "anon");
         filterChainDefinitionMap.put("/blogShow/**", "anon");
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");

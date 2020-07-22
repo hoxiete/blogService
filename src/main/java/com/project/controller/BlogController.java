@@ -34,7 +34,7 @@ public class BlogController {
     public Result searchBlog(Blog blog, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize,Integer operatorId){
         Map<String,Object> data = new HashMap<>();
         List<BlogShowDto> blogs = blogService.searchBlog(blog,pageNum,pageSize,operatorId);
-        List<BlogShowDto> blogs1 = blogService.searchBlog(blog,pageNum,pageSize,operatorId);
+//        List<BlogShowDto> blogs1 = blogService.searchBlog(blog,pageNum,pageSize,operatorId);
         PageInfo<BlogShowDto> page = new PageInfo<>(blogs);
         data.put("blogs",blogs);
         data.put("total",page.getTotal());
@@ -78,6 +78,19 @@ public class BlogController {
         }
         return Results.OK();
     }
+//    @Log("博客爬取")
+//    @PostMapping("/crawlBlog")
+//    public Result crawlBlog(Blog blog,String operator){
+//        HunterConfig config = HunterConfigContext.getHunterConfig(Platform.CSDN);
+//        config.setUid("u011197448")
+//                .setExitWay(ExitWayEnum.DURATION)
+//                .setCount(10);
+//        HunterProcessor hunter = new BlogHunterProcessor(config);
+//        System.out.println("程序开始执行：" + new Date());
+//        CopyOnWriteArrayList<VirtualArticle> list = hunter.execute();
+//        System.out.println("程序执行完毕：" + new Date());
+//        return Results.OK();
+//    }
 
     }
 

@@ -15,4 +15,6 @@ public interface BlogShowService {
     List<Dict> getBlogTypeList();
 
     List<Blog> getBlogByType(Integer typeId);
+
+    List<BlogShowDto> loadBlogList(Blog blog,Integer pageNum, Integer pageSize);
 }

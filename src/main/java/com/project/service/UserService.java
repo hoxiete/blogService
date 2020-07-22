@@ -28,4 +28,6 @@ public interface UserService {
     int insertUserByLoginName(User user);
 
     User checkLoginName(String loginName);
+
+    User getMyInfo();
 }

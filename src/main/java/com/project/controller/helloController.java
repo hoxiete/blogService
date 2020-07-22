@@ -30,7 +30,7 @@ public class helloController {
     @GetMapping("/hellE")
     public String hello1(){
 
-        throw new MyException(1,"sdasdsd", Thread.currentThread() .getStackTrace()[1].getMethodName());
+        throw new MyException(1,"sdasdsd", Thread.currentThread().getStackTrace()[1].getMethodName());
     }
     @GetMapping("/saveInterview")
     public String saveInterview(){
