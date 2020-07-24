@@ -1,15 +1,21 @@
 package com.project.util;
+import com.github.tobato.fastdfs.domain.fdfs.StorageNode;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
+import com.github.tobato.fastdfs.domain.proto.storage.StorageUploadFileCommand;
+import com.github.tobato.fastdfs.domain.upload.FastFile;
 import com.github.tobato.fastdfs.exception.FdfsUnsupportStorePathException;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
+import com.github.tobato.fastdfs.service.TrackerClient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -27,6 +33,7 @@ public class FastDFSClient {
     private final Logger logger = LoggerFactory.getLogger(FastDFSClient.class);
 
     @Autowired
+    //@Resource(name = "devupload")
     private FastFileStorageClient storageClient;
 
     /**
@@ -42,6 +49,24 @@ public class FastDFSClient {
                 FilenameUtils.getExtension(file.getOriginalFilename()), null);
         return getResAccessUrl(storePath);
     }
+    /**
+     * 上传文件
+     *
+     * @param file
+     *            文件对象
+     * @return 文件访问地址
+     * @throws IOException
+     */
+//    public String uploadFiletest(MultipartFile file) throws IOException {
+//        StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(),
+//                FilenameUtils.getExtension(file.getOriginalFilename()), null);
+//        FastFile fastfile = (new FastFile.Builder()).withFile(file.getInputStream(), file.getSize(),
+//                FilenameUtils.getExtension(file.getOriginalFilename())).build();
+//        StorageNode client = new StorageNode("192.168.188.17",23000,(byte)0);
+//        StorageUploadFileCommand command = new StorageUploadFileCommand(client.getStoreIndex(), inputStream, fileExtName, fileSize, false);
+//        return (StorePath)this.fdfsConnectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);
+//        return getResAccessUrl(storePath);
+//    }
 
     /**
      * 将一段字符串生成一个文件上传

@@ -13,4 +13,4 @@ cp ./src/main/docker/Dockerfile ./target/Dockerfile
 cd target
 time=$(date "+%Y_%m_%d_%H_%M")
 docker build -t  $imagename:$time  .
-docker run -id -p 8088:8088 --link storage --name=$name $imagename:$time
+docker run -id -p 8088:8088 --network=fastdfs_default  --name=$name $imagename:$time
