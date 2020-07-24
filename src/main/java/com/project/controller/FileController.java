@@ -2,6 +2,7 @@ package com.project.controller;
 
 
 
+import com.project.entity.MyException;
 import com.project.util.FastDFSClient;
 import com.project.util.JSONUtils;
 import com.project.constants.Results;
@@ -38,7 +39,7 @@ public class FileController {
         try {
              uploadUrl = fastDFSClient.uploadFile(image);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new MyException(500,e.getMessage());
         }
         // 显示图片
         map.put("uploadUrl", uploadUrl);
