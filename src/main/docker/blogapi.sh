@@ -1,8 +1,9 @@
 #!/bin/bash
 cd ./remote_home/
 imagename=blogapi
+name=blogService
 #按tag(时间)排序,选出倒数第三个镜像并删除
-images=$(docker images | grep imagename | sort -t ' ' -k 2  -r | head -n 3 | awk 'NR==3 {print $2}')
+images=$(docker images | grep $imagename | sort -t ' ' -k 2  -r | head -n 3 | awk 'NR==3 {print $2}')
 if  [ $images ]; then
         docker rmi $images
         echo "delete $images"
