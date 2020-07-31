@@ -125,11 +125,17 @@
             <artifactId>guava</artifactId>
             <version>27.0.1-jre</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>me.zhyd.hunter</groupId>-->
-<!--            <artifactId>blog-hunter</artifactId>-->
-<!--            <version>1.0.3</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>me.zhyd.hunter</groupId>
+            <artifactId>blog-hunter</artifactId>
+            <version>1.0.3</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <!-- 七牛存储的SDK -->
 <!--        <dependency>-->
 <!--            <groupId>com.qiniu</groupId>-->

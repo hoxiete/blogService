@@ -43,6 +43,7 @@ public class BlogShowController {
         return Results.OK(info);
     }
 
+    @Log("网站访问")
     @GetMapping("/site")
     public Result getMySite(){
         User info = userService.getMyInfo();
