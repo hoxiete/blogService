@@ -1,5 +1,8 @@
 package com.project.constants;
 
+import com.project.entity.User;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -19,9 +22,11 @@ public class UserRequest {
     public static final String currentUser = "currentUser";
 
     public static String getCurrentUser(){
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String user = (String) request.getAttribute(currentUser);
-        return user;
+        //request为shiro包装类,改用shiro获取用户信息
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//        String user = (String) request.getAttribute(currentUser);
+        Subject currentUser = SecurityUtils.getSubject();
+        return ((User)currentUser.getPrincipal()).getLoginName();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.project.util;
 import com.github.tobato.fastdfs.domain.fdfs.StorageNode;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
+import com.github.tobato.fastdfs.domain.fdfs.ThumbImageConfig;
 import com.github.tobato.fastdfs.domain.proto.storage.StorageUploadFileCommand;
 import com.github.tobato.fastdfs.domain.upload.FastFile;
 import com.github.tobato.fastdfs.exception.FdfsUnsupportStorePathException;
@@ -36,6 +37,7 @@ public class FastDFSClient {
     //@Resource(name = "devupload")
     private FastFileStorageClient storageClient;
 
+
     /**
      * 上传文件
      *
@@ -47,6 +49,20 @@ public class FastDFSClient {
     public String uploadFile(MultipartFile file) throws IOException {
         StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(),
                 FilenameUtils.getExtension(file.getOriginalFilename()), null);
+        return getResAccessUrl(storePath);
+    }
+    /**
+     * 上传Blob文件
+     *
+     * @param file
+     *            文件对象
+     * @return 文件访问地址
+     * @throws IOException
+     */
+    public String uploadBlobFile(MultipartFile file) throws IOException {
+        String suffix = file.getContentType().substring(file.getContentType().indexOf("/")+1);
+        StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(),
+                suffix, null);
         return getResAccessUrl(storePath);
     }
     /**
@@ -97,10 +113,10 @@ public class FastDFSClient {
      * @return 文件访问地址
      * @throws IOException
      */
-    public String uploadImageAndCrtThumbImage(MultipartFile file) throws IOException {
+    public StorePath uploadImageAndCrtThumbImage(MultipartFile file) throws IOException {
         StorePath storePath = storageClient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(),
                 FilenameUtils.getExtension(file.getOriginalFilename()), null);
-        return getResAccessUrl(storePath);
+        return storePath;
     }
 
     /**

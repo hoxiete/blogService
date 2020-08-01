@@ -14,6 +14,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper usermapper;
     @Autowired
     private UploadMapper uploadMapper;
+    @Autowired
+    private FastDFSClient fastDFSClient;
 
     @Value("${baseUrl.img}")
     private String baseUrl;
@@ -57,12 +61,10 @@ public class UserServiceImpl implements UserService {
     public User updateUserSelf(User user,  MultipartFile img) {
         String recourseId = null;
         //用户上传了头像,先上传图片至服务器
+        String url = "";
         if(null!=img){
-//            String fileName = SaveImgUtil.upload(img,baseUrl);
-            String fileName = null;
             try {
-                String filePath = user.getUserId() + prex;
-//                fileName = QiniuCloudUtil.put64image(img,filePath);
+                 url = fastDFSClient.uploadBlobFile(img);
             } catch (Exception e) {
                 throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
             }
@@ -72,10 +74,10 @@ public class UserServiceImpl implements UserService {
 //                SaveImgUtil.delete(baseUrl+ imgInfo.getImageUrl());
 //                QiniuCloudUtil.delete(imgInfo.getImageUrl());
                 //更新图片路径
-                userHeadImgUpdate(fileName,imgInfo.getImageId());
+                userHeadImgUpdate(url,imgInfo.getImageId());
             }else {
                 //新增图片路径
-                recourseId = userHeadImgInsert(fileName,fileType,user.getUserName());
+                recourseId = userHeadImgInsert(url,fileType,user.getUserName());
             }
         }
         User userUpadate = new User();
@@ -136,8 +138,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public int addUser(User user,String operator) {
         User insertUser = new User();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String createTime =formatter.format(new Date());
         insertUser.setUserName(user.getUserName());
         insertUser.setLoginName(user.getLoginName());
         insertUser.setPassWord(MD5Utils.md5(user.getPassWord()));
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
         insertUser.setTel(user.getTel());
         insertUser.setDeleteFlag(0);
         insertUser.setCreateUser(operator);
-        insertUser.setCreateTime(createTime);
+        insertUser.setCreateTime(new Date());
         insertUser.setUpdateUser(operator);
         insertUser.setUpdateTime(new Date());
         return usermapper.insert(insertUser);
@@ -160,8 +160,7 @@ public class UserServiceImpl implements UserService {
         user.setRoleId(1);
         user.setDeleteFlag(0);
         user.setSex(3);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        user.setCreateTime(sdf.format(new Date()));
+        user.setCreateTime(new Date());
         user.setCreateUser("self");
         user.setUpdateTime(new Date());
         user.setUpdateUser("self");
@@ -182,18 +181,14 @@ public class UserServiceImpl implements UserService {
 
 
     //新增图片表的记录，返回id给用户表当外键
-    private String userHeadImgInsert(String fullPath,String fileType,String operator) {
+    private String userHeadImgInsert(String url,String fileType,String operator) {
         Image image = new Image();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String createTime =formatter.format(new Date());
         Long recourseId =System.currentTimeMillis();
-        image.setImageUrl(fullPath);
-        image.setImageType(fileType);
-        image.setRecourseId(recourseId);
-        image.setDeleteFlag(0);
-        image.setCreateTime(createTime);
-        image.setCreateUser(operator);
-        image.setUpdateUser(operator);
+        image.builder().imageUrl(url).imageType(fileType)
+                .recourseId(recourseId)
+                .deleteFlag(0).createTime(new Date())
+                .createUser(operator).updateTime(new Date())
+                .updateUser(operator).build();
         this.uploadMapper.insert(image);
 
         return String.valueOf(recourseId);

@@ -130,6 +130,7 @@ public class ShiroConfig {
     public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
+        advisorAutoProxyCreator.setUsePrefix(true); //解决shoro获取不到Principal问题
         return advisorAutoProxyCreator;
     }
 

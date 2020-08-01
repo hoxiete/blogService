@@ -43,15 +43,15 @@ public class RestfulFilter extends UserFilter {
         UsernamePasswordToken token = tokenManager.getToken(loginToken);
 
         if (token != null) {
-//            try {
-//                Subject subject = getSubject(request, response);
-//                if (subject.getPrincipal() == null) {
-//                    subject.login(token);
-//                }
+            try {
+                Subject subject = getSubject(request, response);
+                if (subject.getPrincipal() == null) {
+                    subject.login(token);
+                }
                 return true;
-//            } catch (Exception e) {
-////                e.printStackTrace();
-////            }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }

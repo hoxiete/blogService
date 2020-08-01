@@ -2,6 +2,8 @@ package com.project.controller;
 
 
 
+import com.github.tobato.fastdfs.domain.fdfs.StorePath;
+import com.github.tobato.fastdfs.domain.fdfs.ThumbImageConfig;
 import com.project.entity.Image;
 import com.project.entity.MyException;
 import com.project.mapper.UploadMapper;
@@ -39,6 +41,9 @@ public class FileController {
     @Autowired
     private UploadMapper uploadMapper;
 
+    @Autowired
+    private ThumbImageConfig thumbImageConfig;
+
     @PostMapping("/uploadImg")
     public String uploadImg(MultipartFile image){
         Map<String,Object> map = new HashMap<>();
@@ -46,29 +51,48 @@ public class FileController {
         String resouceId ="";
         try {
              uploadUrl = fastDFSClient.uploadFile(image);
-             resouceId = blogImgInsert(uploadUrl,"2","swagger");
+//             resouceId = blogImgInsert(uploadUrl,"2","swagger");
+
         } catch (Exception e) {
             throw new MyException(500,e.getMessage());
         }
         // 显示图片
         map.put("uploadUrl", uploadUrl);
+//        map.put("resouceId", resouceId);
+        map.put("fileName", image.getOriginalFilename());
+       return JSONUtils.toJson(Results.OK(map));
+    }
+    @PostMapping("/uploadImgWithThumbImage")
+    public String uploadImgWithThumbImage(MultipartFile image){
+        Map<String,Object> map = new HashMap<>();
+        String uploadUrl ="";
+        String resouceId ="";
+        String thumbImageUrl = "";
+        try {
+            StorePath storePath = fastDFSClient.uploadImageAndCrtThumbImage(image);
+            uploadUrl = storePath.getFullPath();
+            thumbImageUrl = thumbImageConfig.getThumbImagePath(storePath.getPath());
+            resouceId = blogImgInsert(uploadUrl,"2","swagger");
+
+        } catch (Exception e) {
+            throw new MyException(500,e.getMessage());
+        }
+        // 显示图片
+        map.put("uploadUrl", uploadUrl);
+        map.put("thumbImageUrl", thumbImageUrl);
         map.put("resouceId", resouceId);
         map.put("fileName", image.getOriginalFilename());
        return JSONUtils.toJson(Results.OK(map));
     }
     //新增图片表的记录
-    private String blogImgInsert(String fullPath,String fileType,String operator) {
+    private String blogImgInsert(String url,String fileType,String operator) {
         Image image = new Image();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String createTime =formatter.format(new Date());
-        image.setImageUrl(fullPath);
         Long recourseId =System.currentTimeMillis();
-        image.setImageType(fileType);
-        image.setDeleteFlag(0);
-        image.setRecourseId(recourseId);
-        image.setCreateTime(createTime);
-        image.setUpdateUser(operator);
-        image.setCreateUser(operator);
+        image.builder().imageUrl(url).imageType(fileType)
+                .recourseId(recourseId)
+                .deleteFlag(0).createTime(new Date())
+                .createUser(operator).updateTime(new Date())
+                .updateUser(operator).build();
         this.uploadMapper.insert(image);
 
         return String.valueOf(recourseId);

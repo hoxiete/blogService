@@ -1,6 +1,7 @@
 package com.project.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "t_sys_image")
 public class Image {
     /**
@@ -58,7 +60,7 @@ public class Image {
      * 创建时间
      */
 
-    private String createTime;
+    private Date createTime;
 
     /**
      * 更新人

@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "t_sys_user")
 public class User implements Serializable {
+    private static final long serialVersionUID = -6309591275732240138L;
     @Id
     private Integer userId;
     private Integer roleId;
@@ -27,7 +28,7 @@ public class User implements Serializable {
     private String bz;
     private Integer deleteFlag;
     private String createUser;
-    private String createTime;
+    private Date createTime;
     private String updateUser;
     private Date updateTime;
 

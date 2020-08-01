@@ -59,7 +59,6 @@ public class loginController extends BaseController{
             User user = (User) subject.getPrincipal();
             //redis存储用户登录状态
             Token token = tokenManager.saveToken(usernamePasswordToken);
-            request.setAttribute(UserRequest.currentUser, user.getLoginName());
             if(token != null){
                 logger.info("用户信息已存入Redis");
             }else {
