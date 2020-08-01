@@ -18,7 +18,7 @@
     </select>
 
     <select id="loadBlogListPage" resultType="BlogShowDto">
-        SELECT t1.*,t2.label as typeName,t3.image_url FROM `t_sys_blog` t1 LEFT JOIN t_sys_dict t2 ON t1.type_id = t2.value and t2.dict_type = 'BLOGTYPE'
+        SELECT t1.id,t1.create_time,t1.title,t1.summary,t3.image_url FROM `t_sys_blog` t1 LEFT JOIN t_sys_dict t2 ON t1.type_id = t2.value and t2.dict_type = 'BLOGTYPE'
         LEFT JOIN t_sys_image t3 ON t1.cover_img = t3.recourse_id
         <where>
             <if test="blog.title != null and blog.title != ''">
@@ -28,6 +28,12 @@
                 type_id = #{blog.typeId}
             </if>
         </where>
+    </select>
+
+    <select id="selectBlogById" resultType="BlogShowDto">
+        SELECT t1.*,t2.label as typeName,t3.image_url FROM `t_sys_blog` t1 LEFT JOIN t_sys_dict t2 ON t1.type_id = t2.value and t2.dict_type = 'BLOGTYPE'
+        LEFT JOIN t_sys_image t3 ON t1.cover_img = t3.recourse_id
+       where t1.id = #{id}
     </select>
 
 

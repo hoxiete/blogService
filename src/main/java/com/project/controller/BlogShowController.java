@@ -39,7 +39,7 @@ public class BlogShowController {
 
     @GetMapping("/getBlogDetail/{id}")
     public Result getBlogDetail(@PathVariable Integer id){
-        Blog info = blogShowService.getBlogDetail(id);
+        BlogShowDto info = blogShowService.getBlogDetail(id);
         return Results.OK(info);
     }
 

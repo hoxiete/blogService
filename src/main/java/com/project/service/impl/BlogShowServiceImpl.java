@@ -24,8 +24,8 @@ public class BlogShowServiceImpl implements BlogShowService {
     }
 
     @Override
-    public Blog getBlogDetail(Integer id) {
-        Blog blog = blogMapper.selectByPrimaryKey(id);
+    public BlogShowDto getBlogDetail(Integer id) {
+        BlogShowDto blog = blogMapper.selectBlogById(id);
         return blog;
     }
 

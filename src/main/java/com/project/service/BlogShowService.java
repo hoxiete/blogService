@@ -10,7 +10,7 @@ public interface BlogShowService {
 
     List<BlogShowDto> searchBlog(Blog blog, Integer pageNum, Integer pageSize);
 
-    Blog getBlogDetail(Integer id);
+    BlogShowDto getBlogDetail(Integer id);
 
     List<Dict> getBlogTypeList();
 
