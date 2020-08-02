@@ -153,9 +153,8 @@ public class BlogServiceImpl implements BlogService {
     }
     //新增图片表的记录
     private String blogImgInsert(String url,String fileType,String operator) {
-        Image image = new Image();
         Long recourseId =System.currentTimeMillis();
-        image.builder().imageUrl(url).imageType(fileType)
+        Image image = Image.builder().imageUrl(url).imageType(fileType)
                 .recourseId(recourseId)
                 .deleteFlag(0).createTime(new Date())
                 .createUser(operator).updateTime(new Date())

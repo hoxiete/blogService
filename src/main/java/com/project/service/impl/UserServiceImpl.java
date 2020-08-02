@@ -182,9 +182,8 @@ public class UserServiceImpl implements UserService {
 
     //新增图片表的记录，返回id给用户表当外键
     private String userHeadImgInsert(String url,String fileType,String operator) {
-        Image image = new Image();
         Long recourseId =System.currentTimeMillis();
-        image.builder().imageUrl(url).imageType(fileType)
+        Image image = Image.builder().imageUrl(url).imageType(fileType)
                 .recourseId(recourseId)
                 .deleteFlag(0).createTime(new Date())
                 .createUser(operator).updateTime(new Date())
