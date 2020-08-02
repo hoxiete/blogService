@@ -71,9 +71,6 @@ public class WebLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         String userName = UserRequest.getCurrentUser();
-        if(StringUtils.isEmpty(userName)){
-            userName = "游客";
-        }
         // 记录异常信息内容
         String address = AddressUtils.getIpAddr(request);
         ExceptionEntity exception =  new ExceptionEntity();

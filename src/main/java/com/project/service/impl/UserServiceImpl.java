@@ -71,6 +71,7 @@ public class UserServiceImpl implements UserService {
             //用户已有头像，则先删除原有头像
             if(!user.getHeadimg().isEmpty()) {
                 Image imgInfo = usermapper.getHeadUrl(user.getUserId());
+                fastDFSClient.deleteFile(imgInfo.getImageUrl());
 //                SaveImgUtil.delete(baseUrl+ imgInfo.getImageUrl());
 //                QiniuCloudUtil.delete(imgInfo.getImageUrl());
                 //更新图片路径

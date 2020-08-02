@@ -71,7 +71,7 @@ public class FileController {
         try {
             StorePath storePath = fastDFSClient.uploadImageAndCrtThumbImage(image);
             uploadUrl = storePath.getFullPath();
-            thumbImageUrl = thumbImageConfig.getThumbImagePath(storePath.getPath());
+            thumbImageUrl = storePath.getGroup().concat("/").concat(thumbImageConfig.getThumbImagePath(storePath.getPath()));
             resouceId = blogImgInsert(uploadUrl,"2","swagger");
 
         } catch (Exception e) {

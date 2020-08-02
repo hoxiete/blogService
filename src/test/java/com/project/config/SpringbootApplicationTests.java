@@ -1,8 +1,11 @@
 package com.project.config;
 
 import com.project.entity.Blog;
+import com.project.entity.Image;
 import com.project.mapper.BlogMapper;
+import com.project.mapper.UploadMapper;
 import com.project.util.AESUtil;
+import com.project.util.FastDFSClient;
 import com.project.util.MD5Utils;
 import me.zhyd.hunter.config.HunterConfig;
 import me.zhyd.hunter.config.HunterConfigContext;
@@ -18,13 +21,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.DoubleToIntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SpringbootApplicationTests {
     @Autowired
     private BlogMapper blogMapper;
+    @Autowired
+    private UploadMapper uploadMapper;
+    @Autowired
+    private FastDFSClient fastDFSClient;
 
     @Test
     public void contextLoads() {
@@ -44,6 +55,21 @@ public class SpringbootApplicationTests {
 
             blogMapper.insert(insertblog);
         });
+    }
+
+    @Test
+    public void deleteImg(){
+
+
+//        List<Image> collect = uploadMapper.selectAll().stream().filter(dto -> dto.getImageType().equals("2")).collect(Collectors.toList());
+//       for(Image image : collect){
+//           fastDFSClient.deleteBlogImage("group1/M00/00/00/rBMABF8mMISAM_2iAAzQZZpcXNs896.jpg");
+
+//       }
+//                .forEach(dto -> {
+//                    fastDFSClient.deleteFile(dto.getImageUrl());
+////                    uploadMapper.deleteByPrimaryKey(dto.getImageId());
+//                });
     }
 
 

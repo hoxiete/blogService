@@ -1,4 +1,5 @@
 package com.project.util;
+import com.github.tobato.fastdfs.domain.fdfs.DefaultThumbImageConfig;
 import com.github.tobato.fastdfs.domain.fdfs.StorageNode;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.domain.fdfs.ThumbImageConfig;
@@ -34,8 +35,11 @@ public class FastDFSClient {
     private final Logger logger = LoggerFactory.getLogger(FastDFSClient.class);
 
     @Autowired
-    //@Resource(name = "devupload")
+//    @Resource(name = "devupload")
     private FastFileStorageClient storageClient;
+
+    @Autowired
+    private DefaultThumbImageConfig thumbImageConfig;
 
 
     /**
@@ -133,6 +137,26 @@ public class FastDFSClient {
         try {
             StorePath storePath = StorePath.parseFromUrl(fileUrl);
             storageClient.deleteFile(storePath.getGroup(), storePath.getPath());
+        } catch (FdfsUnsupportStorePathException e) {
+            logger.warn(e.getMessage());
+        }
+    }
+
+    /**
+     * 删除博客图片和该缩略图
+     *
+     * @param fileUrl
+     *            文件访问地址
+     * @return
+     */
+    public void deleteBlogImage(String fileUrl) {
+        if (StringUtils.isEmpty(fileUrl)) {
+            return;
+        }
+        try {
+            StorePath storePath = StorePath.parseFromUrl(fileUrl);
+            storageClient.deleteFile(storePath.getGroup(), storePath.getPath());
+            storageClient.deleteFile(storePath.getGroup(), thumbImageConfig.getThumbImagePath(storePath.getPath()));
         } catch (FdfsUnsupportStorePathException e) {
             logger.warn(e.getMessage());
         }
