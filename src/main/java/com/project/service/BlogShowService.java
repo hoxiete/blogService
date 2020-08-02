@@ -1,5 +1,6 @@
 package com.project.service;
 
+import com.github.pagehelper.PageInfo;
 import com.project.entity.Blog;
 import com.project.entity.BlogShowDto;
 import com.project.entity.Dict;
@@ -16,5 +17,5 @@ public interface BlogShowService {
 
     List<Blog> getBlogByType(Integer typeId);
 
-    List<BlogShowDto> loadBlogList(Blog blog,Integer pageNum, Integer pageSize);
+    PageInfo<BlogShowDto> loadBlogList(Blog blog, Integer pageNum, Integer pageSize);
 }

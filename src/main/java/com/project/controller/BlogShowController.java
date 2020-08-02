@@ -53,11 +53,10 @@ public class BlogShowController {
     @GetMapping("/loadList")
     public Result loadBlogList(Blog blog,@RequestParam(defaultValue = "1")Integer pageNum,@RequestParam(defaultValue = "10") Integer pageSize){
         Map<String,Object> data = new HashMap<>();
-        List<BlogShowDto> blogs = blogShowService.loadBlogList(blog,pageNum,pageSize);
-        PageInfo<BlogShowDto> page = new PageInfo<>(blogs);
-        data.put("blogs",blogs);
-        data.put("page",page.getPageNum());
-        data.put("hasNextPage",page.isHasNextPage());
+        PageInfo<BlogShowDto> blogs = blogShowService.loadBlogList(blog,pageNum,pageSize);
+        data.put("blogs",blogs.getList());
+        data.put("page",blogs.getPageNum());
+        data.put("hasNextPage",blogs.isHasNextPage());
         return Results.OK(data);
     }
 
