@@ -4,6 +4,7 @@ package com.project.controller;
 
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.domain.fdfs.ThumbImageConfig;
+import com.project.constants.Result;
 import com.project.entity.Image;
 import com.project.entity.MyException;
 import com.project.mapper.UploadMapper;
@@ -35,6 +36,8 @@ public class FileController {
     @Value("${baseUrl.img}")
     private String baseUrl;
 
+    private static final String myPromisePwd = "choko";
+
     @Autowired
     private FastDFSClient fastDFSClient;
 
@@ -45,7 +48,10 @@ public class FileController {
     private ThumbImageConfig thumbImageConfig;
 
     @PostMapping("/uploadImg")
-    public String uploadImg(MultipartFile image){
+    public Result uploadImg(MultipartFile image, String myPromise){
+        if(myPromise!=myPromisePwd){
+            return Results.BAD_REQUEST("抓到你了");
+        }
         Map<String,Object> map = new HashMap<>();
         String uploadUrl ="";
         String resouceId ="";
@@ -60,10 +66,13 @@ public class FileController {
         map.put("uploadUrl", uploadUrl);
 //        map.put("resouceId", resouceId);
         map.put("fileName", image.getOriginalFilename());
-       return JSONUtils.toJson(Results.OK(map));
+       return Results.OK(map);
     }
     @PostMapping("/uploadImgWithThumbImage")
-    public String uploadImgWithThumbImage(MultipartFile image){
+    public Result uploadImgWithThumbImage(MultipartFile image, String myPromise){
+        if(myPromise!=myPromisePwd){
+            return Results.BAD_REQUEST("抓到你了");
+        }
         Map<String,Object> map = new HashMap<>();
         String uploadUrl ="";
         String resouceId ="";
@@ -82,8 +91,19 @@ public class FileController {
         map.put("thumbImageUrl", thumbImageUrl);
         map.put("resouceId", resouceId);
         map.put("fileName", image.getOriginalFilename());
-       return JSONUtils.toJson(Results.OK(map));
+       return Results.OK(map);
     }
+
+    @PostMapping("/deleteFile")
+    public Result deleteFile(String url, String myPromise){
+        if(myPromise!=myPromisePwd){
+            return Results.BAD_REQUEST("抓到你了");
+        }
+        fastDFSClient.deleteBlogImage(url);
+        uploadMapper.delete(Image.builder().imageUrl(url).build());
+        return Results.OK();
+    }
+
     //新增图片表的记录
     private String blogImgInsert(String url,String fileType,String operator) {
         Long recourseId =System.currentTimeMillis();
