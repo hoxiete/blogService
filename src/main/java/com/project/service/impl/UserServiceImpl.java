@@ -123,17 +123,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int editUser(User user,String operator) {
-        User editUser = new User();
-        editUser.setUserId(user.getUserId());
-        editUser.setUserName(user.getUserName());
-        editUser.setLoginName(user.getLoginName());
-        editUser.setRoleId(user.getRoleId());
-        editUser.setBirthDay(user.getBirthDay());
-        editUser.setSex(user.getSex());
-        editUser.setTel(user.getTel());
-        editUser.setUpdateUser(operator);
-        editUser.setUpdateTime(new Date());
-        return usermapper.updateByPrimaryKeySelective(editUser);
+        user.setUpdateUser(operator);
+        user.setUpdateTime(new Date());
+        return usermapper.updateByPrimaryKeySelective(user);
     }
 
     @Override

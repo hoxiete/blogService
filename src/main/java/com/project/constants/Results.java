@@ -32,6 +32,12 @@ public class Results{
     public static Result BAD_REQUEST() {
         return new Result(ResultConstants.BAD_REQUEST, ResultMsg.BAD_REQUEST, null);
     }
+    //
+    // 请求错误，请修正请求，400，无数据
+    // ----------------------------------------------------------------------------------------------------
+    public static Result USER_LOCKED() {
+        return new Result(ResultConstants.BAD_REQUEST, ResultMsg.USER_LOCKED, null);
+    }
 
     //
     // Token验证失败，401，无数据

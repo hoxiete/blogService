@@ -30,8 +30,8 @@ public class LoginServiceImpl implements LoginService {
 
 
     @Override
-    public User getUserInfo(String loginName) {
-        User user = usermapper.selectUser(loginName);
+    public User getUserByLoginName(String loginName) {
+        User user = usermapper.selectOne(User.builder().loginName(loginName).build());
         return user;
     }
 

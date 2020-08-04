@@ -2,6 +2,7 @@ package com.project.config.shiro;
 
 import com.project.entity.Token;
 import com.project.entity.User;
+import com.project.mapper.UserMapper;
 import com.project.service.LoginService;
 import com.project.service.RouterService;
 import com.project.service.TokenManager;
@@ -81,14 +82,13 @@ public class UserRealm extends AuthorizingRealm {
          */
         //1判断用户名
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
-        User user = loginSerive.getUserInfo(usernamePasswordToken.getUsername());
+        User user = loginSerive.getUserByLoginName(usernamePasswordToken.getUsername());
         if (user == null) {
             throw new UnknownAccountException("用户名不存在");
         }
-
-//        if (user.getStatus() != Status.VALID) {
-//            throw new IncorrectCredentialsException("无效状态，请联系管理员");
-//        }
+        if (user.getDeleteFlag() == 1) {
+            throw new IncorrectCredentialsException("无效状态，请联系管理员");
+        }
 
         //判断密码是否正确
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user, user.getPassWord(), getName());

@@ -1,5 +1,6 @@
 package com.project.service.impl;
 
+import com.project.config.redis.RedisManager;
 import com.project.entity.InterviewEntity;
 import com.project.mapper.SystemMapper;
 import com.project.service.SystemService;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * ClassName: SystemServiceImpl
@@ -30,7 +33,7 @@ public class SystemServiceImpl implements SystemService {
     private String interviewKey = RedisKey.interviewKey;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisManager redisManager;
     @Autowired
     private SystemMapper systemMapper;
 
@@ -38,10 +41,10 @@ public class SystemServiceImpl implements SystemService {
     @Scheduled(cron = "0 0 3 * * ?")
     public void timeToSaveTrace() {
         logger.info("开启保存访客定时器：" + LocalDateTime.now());
-        List<InterviewEntity> record = redisTemplate.opsForList().range(interviewKey,0,-1);
-        if (null != record && record.size() > 0) {
-            systemMapper.insertInterviewOfDay(record);
-            redisTemplate.delete(interviewKey);
-        }
+        Optional.ofNullable(redisManager.getList(interviewKey)).ifPresent(list ->{
+            List<InterviewEntity> interviewList = list.stream().map(object -> (InterviewEntity) object).collect(Collectors.toList());
+            systemMapper.insertInterviewOfDay(interviewList);
+            redisManager.del(interviewKey);
+        });
     }
 }

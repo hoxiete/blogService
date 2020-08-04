@@ -16,6 +16,10 @@ public class ResultMsg {
      * 请求错误，请修正请求
      */
     public static final String BAD_REQUEST = "请求错误，请修正请求";
+    /**
+     * 请求错误，用户被锁定
+     */
+    public static final String USER_LOCKED = "登录失败，已被锁定";
 
     /**
      * Token验证失败

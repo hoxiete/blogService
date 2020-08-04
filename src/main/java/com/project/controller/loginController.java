@@ -17,6 +17,7 @@ import com.project.service.UserService;
 import com.project.util.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -73,6 +74,9 @@ public class loginController extends BaseController{
         } catch (IncorrectCredentialsException e) {
             //登录失败密码错误
             return Results.BAD_REQUEST();
+        } catch (LockedAccountException e) {
+            //登录被锁定
+            return Results.USER_LOCKED();
         } catch (RuntimeException e){
             return  Results.INTERNAL_SERVER_ERROR();
         }

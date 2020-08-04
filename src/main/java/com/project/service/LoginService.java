@@ -12,6 +12,6 @@ import com.project.entity.User;
  */
 public interface LoginService {
 
-    User getUserInfo(String loginName);
+    User getUserByLoginName(String loginName);
 
 }

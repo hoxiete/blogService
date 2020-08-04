@@ -7,13 +7,16 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class RedisManager {
 
     @Autowired
@@ -78,6 +81,23 @@ public class RedisManager {
      */
     public void set(String key,Object value) {
         redisTemplate.opsForValue().set(key, value);
+    }
+
+    /**
+     * 普通缓存放入List
+     * @param key 键
+     * @param value 值
+     */
+    public void pushToList(String key,Object value) {
+        redisTemplate.opsForList().rightPush(key, value);
+    }
+
+    /**
+     * 普通缓存放入List
+     * @param key 键
+     */
+    public List<Object> getList(String key) {
+        return redisTemplate.opsForList().range(key, 0, -1);
     }
 
     /**

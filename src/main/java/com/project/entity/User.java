@@ -1,6 +1,7 @@
 package com.project.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "t_sys_user")
+@Builder
 public class User implements Serializable {
     private static final long serialVersionUID = -6309591275732240138L;
     @Id
