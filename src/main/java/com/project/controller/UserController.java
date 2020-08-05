@@ -2,6 +2,8 @@ package com.project.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.project.config.log.Log;
+import com.project.constants.Result;
+import com.project.constants.UserRequest;
 import com.project.entity.MyException;
 import com.project.entity.User;
 import com.project.entity.UserViewDto;
@@ -10,6 +12,8 @@ import com.project.util.JSONUtils;
 import com.project.constants.ResultConstants;
 import com.project.constants.Results;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,5 +107,4 @@ public class UserController {
         }
         return JSONUtils.toJson(Results.OK());
     }
-
 }

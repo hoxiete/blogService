@@ -1,12 +1,7 @@
 package com.project.config.shiro;
 
-import com.project.entity.Token;
 import com.project.entity.User;
-import com.project.mapper.UserMapper;
 import com.project.service.LoginService;
-import com.project.service.RouterService;
-import com.project.service.TokenManager;
-import com.project.util.UserUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -18,11 +13,6 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 自定义Realm

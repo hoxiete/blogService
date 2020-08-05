@@ -4,8 +4,10 @@ import com.project.config.log.Log;
 import com.project.config.redis.RedisManager;
 import com.project.constants.RedisKey;
 import com.project.constants.Result;
+import com.project.constants.ResultConstants;
 import com.project.constants.UserRequest;
 import com.project.entity.InterviewEntity;
+import com.project.entity.MyException;
 import com.project.entity.User;
 import com.project.util.*;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -52,7 +54,7 @@ public class LogAspect {
             long endTime = System.currentTimeMillis();
             insertLog(action,endTime-beginTime,result);
         } catch (Throwable e) {
-            throw e;
+            throw new MyException(500,"未知错误");
         }
         return result;
     }
@@ -61,18 +63,34 @@ public class LogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         String ip = AddressUtils.getIpAddr(request);
-        String userName = "";
+        String loginName = "";
         if(action.equals("登录")){
             Result res = (Result) result;
-            Map map = (Map) res.getData();
-            User user = (User) map.get("userInfo");
-            userName = user.getUserName();
-        }else{
-             userName = UserRequest.getCurrentUser();
+            switch (res.getStatus()){
+                case ResultConstants.OK:
+                    Map map = (Map) res.getData();
+                    User user = (User) map.get("userInfo");
+                    loginName = user.getLoginName();
+                    break;
+                case ResultConstants.BAD_REQUEST:
+                    loginName = (String) res.getData();
+                    action = "帐号密码错误";
+                    break;
+                case ResultConstants.USER_LOCKED:
+                    loginName = (String) res.getData();
+                    action = "登录被锁定";
+                    break;
+                default:break;
+            }
+        }else if(action.equals("登出")){
+            Result res = (Result) result;
+            loginName = (String) res.getData();
+        } else{
+            loginName = UserRequest.getCurrentUser();
         }
         InterviewEntity record = new InterviewEntity();
         record.setIp(ip);
-        record.setUserName(userName);
+        record.setUserName(loginName);
         record.setState(action);
         record.setRecordTime(new Date());
         record.setRunTime(time);

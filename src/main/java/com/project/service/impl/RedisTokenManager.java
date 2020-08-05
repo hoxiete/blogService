@@ -23,8 +23,6 @@ public class RedisTokenManager implements TokenManager {
 
     @Autowired
     private RedisManager redisManager;
-    @Autowired
-    private StringRedisTemplate redisTemplate;
     private static final String TOKEN_PREFIX = "tokens:";
     /**
      * token过期秒数

@@ -36,13 +36,13 @@ public class Results{
     // 请求错误，请修正请求，400，无数据
     // ----------------------------------------------------------------------------------------------------
     public static Result BAD_REQUEST(String msg) {
-        return new Result(ResultConstants.BAD_REQUEST, msg, null);
+        return new Result(ResultConstants.BAD_REQUEST, ResultMsg.BAD_REQUEST, msg);
     }
     //
     // 请求错误，请修正请求，400，无数据
     // ----------------------------------------------------------------------------------------------------
-    public static Result USER_LOCKED() {
-        return new Result(ResultConstants.BAD_REQUEST, ResultMsg.USER_LOCKED, null);
+    public static Result USER_LOCKED(String loginName) {
+        return new Result(ResultConstants.USER_LOCKED, ResultMsg.USER_LOCKED, loginName);
     }
 
     //

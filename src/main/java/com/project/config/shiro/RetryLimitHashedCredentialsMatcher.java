@@ -79,7 +79,7 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
                 user.setDeleteFlag(0);
                 userService.editUser(user, "sys");
             }
-        }{
+        }else {
             redisManager.set(getRedisKickoutKey(loginName), retryCount,expireSeconds);
         }
         return matches;

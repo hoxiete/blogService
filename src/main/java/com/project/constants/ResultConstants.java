@@ -19,6 +19,10 @@ public class ResultConstants {
      * 请求错误，请修正请求
      */
     public static final int BAD_REQUEST = 400;
+    /**
+     * 登录被锁定
+     */
+    public static final int USER_LOCKED = 403;
 
     /**
      * Token验证失败

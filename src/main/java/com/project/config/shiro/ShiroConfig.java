@@ -49,7 +49,9 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // 拦截器.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-        filterChainDefinitionMap.put("/index/**", "anon");
+        filterChainDefinitionMap.put("/index/login", "anon");
+        filterChainDefinitionMap.put("/index/checkLoginName", "anon");
+        filterChainDefinitionMap.put("/index/register", "anon");
         filterChainDefinitionMap.put("/file/**", "anon");
         filterChainDefinitionMap.put("/blogShow/**", "anon");
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");

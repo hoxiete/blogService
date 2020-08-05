@@ -3,10 +3,7 @@ package com.project.config.redis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -20,7 +17,9 @@ import java.util.concurrent.TimeUnit;
 public class RedisManager {
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     //=============================common============================
     /**
@@ -120,7 +119,7 @@ public class RedisManager {
      * @return
      */
     public Set<String> scan(String key){
-        Set<String> execute = this.redisTemplate.execute(new RedisCallback<Set<String>>() {
+        Set<String> execute = this.stringRedisTemplate.execute(new RedisCallback<Set<String>>() {
 
             @Override
             public Set<String> doInRedis(RedisConnection connection) throws DataAccessException {
@@ -144,7 +143,7 @@ public class RedisManager {
      * @return
      */
     public Long scanSize(String key){
-        long dbSize = this.redisTemplate.execute(new RedisCallback<Long>() {
+        long dbSize = this.stringRedisTemplate.execute(new RedisCallback<Long>() {
 
             @Override
             public Long doInRedis(RedisConnection connection) throws DataAccessException {

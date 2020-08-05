@@ -25,10 +25,12 @@ public class InterviewEntity implements Serializable {
     private Integer id;
 
     private String userName;
-
-    private Long runTime;  //运行时间
-
-    private String state;   //访问的位置
+    //运行时间
+    private Long runTime;
+    //访问的位置
+    private String state;
+//    //信息
+//    private String message;
 
     private String ip;
 

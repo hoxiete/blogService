@@ -70,13 +70,13 @@ public class loginController extends BaseController{
             data.put("userInfo", user);
         } catch (UnknownAccountException e) {
             //登录失败用户名不存在
-            return Results.BAD_REQUEST();
+            return Results.BAD_REQUEST(loginName);
         } catch (IncorrectCredentialsException e) {
             //登录失败密码错误
-            return Results.BAD_REQUEST();
+            return Results.BAD_REQUEST(loginName);
         } catch (LockedAccountException e) {
             //登录被锁定
-            return Results.USER_LOCKED();
+            return Results.USER_LOCKED(loginName);
         } catch (RuntimeException e){
             return  Results.INTERNAL_SERVER_ERROR();
         }
@@ -100,7 +100,15 @@ public class loginController extends BaseController{
         return Results.OK();
     }
 
-
+    @Log("登出")
+    @PostMapping("/logout")
+    public Result logout(String token) {
+        Subject subject = SecurityUtils.getSubject();
+        String currentUser = UserRequest.getCurrentUser();
+        tokenManager.deleteToken(token);
+        subject.logout();
+        return Results.OK(currentUser);
+    }
 }
 
 

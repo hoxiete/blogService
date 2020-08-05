@@ -29,7 +29,7 @@ public class UserRequest {
         //request为shiro包装类,改用shiro获取用户信息
         Subject currentUser = SecurityUtils.getSubject();
         Optional<User> principal = Optional.ofNullable(((User)currentUser.getPrincipal()));
-        return principal.map(User::getUserName).orElse("游客");
+        return principal.map(User::getLoginName).orElse("游客");
     }
 
 }
