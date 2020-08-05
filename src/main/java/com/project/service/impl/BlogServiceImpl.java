@@ -38,7 +38,7 @@ public class BlogServiceImpl implements BlogService {
         return page;
     }
 
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @Override
     public int editBlog(Blog blog, String operator) {
         Blog editBlog = new Blog();
