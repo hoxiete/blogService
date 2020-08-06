@@ -25,11 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 public class RestfulFilter extends UserFilter {
 
-//    @Autowired
-//    private TokenManager tokenManager;
+    @Autowired
+    private TokenManager tokenManager;
 
     @Override
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
@@ -39,7 +38,7 @@ public class RestfulFilter extends UserFilter {
         //对token进行校验
         String loginToken = getToken(request);
         //手动注入tokenManager实例
-        TokenManager tokenManager = SpringUtil.getBean(TokenManager.class);
+//        TokenManager tokenManager = SpringUtil.getBean(TokenManager.class);
         UsernamePasswordToken token = tokenManager.getToken(loginToken);
 
         if (token != null) {

@@ -16,6 +16,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -34,11 +35,11 @@ public class ShiroConfig {
      * 创建ShiroFilterFactoryBean
      */
 
-//    @Bean
-//    public RestfulFilter restfulFilter() {
-//        RestfulFilter restfulFilter = new RestfulFilter();
-//        return restfulFilter;
-//    }
+    @Bean
+    public RestfulFilter restfulFilter() {
+        RestfulFilter restfulFilter = new RestfulFilter();
+        return restfulFilter;
+    }
 
 
 
@@ -58,14 +59,22 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
         filterChainDefinitionMap.put("/v2/**", "anon");
         filterChainDefinitionMap.put("/webjars/**", "anon");
-        filterChainDefinitionMap.put("/**", "authc1");
+        filterChainDefinitionMap.put("/**", "tokenfliter");
 
         //这里重写了authc的验证环节
-        RestfulFilter restfulFilter = new RestfulFilter();
-        shiroFilterFactoryBean.getFilters().put("authc1", restfulFilter);
+//        RestfulFilter restfulFilter = new RestfulFilter();
+        shiroFilterFactoryBean.getFilters().put("tokenfliter", restfulFilter());
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean registration(@Autowired RestfulFilter filter) {
+        // 设置tokenfilter不自动注册到spring管理的监听器中，防止与shiro filter同级，导致该监听器必定执行
+        FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 
     /**
