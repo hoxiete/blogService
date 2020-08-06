@@ -10,6 +10,7 @@
              t1.login_name,
              t1.user_name,
              t1.tel,
+             t1.delete_flag,
              t2.image_url AS headimg,
              t1.birth_day,
              t1.sex,
