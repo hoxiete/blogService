@@ -49,7 +49,7 @@ public class FileController {
 
     @PostMapping("/uploadImg")
     public Result uploadImg(MultipartFile image, String myPromise){
-        if(myPromise!=myPromisePwd){
+        if(!myPromise.equals(myPromisePwd)){
             return Results.BAD_REQUEST("抓到你了");
         }
         Map<String,Object> map = new HashMap<>();
@@ -70,7 +70,7 @@ public class FileController {
     }
     @PostMapping("/uploadImgWithThumbImage")
     public Result uploadImgWithThumbImage(MultipartFile image, String myPromise){
-        if(myPromise!=myPromisePwd){
+        if(!myPromise.equals(myPromisePwd)){
             return Results.BAD_REQUEST("抓到你了");
         }
         Map<String,Object> map = new HashMap<>();
@@ -96,7 +96,7 @@ public class FileController {
 
     @PostMapping("/deleteFile")
     public Result deleteFile(String url, String myPromise){
-        if(myPromise!=myPromisePwd){
+        if(!myPromise.equals(myPromisePwd)){
             return Results.BAD_REQUEST("抓到你了");
         }
         fastDFSClient.deleteBlogImage(url);
