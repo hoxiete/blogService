@@ -35,7 +35,7 @@ public class FastDFSClient {
     private final Logger logger = LoggerFactory.getLogger(FastDFSClient.class);
 
     @Autowired
-//    @Resource(name = "devupload")
+    //@Resource(name = "devupload")
     private FastFileStorageClient storageClient;
 
     @Autowired
@@ -121,6 +121,20 @@ public class FastDFSClient {
         StorePath storePath = storageClient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(),
                 FilenameUtils.getExtension(file.getOriginalFilename()), null);
         return storePath;
+    }
+    /**
+     * 传图片并同时生成一个缩略图 "JPG", "JPEG", "PNG", "GIF", "BMP", "WBMP"
+     *
+     * @param file
+     *            文件对象
+     * @return 文件访问地址
+     * @throws IOException
+     */
+    public String uploadBlobImageAndThumb(MultipartFile file) throws IOException {
+        String suffix = file.getContentType().substring(file.getContentType().indexOf("/")+1);
+        StorePath storePath = storageClient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(),
+                suffix, null);
+        return getResAccessUrl(storePath);
     }
 
     /**

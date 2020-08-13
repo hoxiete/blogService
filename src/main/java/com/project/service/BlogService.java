@@ -1,5 +1,6 @@
 package com.project.service;
 
+import com.github.pagehelper.PageInfo;
 import com.project.entity.Blog;
 import com.project.entity.BlogShowDto;
 import com.project.entity.Dict;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface BlogService {
-    List<BlogShowDto> searchBlog(Blog blog, Integer pageNum, Integer pageSize, Integer operatorId);
+    PageInfo<BlogShowDto> searchBlog(Blog blog, Integer pageNum, Integer pageSize, Integer operatorId);
 
     int editBlog(Blog blog,String operator);
 

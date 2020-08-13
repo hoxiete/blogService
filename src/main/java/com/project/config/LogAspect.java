@@ -54,7 +54,7 @@ public class LogAspect {
             long endTime = System.currentTimeMillis();
             insertLog(action,endTime-beginTime,result);
         } catch (Throwable e) {
-            throw new MyException(500,"未知错误");
+            throw e;  //这里抛出的异常会在weblog切面拦截
         }
         return result;
     }

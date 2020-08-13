@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         String url = "";
         if(null!=img){
             try {
-                 url = fastDFSClient.uploadBlobFile(img);
+                 url = fastDFSClient.uploadBlobImageAndThumb(img);
             } catch (Exception e) {
                 throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
             }

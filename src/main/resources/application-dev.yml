@@ -1,38 +1,39 @@
-#spring:
-#  devtools:
-#    restart:
-#      enabled: false  #设置开启热部署
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8  #时区要为北京时间GMT+8
-#    username: root
-#    password: root
-#  redis:
-#    host: 127.0.0.1
-#    port: 6379
-#
-#  servlet:
-#    multipart:
-#      max-file-size: 10MB
-#      max-request-size: 100MB
-
 spring:
   devtools:
     restart:
       enabled: false  #设置开启热部署
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://106.53.223.87:13306/blog_dev?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8  #时区要为北京时间GMT+8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:13306/blog_dev?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8  #时区要为北京时间GMT+8
     username: root
-    password: park@2020
+    password: root
   redis:
-    host: 106.53.223.87
+    host: 127.0.0.1
     port: 16379
-    password: park@2020
+    password: 123456
+
   servlet:
     multipart:
-      max-file-size: 20MB
+      max-file-size: 10MB
       max-request-size: 100MB
+
+#spring:
+#  devtools:
+#    restart:
+#      enabled: false  #设置开启热部署
+#  datasource:
+#    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://106.53.223.87:13306/blog_dev?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2b8  #时区要为北京时间GMT+8
+#    username: root
+#    password: park@2020
+#  redis:
+#    host: 106.53.223.87
+#    port: 16379
+#    password: park@2020
+#  servlet:
+#    multipart:
+#      max-file-size: 20MB
+#      max-request-size: 100MB
 
 # ===================================================================
 # 分布式文件系统FDFS配置
@@ -44,8 +45,8 @@ fdfs:
     width: 150
     height: 150
   tracker-list:            #TrackerList参数,支持多个
-    #- 192.168.188.17:22122
-    - 106.53.223.87:22122
+    - 192.168.188.17:22122
+    #- 106.53.223.87:22122
   pool:
     #从池中借出的对象的最大数目（配置为-1表示不限制）
     max-total: -1
@@ -58,6 +59,6 @@ fdfs:
     #每个key对应的连接池最小空闲连接数
     max_idle_per_key: 5
 
-#uploadStorageUrl: 192.168.188.17
-uploadStorageUrl: 106.53.223.87
+uploadStorageUrl: 192.168.188.17
+#uploadStorageUrl: 106.53.223.87
 

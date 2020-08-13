@@ -4,16 +4,24 @@
 
 
     <select id="selectBlogListPage" resultType="BlogShowDto">
-        SELECT t1.*,t2.user_name,t3.image_url FROM `t_sys_blog` t1 LEFT JOIN t_sys_user t2 ON t1.user_id = t2.user_id
-                         LEFT JOIN t_sys_image t3 ON t1.cover_img = t3.recourse_id
+        SELECT t1.id,t1.title,t1.summary,t2.user_name,t3.image_url,t4.label
+        FROM `t_sys_blog` t1
+        LEFT JOIN t_sys_user t2 ON t1.user_id = t2.user_id
+        LEFT JOIN t_sys_image t3 ON t1.cover_img = t3.recourse_id
+        left join t_sys_dict t4 on t1.type_id = t4.`VALUE` and t4.dict_type = 'BLOGTYPE'
      <where>
          <if test="blog.title != null and blog.title != ''">
-             title like "%"#{blog.title}"%"
+             t1.title like "%"#{blog.title}"%"
+         </if>
+         <if test="blog.typeId != null and blog.typeId != ''">
+             t1.type_id = #{blog.typeId}
+         </if>
+         <if test="blog.userId != null and blog.userId != ''">
+             t1.user_id = #{blog.userId}
          </if>
          <if test="operatorId != 2 ">
              t2.role_id = #{operatorId}
          </if>
-
      </where>
     </select>
 

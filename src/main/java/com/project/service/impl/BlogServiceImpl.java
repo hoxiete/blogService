@@ -2,6 +2,8 @@ package com.project.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.github.tobato.fastdfs.domain.fdfs.DefaultThumbImageConfig;
 import com.project.entity.*;
 import com.project.mapper.BlogMapper;
 import com.project.mapper.UploadMapper;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogServiceImpl implements BlogService {
@@ -23,6 +26,8 @@ public class BlogServiceImpl implements BlogService {
     private BlogMapper blogMapper;
     @Autowired
     private UploadMapper uploadMapper;
+    @Autowired
+    private DefaultThumbImageConfig thumbImageConfig;
 
     @Value("${qiniu.domain}")
     private String domain;
@@ -32,9 +37,17 @@ public class BlogServiceImpl implements BlogService {
     private String fileType;
 
     @Override
-    public List<BlogShowDto> searchBlog(Blog blog, Integer pageNum, Integer pageSize, Integer operatorId) {
+    public PageInfo<BlogShowDto> searchBlog(Blog blog, Integer pageNum, Integer pageSize, Integer operatorId) {
         PageHelper.startPage(pageNum,pageSize);
-        Page<BlogShowDto> page = blogMapper.selectBlogListPage(blog,operatorId);
+        Page<BlogShowDto> list = blogMapper.selectBlogListPage(blog,operatorId);
+        PageInfo<BlogShowDto> page = new PageInfo<>(list);
+        page.setList(list.stream().map(dto -> {
+            String imageUrl = dto.getImageUrl();
+            if(!StringUtils.isEmpty(imageUrl)) {
+                dto.setImageUrl(thumbImageConfig.getThumbImagePath(imageUrl));
+            }
+            return dto;
+        }).collect(Collectors.toList()));
         return page;
     }
 
