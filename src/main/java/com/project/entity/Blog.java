@@ -20,7 +20,7 @@ public class Blog {
     @Id
     private Integer id;
     private String title;
-    private String coverImg;
+    private long coverImg;
     private String summary;
     private Integer typeId;
     private Integer userId;

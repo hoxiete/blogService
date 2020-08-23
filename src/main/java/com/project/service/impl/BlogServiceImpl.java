@@ -87,14 +87,14 @@ public class BlogServiceImpl implements BlogService {
             //没有新图片，删掉最后一位 ，
             newImages = newImages.substring(0,newImages.length()-1);
         }
-        if(blog.getCoverImg()!=null) {
-            Image img = blogMapper.getCoverImageByBlog(blog.getId());
-            if(img!=null) {
-                fastDFSClient.deleteBlogImage(img.getImageUrl());
-                uploadMapper.delete(img);
-            }
-            editBlog.setCoverImg(blog.getCoverImg());
-        }
+//        if(blog.getCoverImg()!=null) {
+//            Image img = blogMapper.getCoverImageByBlog(blog.getId());
+//            if(img!=null) {
+//                fastDFSClient.deleteBlogImage(img.getImageUrl());
+//                uploadMapper.delete(img);
+//            }
+//            editBlog.setCoverImg(blog.getCoverImg());
+//        }
         editBlog.setSummary(blog.getSummary());
         editBlog.setImgs(newImages);
         editBlog.setId(blog.getId());
@@ -180,12 +180,20 @@ public class BlogServiceImpl implements BlogService {
             uploadMapper.updateByExampleSelective(updateImg, example);
 
         }else{
-//            uploadMapper.insert(Image.builder()
-//                    .imageUrl(storePath.getFullPath())
-//                    .deleteFlag(0).
-//                    createUser().build());
+            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            long resouceId = System.currentTimeMillis();
+            blogMapper.updateByPrimaryKeySelective(Blog.builder().coverImg(resouceId).build());
+            uploadMapper.insert(Image.builder()
+                    .recourseId(resouceId)
+                    .imageType(fileType)
+                    .imageUrl(storePath.getFullPath())
+                    .deleteFlag(0).
+                    createUser(user.getLoginName())
+                    .createTime(new Date())
+                    .updateUser(user.getLoginName())
+                    .updateTime(new Date()).build());
         }
-        return null;
+        return fastDFSClient.getThumbImagePath(storePath);
     }
 
 
