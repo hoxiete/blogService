@@ -30,10 +30,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private FastDFSClient fastDFSClient;
 
-    @Value("${baseUrl.img}")
-    private String baseUrl;
-    @Value("${imgPath.head}")
-    private String prex;
+
     @Value("${imgType.head}")
     private String fileType;
 

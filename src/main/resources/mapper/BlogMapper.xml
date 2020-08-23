@@ -4,7 +4,7 @@
 
 
     <select id="selectBlogListPage" resultType="BlogShowDto">
-        SELECT t1.id,t1.title,t1.summary,t2.user_name,t3.image_url,t4.label
+        SELECT t1.id,t1.title,t1.summary,t2.user_name,t3.image_url,t4.label,t1.create_user,t1.delete_flag
         FROM `t_sys_blog` t1
         LEFT JOIN t_sys_user t2 ON t1.user_id = t2.user_id
         LEFT JOIN t_sys_image t3 ON t1.cover_img = t3.recourse_id

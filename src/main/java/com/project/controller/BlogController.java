@@ -2,12 +2,14 @@ package com.project.controller;
 
 
 import com.github.pagehelper.PageInfo;
+import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.project.config.log.Log;
 import com.project.entity.*;
 import com.project.service.BlogService;
 import com.project.constants.Result;
 import com.project.constants.ResultConstants;
 import com.project.constants.Results;
+import com.project.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,11 +49,11 @@ public class BlogController {
     }
 
 
-    @PostMapping("/saveBlogImg")
-    public Result saveBlogImg(MultipartFile frontCoverImg,MultipartFile[] img,Integer userId,String operator){
-        List<Map<String,String>> imgUrl = blogService.uploadImg(frontCoverImg,img,userId,operator);
-        return Results.OK(imgUrl);
-    }
+//    @PostMapping("/saveBlogImg")
+//    public Result saveBlogImg(MultipartFile frontCoverImg,MultipartFile[] img,Integer userId,String operator){
+//        List<Map<String,String>> imgUrl = blogService.uploadImg(frontCoverImg,img,userId,operator);
+//        return Results.OK(imgUrl);
+//    }
 
     @Log("博客新增")
     @PostMapping("/saveBlog")
@@ -75,6 +77,15 @@ public class BlogController {
             throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"隐藏失败");
         }
         return Results.OK();
+    }
+
+    @PostMapping("/uploadBlogCover")
+    public Result uploadBlogCover(MultipartFile file,Integer id){
+        String thumbImgUrl = blogService.updateCoverImg(file, id);
+        if(StringUtils.isEmpty(thumbImgUrl)){
+            throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"更新失败");
+        }
+        return Results.OK(thumbImgUrl);
     }
 //    @Log("博客爬取")
 //    @PostMapping("/crawlBlog")

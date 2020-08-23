@@ -33,9 +33,6 @@ import java.util.Map;
 @RequestMapping("/file")
 public class FileController {
 
-    @Value("${baseUrl.img}")
-    private String baseUrl;
-
     private static final String myPromisePwd = "choko";
 
     @Autowired
@@ -43,9 +40,6 @@ public class FileController {
 
     @Autowired
     private UploadMapper uploadMapper;
-
-    @Autowired
-    private ThumbImageConfig thumbImageConfig;
 
     @PostMapping("/uploadImg")
     public Result uploadImg(MultipartFile image, String myPromise){
@@ -80,7 +74,7 @@ public class FileController {
         try {
             StorePath storePath = fastDFSClient.uploadImageAndCrtThumbImage(image);
             uploadUrl = storePath.getFullPath();
-            thumbImageUrl = storePath.getGroup().concat("/").concat(thumbImageConfig.getThumbImagePath(storePath.getPath()));
+            thumbImageUrl = fastDFSClient.getThumbImagePath(storePath);
             resouceId = blogImgInsert(uploadUrl,"2","swagger");
 
         } catch (Exception e) {

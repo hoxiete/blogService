@@ -19,8 +19,9 @@ public interface BlogService {
 
     int addBlog(Blog blog, String operator);
 
-    List<Map<String, String>> uploadImg(MultipartFile frontCoverImg,MultipartFile[] file,Integer userId,String operator);
+//    List<Map<String, String>> uploadImg(MultipartFile frontCoverImg,MultipartFile[] file,Integer userId,String operator);
 
     int removeBlog(Blog blog);
 
+    String updateCoverImg(MultipartFile file, Integer id);
 }

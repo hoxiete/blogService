@@ -34,8 +34,8 @@ public class FastDFSClient {
 
     private final Logger logger = LoggerFactory.getLogger(FastDFSClient.class);
 
-    @Autowired
-    //@Resource(name = "devupload")
+    //@Autowired
+    @Resource(name = "devupload")
     private FastFileStorageClient storageClient;
 
     @Autowired
@@ -174,5 +174,12 @@ public class FastDFSClient {
         } catch (FdfsUnsupportStorePathException e) {
             logger.warn(e.getMessage());
         }
+    }
+
+    public String getThumbImagePath(StorePath storePath){
+        return thumbImageConfig.getThumbImagePath(storePath.getFullPath());
+    }
+    public String getThumbImagePath(String path){
+        return thumbImageConfig.getThumbImagePath(path);
     }
 }

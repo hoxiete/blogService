@@ -4,18 +4,23 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.tobato.fastdfs.domain.fdfs.DefaultThumbImageConfig;
+import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.project.entity.*;
 import com.project.mapper.BlogMapper;
 import com.project.mapper.UploadMapper;
 import com.project.service.BlogService;
 import com.project.constants.ResultConstants;
+import com.project.util.FastDFSClient;
 import com.project.util.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import tk.mybatis.mapper.entity.Example;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,13 +32,11 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private UploadMapper uploadMapper;
     @Autowired
-    private DefaultThumbImageConfig thumbImageConfig;
+    private FastDFSClient fastDFSClient;
 
-    @Value("${qiniu.domain}")
-    private String domain;
-    @Value("${imgPath.blog}")
-    private String prex;
-    @Value("${imgType.blog}")
+    @Value("${resource.baseurl}")
+    private String baseurl;
+    @Value("${imgType.head}")
     private String fileType;
 
     @Override
@@ -44,7 +47,7 @@ public class BlogServiceImpl implements BlogService {
         page.setList(list.stream().map(dto -> {
             String imageUrl = dto.getImageUrl();
             if(!StringUtils.isEmpty(imageUrl)) {
-                dto.setImageUrl(thumbImageConfig.getThumbImagePath(imageUrl));
+                dto.setImageUrl(fastDFSClient.getThumbImagePath(imageUrl));
             }
             return dto;
         }).collect(Collectors.toList()));
@@ -56,7 +59,7 @@ public class BlogServiceImpl implements BlogService {
     public int editBlog(Blog blog, String operator) {
         Blog editBlog = new Blog();
         //检索博客，找出所有图片
-        List<String> nowImages =Arrays.asList(StringUtils.substringsBetween(blog.getBody(),domain,")")) ;
+        List<String> nowImages =Arrays.asList(StringUtils.substringsBetween(blog.getBody(),baseurl,")")) ;
         //获取该博客的所有上传的图片
         List<Image> oldImages = blogMapper.getImageListByBlog(blog.getId());
         String newImages = "";
@@ -67,7 +70,7 @@ public class BlogServiceImpl implements BlogService {
                 newImages += image.getRecourseId() + "," ;
             }else {
                 //如果所有图片里已经没有了上传的图片，那么就把图片服务器上的图片删除
-//                QiniuCloudUtil.delete(image.getImageUrl());
+                fastDFSClient.deleteBlogImage(image.getImageUrl());
                 //并更新图片表
                 Image delImage = new Image();
                 delImage.setRecourseId(image.getRecourseId());
@@ -87,7 +90,7 @@ public class BlogServiceImpl implements BlogService {
         if(blog.getCoverImg()!=null) {
             Image img = blogMapper.getCoverImageByBlog(blog.getId());
             if(img!=null) {
-//                QiniuCloudUtil.delete(img.getImageUrl());
+                fastDFSClient.deleteBlogImage(img.getImageUrl());
                 uploadMapper.delete(img);
             }
             editBlog.setCoverImg(blog.getCoverImg());
@@ -114,42 +117,42 @@ public class BlogServiceImpl implements BlogService {
         return blogMapper.insert(blog);
     }
 
-    @Transactional
-    @Override
-    public List<Map<String, String>> uploadImg(MultipartFile frontCoverImg,MultipartFile[] imgs,Integer userId,String operator) {
-        List<Map<String, String>> list = new ArrayList<>();
-        String fileName = null;
-        String resourceId = null;
-        String filePath = userId + prex;
-        if(frontCoverImg!=null) {
-            Map<String, String> data = new HashMap<>();
-            try {
-//                fileName = QiniuCloudUtil.put64image(frontCoverImg, filePath);
-            } catch (Exception e) {
-                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
-            }
-            resourceId = blogImgInsert(fileName, fileType, operator);
-            data.put("resourceId", resourceId);
-            list.add(data);
-        }
-        if(imgs.length!=0){
-            try {
-                for(MultipartFile img : imgs) {
-                    Map<String,String> data1 = new HashMap<>();
-//                    fileName = QiniuCloudUtil.put64image(img,filePath);
-                    resourceId = blogImgInsert(fileName,fileType,operator);
-                    data1.put("pos",img.getOriginalFilename());
-                    data1.put("url",domain + fileName);
-                    data1.put("resourceId",resourceId);
-                    list.add(data1);
-                }
-            } catch (Exception e) {
-                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
-            }
-
-        }
-        return list;
-    }
+//    @Transactional
+//    @Override
+//    public List<Map<String, String>> uploadImg(MultipartFile frontCoverImg,MultipartFile[] imgs,Integer userId,String operator) {
+//        List<Map<String, String>> list = new ArrayList<>();
+//        String fileName = null;
+//        String resourceId = null;
+//        String filePath = userId + prex;
+//        if(frontCoverImg!=null) {
+//            Map<String, String> data = new HashMap<>();
+//            try {
+////                fileName = QiniuCloudUtil.put64image(frontCoverImg, filePath);
+//            } catch (Exception e) {
+//                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
+//            }
+//            resourceId = blogImgInsert(fileName, fileType, operator);
+//            data.put("resourceId", resourceId);
+//            list.add(data);
+//        }
+//        if(imgs.length!=0){
+//            try {
+//                for(MultipartFile img : imgs) {
+//                    Map<String,String> data1 = new HashMap<>();
+////                    fileName = QiniuCloudUtil.put64image(img,filePath);
+//                    resourceId = blogImgInsert(fileName,fileType,operator);
+//                    data1.put("pos",img.getOriginalFilename());
+//                    data1.put("url",domain + fileName);
+//                    data1.put("resourceId",resourceId);
+//                    list.add(data1);
+//                }
+//            } catch (Exception e) {
+//                throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"图片上传失败");
+//            }
+//
+//        }
+//        return list;
+//    }
 
     @Override
     public int removeBlog(Blog blog) {
@@ -157,6 +160,32 @@ public class BlogServiceImpl implements BlogService {
         coverBlog.setId(blog.getId());
         coverBlog.setDeleteFlag(blog.getDeleteFlag());
         return blogMapper.updateByPrimaryKeySelective(coverBlog);
+    }
+
+    @Override
+    public String updateCoverImg(MultipartFile file, Integer id) {
+        Optional<Image> image = Optional.ofNullable(blogMapper.getCoverImageByBlog(id));
+        StorePath storePath = null;
+        try {
+            storePath = fastDFSClient.uploadImageAndCrtThumbImage(file);
+        } catch (IOException e) {
+            throw new MyException(500,"上传失败");
+        }
+        if(image.isPresent()){
+            Image updateImg = image.get();
+            updateImg.setImageUrl(storePath.getFullPath());
+            Example example = new Example(Image.class);
+            example.createCriteria().andEqualTo("recourseId",updateImg.getRecourseId());
+            fastDFSClient.deleteBlogImage(updateImg.getImageUrl());
+            uploadMapper.updateByExampleSelective(updateImg, example);
+
+        }else{
+//            uploadMapper.insert(Image.builder()
+//                    .imageUrl(storePath.getFullPath())
+//                    .deleteFlag(0).
+//                    createUser().build());
+        }
+        return null;
     }
 
 
