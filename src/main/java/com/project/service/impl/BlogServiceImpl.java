@@ -180,8 +180,8 @@ public class BlogServiceImpl implements BlogService {
 
         }else{
             User user = (User) SecurityUtils.getSubject().getPrincipal();
-            long resouceId = System.currentTimeMillis();
-            blogMapper.updateByPrimaryKeySelective(Blog.builder().coverImg(resouceId).id(id).build());
+            Long resouceId = System.currentTimeMillis();
+            blogMapper.updateByPrimaryKeySelective(Blog.builder().id(id).coverImg(resouceId).build());
             uploadMapper.insert(Image.builder()
                     .recourseId(resouceId)
                     .imageType(UploadConstants.blogImg)
