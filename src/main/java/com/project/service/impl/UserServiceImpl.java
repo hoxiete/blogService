@@ -2,6 +2,7 @@ package com.project.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.project.constants.ResultConstants;
+import com.project.constants.UploadConstants;
 import com.project.constants.UserRequest;
 import com.project.entity.*;
 import com.project.mapper.UploadMapper;
@@ -9,14 +10,10 @@ import com.project.mapper.UserMapper;
 import com.project.service.UserService;
 import com.project.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -29,10 +26,6 @@ public class UserServiceImpl implements UserService {
     private UploadMapper uploadMapper;
     @Autowired
     private FastDFSClient fastDFSClient;
-
-
-    @Value("${imgType.head}")
-    private String fileType;
 
     //注入springboot自动配置好的redisTemplate
     @Autowired
@@ -75,7 +68,7 @@ public class UserServiceImpl implements UserService {
                 userHeadImgUpdate(url,imgInfo.getImageId());
             }else {
                 //新增图片路径
-                recourseId = userHeadImgInsert(url,fileType,user.getUserName());
+                recourseId = userHeadImgInsert(url, UploadConstants.userHeadImg,user.getUserName());
             }
         }
         User userUpadate = new User();

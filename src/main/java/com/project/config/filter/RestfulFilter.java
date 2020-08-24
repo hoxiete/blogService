@@ -10,6 +10,8 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.UserFilter;
 import org.apache.shiro.web.util.WebUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import javax.servlet.ServletRequest;
@@ -19,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class RestfulFilter extends UserFilter {
-
+    private static final Logger logger = LoggerFactory.getLogger(RestfulFilter.class);
     @Autowired
     private TokenManager tokenManager;
 
@@ -45,6 +47,7 @@ public class RestfulFilter extends UserFilter {
                 e.printStackTrace();
             }
         }
+        logger.warn("token验证失败");
         return false;
     }
 

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.tobato.fastdfs.domain.fdfs.DefaultThumbImageConfig;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
+import com.project.constants.UploadConstants;
 import com.project.entity.*;
 import com.project.mapper.BlogMapper;
 import com.project.mapper.UploadMapper;
@@ -36,8 +37,6 @@ public class BlogServiceImpl implements BlogService {
 
     @Value("${resource.baseurl}")
     private String baseurl;
-    @Value("${imgType.head}")
-    private String fileType;
 
     @Override
     public PageInfo<BlogShowDto> searchBlog(Blog blog, Integer pageNum, Integer pageSize, Integer operatorId) {
@@ -182,10 +181,10 @@ public class BlogServiceImpl implements BlogService {
         }else{
             User user = (User) SecurityUtils.getSubject().getPrincipal();
             long resouceId = System.currentTimeMillis();
-            blogMapper.updateByPrimaryKeySelective(Blog.builder().coverImg(resouceId).build());
+            blogMapper.updateByPrimaryKeySelective(Blog.builder().coverImg(resouceId).id(id).build());
             uploadMapper.insert(Image.builder()
                     .recourseId(resouceId)
-                    .imageType(fileType)
+                    .imageType(UploadConstants.blogImg)
                     .imageUrl(storePath.getFullPath())
                     .deleteFlag(0).
                     createUser(user.getLoginName())
