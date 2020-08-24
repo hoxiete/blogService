@@ -84,6 +84,7 @@ public class RestfulFilter extends UserFilter {
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json");
         Result result = Results.SC_UNAUTHORIZED();
+        httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         httpServletResponse.getWriter().write(JSONObject.toJSON(result).toString());
         return false;
     }
