@@ -1,5 +1,7 @@
 package com.project.util;
 
+import cn.hutool.core.lang.Assert;
+import com.project.constants.RedisKey;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -8,13 +10,11 @@ import io.jsonwebtoken.impl.crypto.MacProvider;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.joda.time.DateTime;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * JWT校验工具类
@@ -75,35 +75,36 @@ public class JwtUtil {
      * @param key      jwt 加密密钥
      * @param sub      jwt 面向的用户
      * @param aud      jwt 接收方
-     * @param jti      jwt 唯一身份标识
+     * @param curtime      jwt 唯一身份标识
      * @param iss      jwt 签发者
      * @param nbf      jwt 生效日期时间
      * @param duration jwt 有效时间，单位：秒
      * @return JWT字符串
      */
-    public static String buildJWT(SignatureAlgorithm alg, Key key, String sub, String aud, String jti, String iss, Date nbf, Integer duration) {
+    public static String buildJWT(SignatureAlgorithm alg, Key key, String sub, String aud, Map claims, String iss, Date nbf, Integer duration) {
         // jwt的签发时间
-        DateTime iat = DateTime.now();
+        Date iat = new Date();
         // jwt的过期时间，这个过期时间必须要大于签发时间
-        DateTime exp = null;
-        if (duration != null)
-            exp = (nbf == null ? iat.plusSeconds(duration) : new DateTime(nbf).plusSeconds(duration));
-
+        Date exp = null;
+        if (duration != null) {
+            exp = DateUtils.addSeconds(nbf == null ? iat : nbf, duration);
+        }
         // 获取JWT字符串
         String compact = Jwts.builder()
                 .signWith(alg, key)
-                .setSubject(sub)
                 .setAudience(aud)
-                .setId(jti)
+                .setClaims(claims)
+                .setSubject(sub)
                 .setIssuer(iss)
                 .setNotBefore(nbf)
-                .setIssuedAt(iat.toDate())
-                .setExpiration(exp != null ? exp.toDate() : null)
+//                .setIssuedAt(iat)
+                .setExpiration(exp)
                 .compact();
 
         // 在JWT字符串前添加"Bearer "字符串，用于加入"Authorization"请求头
         return JWT_SEPARATOR + compact;
     }
+
 
     /**
      * 构建JWT
@@ -116,7 +117,7 @@ public class JwtUtil {
      * @param duration jwt 有效时间，单位：秒
      * @return JWT字符串
      */
-    public static String buildJWT(String sub, String aud, String jti, String iss, Date nbf, Integer duration) {
+    public static String buildJWT(String sub, String aud, Map jti, String iss, Date nbf, Integer duration) {
         return buildJWT(JWT_ALG, generateKey(JWT_ALG, JWT_RULE), sub, aud, jti, iss, nbf, duration);
     }
 
@@ -124,11 +125,24 @@ public class JwtUtil {
      * 构建JWT
      *
      * @param sub jwt 面向的用户
-     * @param jti jwt 唯一身份标识，主要用来作为一次性token,从而回避重放攻击
+     * @param curtime jwt 唯一身份标识，主要用来作为一次性token,从而回避重放攻击
      * @return JWT字符串
      */
-    public static String buildJWT(String sub, String jti, Integer duration) {
-        return buildJWT(sub, null, jti, null, null, duration);
+    public static String buildJWT(String sub, String curtime, Integer duration) {
+        Map<String,String> map = new HashMap<>();
+        map.put(RedisKey.CURRENT_TIME_MILLIS,curtime);
+        return buildJWT(sub, null, map, null, null, duration);
+    }
+    /**
+     * 构建JWT
+     *
+     * @param sub jwt 面向的用户
+     * @return JWT字符串
+     */
+    public static String buildJWT(String sub, Integer duration) {
+        Map<String,String> map = new HashMap<>();
+        map.put("userName",sub);
+        return buildJWT(null, null, map, null, null, duration);
     }
 
     /**
@@ -140,7 +154,7 @@ public class JwtUtil {
      * @return JWT字符串
      */
     public static String buildJWT(String sub) {
-        return buildJWT(sub, null, UUID.randomUUID().toString(), null, null, 3600);
+        return buildJWT(sub, null, null, null, null, 3600);
     }
 
     /**
@@ -182,48 +196,33 @@ public class JwtUtil {
      * @param claimsJws jwt 内容文本
      * @return userName
      */
-    public static String checkJWT(String claimsJws) {
-        String userName = "";
+    public static Optional<String> getUserName(String claimsJws) {
         try {
             SecretKey key = generateKey(JWT_ALG, JWT_RULE);
             // 获取 JWT 的 payload 部分
-//            flag = (parseJWT(key, claimsJws).getBody() != null);
-             userName = parseJWT(key, claimsJws).getBody().getSubject();
+            return Optional.ofNullable((String) parseJWT(key, claimsJws).getBody().get("userName"));
         } catch (Exception e) {
             log.warn("JWT验证出错，错误原因：{}", e.getMessage());
+            return Optional.empty();
         }
-        return userName;
     }
-
     /**
      * 校验JWT
      *
-     * @param key       jwt 加密密钥
      * @param claimsJws jwt 内容文本
-     * @param sub       jwt 面向的用户
-     * @return ture or false
+     * @return userName
      */
-    public static Boolean checkJWT(Key key, String claimsJws, String sub) {
-        boolean flag = false;
+    public static Optional<String> getClaims(String claimsJws, String claimsName) {
         try {
+            SecretKey key = generateKey(JWT_ALG, JWT_RULE);
             // 获取 JWT 的 payload 部分
-            Claims claims = parseJWT(key, claimsJws).getBody();
-            // 比对JWT中的 sub 字段
-            flag = claims.getSubject().equals(sub);
+             return Optional.of((String) parseJWT(key, claimsJws).getBody().get(claimsName));
         } catch (Exception e) {
             log.warn("JWT验证出错，错误原因：{}", e.getMessage());
         }
-        return flag;
+        return Optional.empty();
     }
 
-    /**
-     * 校验JWT
-     *
-     * @param claimsJws jwt 内容文本
-     * @param sub       jwt 面向的用户
-     * @return ture or false
-     */
-    public static Boolean checkJWT(String claimsJws, String sub) {
-        return checkJWT(generateKey(JWT_ALG, JWT_RULE), claimsJws, sub);
-    }
+
+
 }

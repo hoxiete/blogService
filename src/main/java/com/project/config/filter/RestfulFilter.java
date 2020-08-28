@@ -1,10 +1,14 @@
 package com.project.config.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.project.config.redis.RedisManager;
+import com.project.constants.RedisKey;
 import com.project.constants.Result;
 import com.project.constants.Results;
 import com.project.constants.UserRequest;
+import com.project.entity.Token;
 import com.project.service.TokenManager;
+import com.project.util.JwtUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -19,11 +23,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class RestfulFilter extends UserFilter {
     private static final Logger logger = LoggerFactory.getLogger(RestfulFilter.class);
     @Autowired
     private TokenManager tokenManager;
+    @Autowired
+    private RedisManager redisManager;
 
     @Override
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
@@ -32,20 +39,24 @@ public class RestfulFilter extends UserFilter {
         }
         //对token进行校验
         String loginToken = getToken(request);
-        //手动注入tokenManager实例
-//        TokenManager tokenManager = SpringUtil.getBean(TokenManager.class);
-        UsernamePasswordToken token = tokenManager.getToken(loginToken);
 
-        if (token != null) {
-            try {
-                Subject subject = getSubject(request, response);
-                if (subject.getPrincipal() == null) {
-                    subject.login(token);
-                }
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
+        Optional<String> userName = JwtUtil.getUserName(loginToken);
+        //jwtToken失效情况,查看redis是否还存有用户信息
+        if(!userName.isPresent()) {
+            Optional<UsernamePasswordToken> user = Optional.ofNullable(tokenManager.getToken(loginToken));
+            //用户信息还在说明 jwttoken过期了
+            if(user.isPresent()) {
+//                if (userName.equals(token.get().getUsername())) {
+//                    long buildTime = Long.parseLong(JwtUtil.getClaims(loginToken, RedisKey.CURRENT_TIME_MILLIS).orElse(""));
+//                    long diffTime = (System.currentTimeMillis() - buildTime) / 1000;
+//                    if (diffTime > RedisKey.FIVE_MINIUTE) {
+                        refreshToken(user.get(),loginToken, response);
+//                    }
+                    return true;
+//                }
             }
+        }else{
+            return true;
         }
         logger.warn("token验证失败");
         return false;
@@ -57,7 +68,7 @@ public class RestfulFilter extends UserFilter {
      * @param request
      * @return
      */
-    public static String getToken(ServletRequest request) {
+    public String getToken(ServletRequest request) {
         HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
         String loginToken = httpServletRequest.getParameter(UserRequest.LOGIN_TOKEN);
         if (StringUtils.isBlank(loginToken)) {
@@ -65,6 +76,34 @@ public class RestfulFilter extends UserFilter {
         }
 
         return loginToken;
+    }
+    /**
+     * 刷新AccessToken，进行判断RefreshToken是否过期，未过期就返回新的AccessToken且继续正常访问
+     */
+    private boolean refreshToken(UsernamePasswordToken user,String oldToken,ServletResponse response) {
+        // 获取当前Token的帐号信息
+//        String userName = JwtUtil.getUserName(token);
+//        String refreshTokenCacheKey = RedisKey.REFRESH_TOKEN_PREFIX + userName;
+        // 判断Redis中RefreshToken是否存在
+//        if (redisManager.hasKey(refreshTokenCacheKey)) {
+//            // 获取RefreshToken时间戳,及AccessToken中的时间戳
+//            // 相比如果一致，进行AccessToken刷新
+//            String currentTimeMillisRedis = (String) redisManager.get(refreshTokenCacheKey);
+//            if (String.valueOf(buildMillis).equals(currentTimeMillisRedis)) {
+                // 设置RefreshToken中的时间戳为当前最新时间戳
+//                String currentTimeMillis = String.valueOf(System.currentTimeMillis());
+                tokenManager.deleteToken(oldToken);
+                tokenManager.saveToken(user);
+                // 刷新AccessToken，为当前最新时间戳
+                String token = JwtUtil.buildJWT(user.getUsername(), RedisKey.TEN_MINIUTE);
+                // 设置响应的Header头新Token
+                HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+                httpServletResponse.setHeader("Authentication", token);
+//                httpServletResponse.setHeader("Access-Control-Expose-Headers", SecurityConsts.REQUEST_AUTH_HEADER);
+
+//            }
+//        }
+        return true;
     }
 
     /**

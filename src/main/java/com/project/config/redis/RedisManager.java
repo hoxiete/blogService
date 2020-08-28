@@ -72,6 +72,14 @@ public class RedisManager {
     public Object get(String key){
         return redisTemplate.opsForValue().get(key);
     }
+    /**
+     * 普通缓存获取
+     * @param key 键
+     * @return 值
+     */
+    public String getString(String key){
+        return stringRedisTemplate.opsForValue().get(key);
+    }
 
     /**
      * 普通缓存放入
@@ -80,6 +88,14 @@ public class RedisManager {
      */
     public void set(String key,Object value) {
         redisTemplate.opsForValue().set(key, value);
+    }
+    /**
+     * 普通缓存放入
+     * @param key 键
+     * @param value 值
+     */
+    public void setString(String key,String value,long time) {
+        stringRedisTemplate.opsForValue().set(key, value, time);
     }
 
     /**
