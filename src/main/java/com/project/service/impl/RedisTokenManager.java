@@ -30,7 +30,7 @@ public class RedisTokenManager implements TokenManager {
     public Token saveToken(UsernamePasswordToken user) {
         String currTime = String.valueOf(System.currentTimeMillis());
         //传输用的token,有效期10分钟
-        String jwt = JwtUtil.buildJWT(user.getUsername(),currTime, RedisKey.TEN_MINIUTE);
+        String jwt = JwtUtil.buildJWT(user.getUsername(),currTime, 30);
         String tokenKey = RedisKey.TOKEN_PREFIX + jwt;
         String refreshKey = RedisKey.REFRESH_TOKEN_PREFIX + user.getUsername();
         //设置刷新token

@@ -54,17 +54,10 @@ public class RestfulFilter extends UserFilter {
                 return false;
             }
         }
-        //jwtToken失效情况,查看redis是否还存有用户信息
         else{
-            Optional<UsernamePasswordToken> user = Optional.ofNullable(tokenManager.getToken(loginToken));
-            //用户信息还在说明 jwttoken过期了
-            if(user.isPresent()) {
-                refreshToken(user.get(),loginToken, response);
-                return true;
-            }else{
                 logger.warn("token验证失败");
                 return false;
-            }
+
         }
     }
 
@@ -82,35 +75,6 @@ public class RestfulFilter extends UserFilter {
         }
 
         return loginToken;
-    }
-    /**
-     * 刷新AccessToken，进行判断RefreshToken是否过期，未过期就返回新的AccessToken且继续正常访问
-     */
-    private boolean refreshToken(UsernamePasswordToken user,String oldToken,ServletResponse response) {
-        // 获取当前Token的帐号信息
-        String userName = user.getUsername();
-        String refreshTokenCacheKey = RedisKey.REFRESH_TOKEN_PREFIX + userName;
-//         判断Redis中RefreshToken是否存在
-        if (redisManager.hasKey(refreshTokenCacheKey)) {
-            // 获取RefreshToken时间戳,及AccessToken中的时间戳
-            // 相比如果一致，进行AccessToken刷新
-
-//            String buildMillis = JwtUtil.getClaims(oldToken, RedisKey.CURRENT_TIME_MILLIS).orElse("");
-//            if (buildMillis.equals(currentTimeMillisRedis)) {
-                // 设置RefreshToken中的时间戳为当前最新时间戳
-                tokenManager.deleteToken(oldToken);
-                Token token = tokenManager.saveToken(user);
-                // 设置响应的Header头新Token
-                HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-                httpServletResponse.setHeader("Authentication", token.getToken());
-//                httpServletResponse.setHeader("Access-Control-Expose-Headers", SecurityConsts.REQUEST_AUTH_HEADER);
-                return true;
-//            }else{
-//                return false;
-//            }
-        }else{
-            return false;
-        }
     }
 
     /**

@@ -4,10 +4,7 @@ package com.project.controller;
 import com.project.config.log.Log;
 import com.project.config.redis.RedisManager;
 import com.project.config.shiro.RetryLimitHashedCredentialsMatcher;
-import com.project.constants.Result;
-import com.project.constants.ResultConstants;
-import com.project.constants.Results;
-import com.project.constants.UserRequest;
+import com.project.constants.*;
 import com.project.entity.MyException;
 import com.project.entity.Token;
 import com.project.entity.User;
@@ -26,8 +23,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/index")
@@ -41,6 +41,8 @@ public class loginController extends BaseController{
     private UserService userService;
     @Autowired
     private TokenManager tokenManager;
+    @Autowired
+    private RedisManager redisManager;
 
     @Log("登录")
     @PostMapping("/login")
@@ -108,6 +110,37 @@ public class loginController extends BaseController{
         tokenManager.deleteToken(token);
         subject.logout();
         return Results.OK(currentUser);
+    }
+    @Log("刷新token")
+    @GetMapping("/refreshToken")
+    public Result refreshToken(@RequestParam("token") String loginToken) {
+            Optional<UsernamePasswordToken> user = Optional.ofNullable(tokenManager.getToken(loginToken));
+            //用户信息还在说明 jwttoken过期了
+            if(user.isPresent()) {
+                Optional<Token> token = refreshToken(user.get(), loginToken);
+                if(token.isPresent()) {
+                    return Results.OK(token);
+                }else{
+                    return Results.BAD_REQUEST();
+                }
+            }else{
+                return Results.BAD_REQUEST();
+            }
+        }
+
+    private Optional<Token> refreshToken(UsernamePasswordToken user, String oldToken) {
+        // 获取当前Token的帐号信息
+        String userName = user.getUsername();
+        String refreshTokenCacheKey = RedisKey.REFRESH_TOKEN_PREFIX + userName;
+//         判断Redis中RefreshToken是否存在
+        if (redisManager.hasKey(refreshTokenCacheKey)) {
+            // 设置RefreshToken中的时间戳为当前最新时间戳
+            tokenManager.deleteToken(oldToken);
+            Token token = tokenManager.saveToken(user);
+            return Optional.ofNullable(token);
+        }else{
+            return Optional.empty();
+        }
     }
 }
 
