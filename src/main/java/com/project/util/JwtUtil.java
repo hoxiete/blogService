@@ -141,7 +141,7 @@ public class JwtUtil {
      */
     public static String buildJWT(String sub, Integer duration) {
         Map<String,String> map = new HashMap<>();
-        map.put("userName",sub);
+        map.put("sub",sub);
         return buildJWT(null, null, map, null, null, duration);
     }
 
@@ -200,7 +200,7 @@ public class JwtUtil {
         try {
             SecretKey key = generateKey(JWT_ALG, JWT_RULE);
             // 获取 JWT 的 payload 部分
-            return Optional.ofNullable((String) parseJWT(key, claimsJws).getBody().get("userName"));
+            return Optional.ofNullable((String) parseJWT(key, claimsJws).getBody().get("sub"));
         } catch (Exception e) {
             log.warn("JWT验证出错，错误原因：{}", e.getMessage());
             return Optional.empty();

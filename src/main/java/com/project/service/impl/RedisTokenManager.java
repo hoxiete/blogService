@@ -28,13 +28,13 @@ public class RedisTokenManager implements TokenManager {
 
     @Override
     public Token saveToken(UsernamePasswordToken user) {
-//        String currTime = String.valueOf(System.currentTimeMillis());
-        //传输用的token,有效期5分钟
-        String jwt = JwtUtil.buildJWT(user.getUsername(), 10);
+        String currTime = String.valueOf(System.currentTimeMillis());
+        //传输用的token,有效期10分钟
+        String jwt = JwtUtil.buildJWT(user.getUsername(),currTime, RedisKey.TEN_MINIUTE);
         String tokenKey = RedisKey.TOKEN_PREFIX + jwt;
-//        String refreshKey = RedisKey.REFRESH_TOKEN_PREFIX + user.getUsername();
+        String refreshKey = RedisKey.REFRESH_TOKEN_PREFIX + user.getUsername();
         //设置刷新token
-//        redisManager.set(refreshKey, currTime , RedisKey.A_HOURS);
+        redisManager.set(refreshKey, currTime , RedisKey.A_HOURS);
         //设置用户信息
         redisManager.set(tokenKey, JSONObject.toJSONString(user),RedisKey.A_HOURS);
 
