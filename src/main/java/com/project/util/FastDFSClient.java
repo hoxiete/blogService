@@ -34,8 +34,8 @@ public class FastDFSClient {
 
     private final Logger logger = LoggerFactory.getLogger(FastDFSClient.class);
 
-    //@Autowired
-    @Resource(name = "devupload")
+    @Autowired
+    //@Resource(name = "devupload")
     private FastFileStorageClient storageClient;
 
     @Autowired
