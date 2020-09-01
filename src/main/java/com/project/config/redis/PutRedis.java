@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface PutRedis {
     String key();         //redis 的key的前缀
-    String fieldKey() ;  //输入的字段名（条件）
+    String fieldKey() default "";  //输入的字段名（条件）
     //缓存多少天,默认无限期
     int expire() default 0;
 }

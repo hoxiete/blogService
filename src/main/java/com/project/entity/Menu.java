@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Menu implements Serializable {
+    private static final long serialVersionUID = -5645108301917994003L;
     private Integer permId;
     private Integer parentId;
     private String name;

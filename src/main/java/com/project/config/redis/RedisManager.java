@@ -6,7 +6,6 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +28,14 @@ public class RedisManager {
      */
     public void expire(String key,long time){
         redisTemplate.expire(key, time, TimeUnit.SECONDS);
+    }
+    /**
+     * 指定缓存失效时间
+     * @param key 键
+     * @param time 时间(秒)
+     */
+    public void expire(String key,long time,TimeUnit unit){
+        redisTemplate.expire(key, time, unit);
     }
 
     /**
@@ -79,6 +86,14 @@ public class RedisManager {
      */
     public String getString(String key){
         return stringRedisTemplate.opsForValue().get(key);
+    }
+    /**
+     * 普通缓存获取
+     * @param key 键
+     * @return 值
+     */
+    public Set<Object> keys(String key){
+        return redisTemplate.keys(key);
     }
 
     /**

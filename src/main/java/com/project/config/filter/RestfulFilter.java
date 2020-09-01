@@ -6,11 +6,7 @@ import com.project.constants.RedisKey;
 import com.project.constants.Result;
 import com.project.constants.Results;
 import com.project.constants.UserRequest;
-import com.project.entity.Token;
-import com.project.service.TokenManager;
 import com.project.util.JwtUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.web.filter.authc.UserFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
@@ -27,8 +23,6 @@ import java.util.Optional;
 public class RestfulFilter extends UserFilter {
     private static final Logger logger = LoggerFactory.getLogger(RestfulFilter.class);
     @Autowired
-    private TokenManager tokenManager;
-    @Autowired
     private RedisManager redisManager;
 
     @Override
@@ -37,7 +31,7 @@ public class RestfulFilter extends UserFilter {
             return Boolean.TRUE;
         }
         //对token进行校验
-        String loginToken = getToken(request);
+        String loginToken = UserRequest.getToken(request);
 
         Optional<String> userName = JwtUtil.getUserName(loginToken);
         //比较refreshToken的时间戳
@@ -61,21 +55,6 @@ public class RestfulFilter extends UserFilter {
         }
     }
 
-    /**
-     * 根据参数或者header获取login-token
-     *
-     * @param request
-     * @return
-     */
-    public String getToken(ServletRequest request) {
-        HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
-        String loginToken = httpServletRequest.getParameter(UserRequest.LOGIN_TOKEN);
-        if (StringUtils.isBlank(loginToken)) {
-            loginToken = httpServletRequest.getHeader(UserRequest.LOGIN_TOKEN);
-        }
-
-        return loginToken;
-    }
 
     /**
      * 在访问controller前判断是否登录，返回json，不进行重定向。

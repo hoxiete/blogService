@@ -3,15 +3,12 @@ package com.project.controller;
 
 import com.project.config.log.Log;
 import com.project.config.redis.RedisManager;
-import com.project.config.shiro.RetryLimitHashedCredentialsMatcher;
 import com.project.constants.*;
 import com.project.entity.MyException;
 import com.project.entity.Token;
 import com.project.entity.User;
-import com.project.service.LoginService;
 import com.project.service.TokenManager;
 import com.project.service.UserService;
-import com.project.util.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -22,9 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -104,10 +98,13 @@ public class loginController extends BaseController{
 
     @Log("登出")
     @PostMapping("/logout")
-    public Result logout(String token) {
-        Subject subject = SecurityUtils.getSubject();
+    public Result logout() {
+        String token = UserRequest.getToken(request);
         String currentUser = UserRequest.getCurrentUser();
         tokenManager.deleteToken(token);
+        String refreshTokenCacheKey = RedisKey.REFRESH_TOKEN_PREFIX + currentUser;
+        redisManager.del(refreshTokenCacheKey);
+        Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return Results.OK(currentUser);
     }

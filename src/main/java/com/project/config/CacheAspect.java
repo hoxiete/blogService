@@ -2,6 +2,8 @@ package com.project.config;
 
 import com.project.config.redis.DelRedis;
 import com.project.config.redis.PutRedis;
+import com.project.config.redis.RedisManager;
+import com.project.util.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -10,14 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
@@ -28,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CacheAspect {
     @Autowired
-    private RedisTemplate<Object,Object> redisTemplate;
+    private RedisManager redisManager;
 
     public static final Logger logger = LoggerFactory.getLogger(CacheAspect.class);
 
@@ -50,11 +48,11 @@ public class CacheAspect {
             String fieldKey = parseKey(keyExpr, methodWithAnnotations, as);
             key.append(fieldKey);
             String keys = key.toString();
-            redisTemplate.delete(keys);
+            redisManager.del(keys);
             logger.info("redis删除key为:"+keys+"的记录");
         }else{
-            Set<Object> keys = redisTemplate.keys(key + "*");      //    " * " 模糊匹配记录
-            redisTemplate.delete(keys);                          //记录全部删除
+            Set<Object> keys = redisManager.keys(key + "*");      //    " * " 模糊匹配记录
+            redisManager.del(keys);                          //记录全部删除
             logger.info("redis删除key为:"+key+"的所有记录");
         }
 
@@ -73,9 +71,11 @@ public class CacheAspect {
         // 解析key
         StringBuilder key = new StringBuilder(putRedis.key());
         String keyExpr = putRedis.fieldKey();
-        Object[] as = pjp.getArgs();
-        String fieldKey = parseKey(keyExpr, methodWithAnnotations, as);
-        key.append(fieldKey);
+        if(StringUtils.isNotEmpty(keyExpr)) {
+            Object[] as = pjp.getArgs();
+            String fieldKey = parseKey(keyExpr, methodWithAnnotations, as);
+            key.append(fieldKey);
+        }
         // 注解的属性本质是注解里的定义的方法
 //        Method methodOfAnnotation = a.getClass().getMethod("key");
         // 注解的值本质是注解里的定义的方法返回值
@@ -83,7 +83,7 @@ public class CacheAspect {
         // 到redis中获取缓存
         String stringKey = key.toString();
 //        Class returnType=((MethodSignature)pjp.getSignature()).getReturnType();
-        Object cache = redisTemplate.opsForValue().get(stringKey);
+        Object cache = redisManager.get(stringKey);
         if (cache == null) {
             // 若不存在，则到数据库中去获取
             Object result = pjp.proceed();
@@ -92,11 +92,11 @@ public class CacheAspect {
 
                 // 从数据库获取后存入redis
                 System.out.println("从数据库获取的结果并存入redis中: "+result);
-                redisTemplate.opsForValue().set(stringKey, result);
+                redisManager.set(stringKey, result);
                 // 若有指定过期时间，则设置
                 int expireTime = putRedis.expire();
                 if (expireTime != 0) {
-                    redisTemplate.expire(stringKey,expireTime,TimeUnit.DAYS);
+                    redisManager.expire(stringKey,expireTime,TimeUnit.DAYS);
                 }
 
             }

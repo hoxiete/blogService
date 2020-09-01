@@ -10,15 +10,8 @@ import com.project.util.JwtUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.HandlerInterceptor;
-
 import java.util.Date;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class RedisTokenManager implements TokenManager {
@@ -29,8 +22,8 @@ public class RedisTokenManager implements TokenManager {
     @Override
     public Token saveToken(UsernamePasswordToken user) {
         String currTime = String.valueOf(System.currentTimeMillis());
-        //传输用的token,有效期10分钟
-        String jwt = JwtUtil.buildJWT(user.getUsername(),currTime, 30);
+        //传输用的token,有效期30分钟
+        String jwt = JwtUtil.buildJWT(user.getUsername(),currTime, RedisKey.TEN_MINIUTE*3);
         String tokenKey = RedisKey.TOKEN_PREFIX + jwt;
         String refreshKey = RedisKey.REFRESH_TOKEN_PREFIX + user.getUsername();
         //设置刷新token
@@ -38,7 +31,7 @@ public class RedisTokenManager implements TokenManager {
         //设置用户信息
         redisManager.set(tokenKey, JSONObject.toJSONString(user),RedisKey.A_HOURS);
 
-        return new Token(jwt, DateUtils.addSeconds(new Date(),RedisKey.TEN_MINIUTE));
+        return new Token(jwt, DateUtils.addSeconds(new Date(),RedisKey.A_HOURS));
     }
 
     @Override

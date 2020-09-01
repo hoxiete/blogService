@@ -1,6 +1,7 @@
 package com.project.service.impl;
 
 import com.project.config.redis.DelRedis;
+import com.project.config.redis.PutRedis;
 import com.project.entity.*;
 import com.project.mapper.RouterMapper;
 import com.project.service.RouterService;
@@ -26,7 +27,7 @@ public class RouterServiceImpl implements RouterService {
         return treeRouter;
     }
 
-//    @PutRedis(key = "router",fieldKey ="#roleId")
+    @PutRedis(key = "router",fieldKey ="#roleId")
     @Override
     public List<Menu> getMenuList(Integer roleId) {
 
