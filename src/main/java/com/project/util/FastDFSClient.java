@@ -53,6 +53,7 @@ public class FastDFSClient {
     public String uploadFile(MultipartFile file) throws IOException {
         StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(),
                 FilenameUtils.getExtension(file.getOriginalFilename()), null);
+        logger.info("fastDFS上传imgUrl为--------"+storePath.getFullPath());
         return getResAccessUrl(storePath);
     }
     /**
@@ -67,6 +68,7 @@ public class FastDFSClient {
         String suffix = file.getContentType().substring(file.getContentType().indexOf("/")+1);
         StorePath storePath = storageClient.uploadFile(file.getInputStream(), file.getSize(),
                 suffix, null);
+        logger.info("fastDFS上传imgUrl为-------"+storePath.getFullPath());
         return getResAccessUrl(storePath);
     }
     /**
@@ -100,6 +102,7 @@ public class FastDFSClient {
         byte[] buff = content.getBytes(Charset.forName("UTF-8"));
         ByteArrayInputStream stream = new ByteArrayInputStream(buff);
         StorePath storePath = storageClient.uploadFile(stream, buff.length, fileExtension, null);
+        logger.info("fastDFS上传imgUrl为---------"+storePath.getFullPath());
         return getResAccessUrl(storePath);
     }
 
@@ -120,6 +123,7 @@ public class FastDFSClient {
     public StorePath uploadImageAndCrtThumbImage(MultipartFile file) throws IOException {
         StorePath storePath = storageClient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(),
                 FilenameUtils.getExtension(file.getOriginalFilename()), null);
+        logger.info("fastDFS上传imgUrl为---------"+storePath.getFullPath());
         return storePath;
     }
     /**
@@ -134,6 +138,7 @@ public class FastDFSClient {
         String suffix = file.getContentType().substring(file.getContentType().indexOf("/")+1);
         StorePath storePath = storageClient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(),
                 suffix, null);
+        logger.info("fastDFS上传imgUrl为------"+storePath.getFullPath());
         return getResAccessUrl(storePath);
     }
 
@@ -171,6 +176,7 @@ public class FastDFSClient {
             StorePath storePath = StorePath.parseFromUrl(fileUrl);
             storageClient.deleteFile(storePath.getGroup(), storePath.getPath());
             storageClient.deleteFile(storePath.getGroup(), thumbImageConfig.getThumbImagePath(storePath.getPath()));
+            logger.info("fastDFS删除----------"+storePath.getFullPath());
         } catch (FdfsUnsupportStorePathException e) {
             logger.warn(e.getMessage());
         }
