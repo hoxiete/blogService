@@ -1,12 +1,15 @@
 package com.project.config;
 
+import com.project.constants.ResultConstants;
 import com.project.entity.MyException;
+import com.project.util.HttpUtil;
 import com.project.util.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.WebUtils;
 
 /**
  * @Auther: cookie
@@ -28,9 +31,10 @@ public class MyControllerAdvice {
         return JSONUtils.toJson(result);
     }
 
+    @ResponseBody
     @ExceptionHandler(value = Exception.class)    //申明捕获那个异常类
     public String test(Exception e) {
         logger.error(e.getMessage(), e);
-        return "什么鬼玩意啊";
+        return JSONUtils.toJson(new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"未知错误"));
     }
 }

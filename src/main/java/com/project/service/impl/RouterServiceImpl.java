@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RouterServiceImpl implements RouterService {
@@ -52,7 +53,6 @@ public class RouterServiceImpl implements RouterService {
         return tree;
     }
 
-//    @DelRedis(key = "router")
     @Override
     public int addPermissionBranch(Router router,String operator) {
         List<Integer> list = routerMapper.getLastPermIdAndSort(router.getParentId());
@@ -184,7 +184,9 @@ public class RouterServiceImpl implements RouterService {
         }
         List<Menu> menu = createChild(routers,menus,showMenus);
 
-        return menu;
+        return menu.stream()
+                .filter(oneMenu -> !(oneMenu.getPath().equals("/")&&oneMenu.getChildren()==null))
+                .collect(Collectors.toList());
         }
 
     private List<Menu> createChild(List<Menu> routers, List<Menu> menus ,boolean showMenus ) {

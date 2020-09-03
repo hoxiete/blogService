@@ -14,5 +14,16 @@
     <delete id="deleteRoleAssgin">
        DELETE FROM t_role_permission where role_id = #{roleId}
     </delete>
+    
+    <insert id="insertList" keyProperty="id" useGeneratedKeys="true" >
+        insert into t_role_permission (role_id,perm_id,delete_flag,create_time,create_user,update_time,update_user)
+        values
+        <foreach collection="list" item="item"  separator=",">
+            (#{item.roleId},#{item.permId},
+            #{item.deleteFlag}, #{item.createTime},
+             #{item.createUser}, #{item.updateTime},
+             #{item.updateUser})
+        </foreach>
+    </insert>
 
 </mapper>

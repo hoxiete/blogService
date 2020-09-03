@@ -54,11 +54,11 @@ public class AssignServiceImpl implements AssignService {
     }
 
     @DelRedis(key = "router",fieldKey ="#roleId")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int addRoleAssgin(Integer[] permIds, Integer roleId, String operater) {
        assignMapper.deleteRoleAssgin(roleId);
-        int count = 0;
+        List<Assign> insertAssgin = new ArrayList<>();
         for (Integer permId : permIds) {
             if (permId != 0) {
                 Assign assign = new Assign();
@@ -69,10 +69,10 @@ public class AssignServiceImpl implements AssignService {
                 assign.setCreateTime(new Date());
                 assign.setUpdateUser(operater);
                 assign.setUpdateTime(new Date());
-                assignMapper.insertSelective(assign);
-                count++;
+                insertAssgin.add(assign);
             }
         }
+        int count = assignMapper.insertList(insertAssgin);
         if (count != permIds.length-1) {
             throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR, "新增时失败");
         }

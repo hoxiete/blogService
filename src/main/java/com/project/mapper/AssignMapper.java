@@ -12,4 +12,6 @@ public interface AssignMapper extends Mapper<Assign> {
     List<Menu> getPermIdByRoleId(Integer roleId);
 
     int deleteRoleAssgin(Integer roleId);
+
+    int insertList(List<Assign> list);
 }
