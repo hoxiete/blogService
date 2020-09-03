@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.weekend.Weekend;
-
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -172,10 +170,10 @@ public class BlogServiceImpl implements BlogService {
         }
         if(image.isPresent()){
             Image updateImg = image.get();
+            fastDFSClient.deleteBlogImage(updateImg.getImageUrl());
             updateImg.setImageUrl(storePath.getFullPath());
             Weekend<Image> weekend = new Weekend(Image.class);
             weekend.weekendCriteria().andEqualTo(Image::getRecourseId,updateImg.getRecourseId());
-            fastDFSClient.deleteBlogImage(updateImg.getImageUrl());
             uploadMapper.updateByExampleSelective(updateImg, weekend);
 
         }else{

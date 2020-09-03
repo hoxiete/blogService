@@ -51,8 +51,10 @@ public class CacheAspect {
             redisManager.del(keys);
             logger.info("redis删除key为:"+keys+"的记录");
         }else{
-            Set<Object> keys = redisManager.keys(key + "*");      //    " * " 模糊匹配记录
-            redisManager.del(keys);                          //记录全部删除
+            // " * " 模糊匹配记录
+            Set<Object> keys = redisManager.keys(key + "*");
+            // 记录全部删除
+            redisManager.del(keys);
             logger.info("redis删除key为:"+key+"的所有记录");
         }
 
