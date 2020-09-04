@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.project.config.redis.PutRedis;
 import com.project.constants.UploadConstants;
+import com.project.constants.UserRequest;
 import com.project.entity.*;
 import com.project.mapper.BlogMapper;
 import com.project.mapper.UploadMapper;
@@ -177,7 +178,7 @@ public class BlogServiceImpl implements BlogService {
             uploadMapper.updateByExampleSelective(updateImg, weekend);
 
         }else{
-            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            String userName = UserRequest.getCurrentUser();
             Long resouceId = System.currentTimeMillis();
             blogMapper.updateByPrimaryKeySelective(Blog.builder().id(id).coverImg(resouceId).build());
             uploadMapper.insert(Image.builder()
@@ -185,9 +186,9 @@ public class BlogServiceImpl implements BlogService {
                     .imageType(UploadConstants.blogImg)
                     .imageUrl(storePath.getFullPath())
                     .deleteFlag(0).
-                    createUser(user.getLoginName())
+                    createUser(userName)
                     .createTime(new Date())
-                    .updateUser(user.getLoginName())
+                    .updateUser(userName)
                     .updateTime(new Date()).build());
         }
         return fastDFSClient.getThumbImagePath(storePath);

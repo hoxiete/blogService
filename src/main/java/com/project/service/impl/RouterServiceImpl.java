@@ -74,7 +74,7 @@ public class RouterServiceImpl implements RouterService {
     }
 
     @DelRedis(key = "router")
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @Override
     public int editPermissionBranch(Router router, String operator, OrderSortDto sortDto) {
         Integer startEditSort = null;
@@ -155,7 +155,7 @@ public class RouterServiceImpl implements RouterService {
     }
 
     @DelRedis(key = "router")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteByBatchPermId(Integer[] permIds) {
         int i=0;
@@ -170,69 +170,19 @@ public class RouterServiceImpl implements RouterService {
         }
     }
 
-    private List<Menu> createRouter(List<Menu> menus,boolean showMenus) {
-
-        List<Menu> routers = new ArrayList<>();
-        for (int i = 0; i < menus.size(); i++) {
-            Menu menu = menus.get(i);
-            if (showMenus) {
-                menu.setMeta(new Meta(menu.getName()));
-            }
-            if (menu.getParentId() == 0) {
-                routers.add(menu);
-            }
+    private List<Menu> createRouter(List<Menu> menus,boolean showMeta) {
+        if(showMeta){
+            menus.forEach(menu -> menu.setMeta(new Meta(menu.getName())));
         }
-        List<Menu> menu = createChild(routers,menus,showMenus);
-
-        return menu.stream()
-                .filter(oneMenu -> !(oneMenu.getPath().equals("/")&&oneMenu.getChildren()==null))
+        return menus.stream().filter(menu -> menu.getParentId().equals(0)).map(menu -> createChild(menu,menus))
+                .filter(oneMenu -> !(oneMenu.getPath().equals("/")&&oneMenu.getChildren().size()==0))
                 .collect(Collectors.toList());
         }
 
-    private List<Menu> createChild(List<Menu> routers, List<Menu> menus ,boolean showMenus ) {
-        List<Menu> newRouter = new ArrayList<>();
-
-        for (int i = 0; i < routers.size(); i++) {
-            List<Menu> children = new ArrayList<>();
-            for (int j = 0; j < menus.size(); j++) {
-
-                    if (routers.get(i).getPermId().equals(menus.get(j).getParentId())) {
-                        Menu childmenu = new Menu();
-                        if (showMenus) {
-                            childmenu.setMeta(menus.get(j).getMeta());
-                            childmenu.setPath(menus.get(j).getPath());
-                        } else {
-                            childmenu.setPath(menus.get(j).getPath());
-                        }
-                        childmenu.setDeleteFlag(menus.get(j).getDeleteFlag());
-                        childmenu.setDescription(menus.get(j).getDescription());
-                        childmenu.setName(menus.get(j).getName());
-                        childmenu.setChildren(menus.get(j).getChildren());
-                        childmenu.setIconCls(menus.get(j).getIconCls());
-                        childmenu.setPermId(menus.get(j).getPermId());
-                        childmenu.setParentId(menus.get(j).getParentId());
-                        childmenu.setOrderSort(menus.get(j).getOrderSort());
-                        children.add(childmenu);
-                    }
-                }
-                Menu child = new Menu();
-                child.setMeta(routers.get(i).getMeta());
-                child.setDeleteFlag(routers.get(i).getDeleteFlag());
-                child.setName(routers.get(i).getName());
-                child.setDescription(routers.get(i).getDescription());
-                child.setChildren(routers.get(i).getChildren());
-                child.setIconCls(routers.get(i).getIconCls());
-                child.setParentId(routers.get(i).getParentId());
-                child.setPath(routers.get(i).getPath());
-                child.setOrderSort(routers.get(i).getOrderSort());
-                child.setPermId(routers.get(i).getPermId());
-                if (!children.isEmpty()) {
-                    child.setChildren(createChild(children, menus, showMenus));
-                }
-
-                newRouter.add(child);
-            }
-            return newRouter;
+    private Menu createChild(Menu menu, List<Menu> menus  ) {
+        menu.setChildren(menus.stream().filter(oneMenu -> oneMenu.getParentId().equals(menu.getPermId()))
+                .map(oneMenu -> createChild(oneMenu,menus)).collect(Collectors.toList()));
+        return menu;
         }
 
     }
