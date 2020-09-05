@@ -9,6 +9,7 @@ import com.project.entity.Token;
 import com.project.entity.User;
 import com.project.service.TokenManager;
 import com.project.service.UserService;
+import com.project.util.EmailUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -89,10 +90,21 @@ public class loginController extends BaseController{
 
     @Log("注册")
     @PostMapping("/register")
-    public Result register(User user) {
+    public Result register(User user,String checkCode) {
+        if(!redisManager.get(user.getEmail()).equals(checkCode)){
+            throw new MyException(ResultConstants.BAD_REQUEST, "验证码错误");
+        }
         if (userService.insertUserByLoginName(user) == 0) {
             throw new MyException(ResultConstants.INTERNAL_SERVER_ERROR, "注册失败");
         }
+        return Results.OK();
+    }
+
+    @PostMapping("/registerForEmail")
+    public Result registerForEmail(String email) {
+        String key = EmailUtil.getRandomNumCode(4);
+        EmailUtil.send(email,"hoxiete注册-验证码",key);
+        redisManager.set(email,key,120);
         return Results.OK();
     }
 

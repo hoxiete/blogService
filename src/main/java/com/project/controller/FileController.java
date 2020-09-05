@@ -51,14 +51,14 @@ public class FileController {
         String resouceId ="";
         try {
              uploadUrl = fastDFSClient.uploadFile(image);
-//             resouceId = blogImgInsert(uploadUrl,"2","swagger");
+             resouceId = blogImgInsert(uploadUrl,"2","swagger");
 
         } catch (Exception e) {
             throw new MyException(500,e.getMessage());
         }
         // 显示图片
         map.put("uploadUrl", uploadUrl);
-//        map.put("resouceId", resouceId);
+        map.put("resouceId", resouceId);
         map.put("fileName", image.getOriginalFilename());
        return Results.OK(map);
     }

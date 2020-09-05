@@ -140,6 +140,7 @@ public class UserServiceImpl implements UserService {
     public int insertUserByLoginName(User user) {
         user.setUserName(user.getLoginName());
         user.setPassWord(MD5Utils.md5(user.getPassWord()));
+        user.setEmail(user.getEmail());
         user.setRoleId(1);
         user.setDeleteFlag(0);
         user.setSex(3);
