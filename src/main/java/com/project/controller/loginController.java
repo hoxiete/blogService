@@ -63,7 +63,7 @@ public class loginController extends BaseController{
                 logger.info("用户信息未存入Redis");
             }
             data.put("token", token.getToken());
-            data.put("expires_in", token.getExpireTime());   //过期时间1小时
+            data.put("expires_in", token.getExpireTime());
             data.put("userInfo", user);
         } catch (UnknownAccountException e) {
             //登录失败用户名不存在
@@ -103,7 +103,7 @@ public class loginController extends BaseController{
     @PostMapping("/registerForEmail")
     public Result registerForEmail(String email) {
         String key = EmailUtil.getRandomNumCode(4);
-        EmailUtil.send(email,"hoxiete注册-验证码",key);
+        EmailUtil.send(email,"hoxiete-注册","【验证码】:"+key+"  (2分钟内有效)");
         redisManager.set(email,key,120);
         return Results.OK();
     }

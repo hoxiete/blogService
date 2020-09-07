@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public class UserRequest {
-    @Autowired
-    private TokenManager tokenManager;
     /** 加密次数 */
     public static int HASH_ITERATIONS = 1;
 
@@ -36,7 +34,7 @@ public class UserRequest {
         Optional<User> principal = Optional.ofNullable(((User)currentUser.getPrincipal()));
         return principal.map(User::getLoginName).orElseGet(()-> {
             String token = getToken(request);
-            return JwtUtil.getUserName(token).get();
+            return JwtUtil.getUserName(token).orElse("游客");
         });
     }
 

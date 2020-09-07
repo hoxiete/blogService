@@ -1,24 +1,18 @@
 package com.project.controller;
 
-
-
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
-import com.github.tobato.fastdfs.domain.fdfs.ThumbImageConfig;
 import com.project.constants.Result;
+import com.project.constants.UserRequest;
 import com.project.entity.Image;
 import com.project.entity.MyException;
 import com.project.mapper.UploadMapper;
 import com.project.util.FastDFSClient;
-import com.project.util.JSONUtils;
 import com.project.constants.Results;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +45,7 @@ public class FileController {
         String resouceId ="";
         try {
              uploadUrl = fastDFSClient.uploadFile(image);
-             resouceId = blogImgInsert(uploadUrl,"2","swagger");
+             resouceId = blogImgInsert(uploadUrl,"2", UserRequest.getCurrentUser());
 
         } catch (Exception e) {
             throw new MyException(500,e.getMessage());
@@ -75,7 +69,7 @@ public class FileController {
             StorePath storePath = fastDFSClient.uploadImageAndCrtThumbImage(image);
             uploadUrl = storePath.getFullPath();
             thumbImageUrl = fastDFSClient.getThumbImagePath(storePath);
-            resouceId = blogImgInsert(uploadUrl,"2","swagger");
+            resouceId = blogImgInsert(uploadUrl,"2", UserRequest.getCurrentUser());
 
         } catch (Exception e) {
             throw new MyException(500,e.getMessage());

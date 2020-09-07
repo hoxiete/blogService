@@ -8,11 +8,7 @@ import java.util.Random;
 
 /**
  * <pre>
- * 描述：ab邮件工具
- * 作者:aschs
- * 邮箱:aschs@qq.com
- * 日期:2018年9月13日
- * 版权:summer
+ * 描述：邮件工具
  * </pre>
  */
 public class EmailUtil {
@@ -22,7 +18,7 @@ public class EmailUtil {
 	private static final String host = "smtp.qq.com";
 	private static final Integer port = 465;
 	private static final boolean isSsl = true;
-	private static final String nickName = "787326576@qq.com";
+	private static final String userName = "787326576";
 	private static final String address = "787326576@qq.com";
 	private static final String password = "dcrjhjnklnpebcfa";
 //	private static final String password = "wchvkujdcmowbcgg";
@@ -50,7 +46,7 @@ public class EmailUtil {
 		mailAccount.setHost(host);
 		mailAccount.setPort(port);
 		mailAccount.setFrom(address);
-		mailAccount.setUser(nickName);
+		mailAccount.setUser(userName);
 		mailAccount.setPass(password);
 		mailAccount.setSslEnable(isSsl);
 		setAccount(mailAccount);
