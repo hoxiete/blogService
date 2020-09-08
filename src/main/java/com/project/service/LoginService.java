@@ -12,6 +12,6 @@ import com.project.entity.User;
  */
 public interface LoginService {
 
-    User getUserByLoginName(String loginName);
+    User getUserByCase(User user);
 
 }

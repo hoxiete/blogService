@@ -72,7 +72,7 @@ public class UserRealm extends AuthorizingRealm {
          */
         //1判断用户名
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
-        User user = loginSerive.getUserByLoginName(usernamePasswordToken.getUsername());
+        User user = loginSerive.getUserByCase(User.builder().loginName(usernamePasswordToken.getUsername()).build());
         if (user == null) {
             throw new UnknownAccountException("用户名不存在");
         }
@@ -81,7 +81,7 @@ public class UserRealm extends AuthorizingRealm {
         }
 
         //判断密码是否正确
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user, user.getPassWord(), getName());
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user, usernamePasswordToken.getCredentials(), getName());
 
         //设置用户session
 //        UserUtils.setUserSession(user);

@@ -110,7 +110,7 @@ public class RedisManager {
      * @param value 值
      */
     public void setString(String key,String value,long time) {
-        stringRedisTemplate.opsForValue().set(key, value, time);
+        stringRedisTemplate.opsForValue().set(key, value, time,TimeUnit.SECONDS);
     }
 
     /**

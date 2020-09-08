@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.WebUtils;
 
+import javax.validation.ConstraintViolationException;
+
 /**
  * @Auther: cookie
  * @Date: 2019/9/2 15:09
@@ -36,5 +38,10 @@ public class MyControllerAdvice {
     public String test(Exception e) {
         logger.error(e.getMessage(), e);
         return JSONUtils.toJson(new MyException(ResultConstants.INTERNAL_SERVER_ERROR,"未知错误"));
+    }
+    @ResponseBody
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public String validateNull(ConstraintViolationException e) {
+        return JSONUtils.toJson(new MyException(ResultConstants.BAD_REQUEST,e.getMessage().split("\\.")[1]));
     }
 }

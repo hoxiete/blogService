@@ -3,6 +3,7 @@ package com.project.config.shiro;
 import com.project.config.filter.RestfulFilter;
 import com.project.constants.UserRequest;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -13,7 +14,10 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,11 +44,13 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // 拦截器.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-        filterChainDefinitionMap.put("/index/login", "anon");
+        filterChainDefinitionMap.put("/index/loginForPwd", "anon");
+        filterChainDefinitionMap.put("/index/loginForEmail", "anon");
         filterChainDefinitionMap.put("/index/checkLoginName", "anon");
         filterChainDefinitionMap.put("/index/register", "anon");
         filterChainDefinitionMap.put("/index/refreshToken", "anon");
-        filterChainDefinitionMap.put("/index/registerForEmail", "anon");
+        filterChainDefinitionMap.put("/index/registerVerifyCode", "anon");
+        filterChainDefinitionMap.put("/index/loginVerifyCode", "anon");
         filterChainDefinitionMap.put("/file/**", "anon");
         filterChainDefinitionMap.put("/blogShow/**", "anon");
         filterChainDefinitionMap.put("/blog/getBlogType", "anon");
@@ -74,10 +80,13 @@ public class ShiroConfig {
      * * 创建DefaultWebSecurityManager
      */
     @Bean
-    public SecurityManager securityManager(UserRealm userRealm) {
+    public SecurityManager securityManager(UserRealm userRealm,EmailRealm emailRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         //关联Realm
-        securityManager.setRealm(userRealm);
+        List<Realm> realms = new ArrayList<>();
+        realms.add(userRealm);
+        realms.add(emailRealm);
+        securityManager.setRealms(realms);
         return securityManager;
     }
 
@@ -88,8 +97,15 @@ public class ShiroConfig {
     public UserRealm getRealm() {
         UserRealm userRealm = new UserRealm();
         userRealm.setCredentialsMatcher(retryLimitHashedCredentialsMatcher());
-
         return userRealm;
+    }
+    /**
+     * * 创建emailRealm
+     */
+    @Bean
+    public EmailRealm emailRealm(){
+        EmailRealm phoneRealm = new EmailRealm();
+        return phoneRealm;
     }
 
     /**

@@ -36,7 +36,7 @@ public class Results{
     // 请求错误，请修正请求，400，无数据
     // ----------------------------------------------------------------------------------------------------
     public static Result BAD_REQUEST(String msg) {
-        return new Result(ResultConstants.BAD_REQUEST, ResultMsg.BAD_REQUEST, msg);
+        return new Result(ResultConstants.BAD_REQUEST, msg, null);
     }
     //
     // 请求错误，请修正请求，400，无数据
