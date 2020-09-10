@@ -198,6 +198,7 @@ public class JwtUtil {
      */
     public static Optional<String> getUserName(String claimsJws) {
         try {
+            if(claimsJws==null){ return Optional.empty();}
             SecretKey key = generateKey(JWT_ALG, JWT_RULE);
             // 获取 JWT 的 payload 部分
             return Optional.ofNullable((String) parseJWT(key, claimsJws).getBody().get("sub"));

@@ -81,12 +81,12 @@ public class UserRealm extends AuthorizingRealm {
         }
 
         //判断密码是否正确
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user, usernamePasswordToken.getCredentials(), getName());
-
-        //设置用户session
-//        UserUtils.setUserSession(user);
-
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user, user.getPassWord(), getName());
 
         return authenticationInfo;
+    }
+    @Override
+    public boolean supports(AuthenticationToken var1){
+        return var1 instanceof UsernamePasswordToken;
     }
 }

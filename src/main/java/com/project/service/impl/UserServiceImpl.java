@@ -152,10 +152,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User checkLoginName(String loginName) {
-        User user = new User();
-        user.setLoginName(loginName);
-        return usermapper.selectOne(user);
+    public boolean checkIsExsit(User user) {
+        return usermapper.selectCount(user) > 0;
     }
 
     @Override

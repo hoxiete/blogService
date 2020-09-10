@@ -2,6 +2,8 @@ package com.project.config.shiro;
 
 import com.project.config.filter.RestfulFilter;
 import com.project.constants.UserRequest;
+import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -14,7 +16,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,11 +83,16 @@ public class ShiroConfig {
     @Bean
     public SecurityManager securityManager(UserRealm userRealm,EmailRealm emailRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        //实现自己的多realm方法,明确抛出异常信息
+        ModularRealmAuthenticator modularRealmAuthenticator = new MutiRealmAuthenticator();
+        FirstSuccessfulStrategy firstSuccessfulStrategy = new FirstSuccessfulStrategy();
+        modularRealmAuthenticator.setAuthenticationStrategy(firstSuccessfulStrategy);
         //关联Realm
         List<Realm> realms = new ArrayList<>();
         realms.add(userRealm);
         realms.add(emailRealm);
-        securityManager.setRealms(realms);
+        modularRealmAuthenticator.setRealms(realms);
+        securityManager.setAuthenticator(modularRealmAuthenticator);
         return securityManager;
     }
 

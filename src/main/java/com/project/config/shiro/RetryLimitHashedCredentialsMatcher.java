@@ -37,10 +37,6 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
     @Autowired
     private RedisManager redisManager;
 
-    public void setRedisManager(RedisManager redisManager) {
-        this.redisManager = redisManager;
-    }
-
     private String getRedisKickoutKey(String username) {
         return this.keyPrefix + username;
     }
@@ -63,8 +59,7 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
             if (user != null && user.getDeleteFlag()==0){
                 //数据库字段 默认为 0  就是正常状态 所以 要改为2
                 //修改数据库的状态字段为锁定
-                user.setDeleteFlag(2);
-                userService.editUser(user,"sys");
+                userService.editUser(User.builder().deleteFlag(2).build(),"sys");
             }
             logger.info("锁定用户" + user.getUserName());
             //抛出用户锁定异常
@@ -76,8 +71,7 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
             //如果正确,从缓存中将用户登录计数 清除
             redisManager.del(getRedisKickoutKey(loginName));
             if(user.getDeleteFlag()==2) {
-                user.setDeleteFlag(0);
-                userService.editUser(user, "sys");
+                userService.editUser(User.builder().deleteFlag(0).build(), "sys");
             }
         }else {
             redisManager.set(getRedisKickoutKey(loginName), retryCount,expireSeconds);

@@ -123,8 +123,8 @@ public class loginController extends BaseController{
     }
 
     @PostMapping("/checkLoginName")
-    public Result checkLoginName(@NotBlank String loginName) {
-        if (null != userService.checkLoginName(loginName)) {
+    public Result checkLoginName(@NotBlank @RequestParam("loginName")String loginName) {
+        if (userService.checkIsExsit(User.builder().loginName(loginName).build())) {
             return Results.BAD_REQUEST();
         }
         return Results.OK();
@@ -132,8 +132,8 @@ public class loginController extends BaseController{
 
     @Log("注册")
     @PostMapping("/register")
-    public Result register(User user,String checkCode) {
-        if(!redisManager.get(user.getEmail()).equals(checkCode)){
+    public Result register(User user,@RequestParam("verifyCode") String verifyCode) {
+        if(!verifyCode.equals(redisManager.getString(user.getEmail()))){
             throw new MyException(ResultConstants.BAD_REQUEST, "验证码错误");
         }
         if (userService.insertUserByLoginName(user) == 0) {
@@ -143,16 +143,19 @@ public class loginController extends BaseController{
     }
 
     @PostMapping("/registerVerifyCode")
-    public Result registerForEmail(@NotBlank String email) {
+    public Result registerForEmail(@NotBlank @RequestParam("email") String email) {
+        if(userService.checkIsExsit(User.builder().email(email).build())){
+            return Results.BAD_REQUEST("邮箱已被注册");
+        }
         String key = EmailUtil.getRandomNumCode(4);
-//        EmailUtil.send(email,"hoxiete-注册","【验证码】:"+key+"  (2分钟内有效)");
+        EmailUtil.send(email,"hoxiete-注册","<span>【验证码】:"+key+"</span><br/><span>(2分钟内有效)</span>");
         redisManager.setString(email,key,120);
         return Results.OK();
     }
     @PostMapping("/loginVerifyCode")
-    public Result loginForEmail(@NotBlank String email) {
+    public Result loginForEmail(@NotBlank @RequestParam("email")String email) {
         String key = EmailUtil.getRandomNumCode(4);
-//        EmailUtil.send(email,"hoxiete-登录","【验证码】:"+key+"  \n\n(2分钟内有效)");
+        EmailUtil.send(email,"hoxiete-登录","<span>【验证码】:"+key+"</span><br/><span>(2分钟内有效)</span>");
         redisManager.setString(email,key,120);
         return Results.OK();
     }

@@ -27,7 +27,7 @@ public interface UserService {
 
     int insertUserByLoginName(User user);
 
-    User checkLoginName(String loginName);
+    boolean checkIsExsit(User user);
 
     User getMyInfo();
 }
