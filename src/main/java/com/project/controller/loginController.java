@@ -12,7 +12,6 @@ import com.project.service.LoginService;
 import com.project.service.TokenManager;
 import com.project.service.UserService;
 import com.project.util.EmailUtil;
-import com.project.util.ResultMsg;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -24,9 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -75,10 +72,10 @@ public class loginController extends BaseController{
             data.put("userInfo", user);
         } catch (UnknownAccountException e) {
             //登录失败用户名不存在
-            return Results.BAD_REQUEST(loginName);
+            return Results.BAD_REQUEST();
         } catch (IncorrectCredentialsException e) {
             //登录失败密码错误
-            return Results.BAD_REQUEST(loginName);
+            return Results.BAD_REQUEST();
         } catch (LockedAccountException e) {
             //登录被锁定
             return Results.USER_LOCKED(loginName);
