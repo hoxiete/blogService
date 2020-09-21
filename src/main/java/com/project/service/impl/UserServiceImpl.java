@@ -27,9 +27,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private FastDFSClient fastDFSClient;
 
-    //注入springboot自动配置好的redisTemplate
-    @Autowired
-    private RedisTemplate<Object,Object> redisTemplate;
 
     @Override
     public List<UserViewDto> selectUserList(User user ,Integer pageNum, Integer pageSize) {
@@ -95,7 +92,7 @@ public class UserServiceImpl implements UserService {
         return usermapper.updateByPrimaryKeySelective(user);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteUserByBatchId(Integer[] userIds) {
         int i=0;
