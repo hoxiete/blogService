@@ -1,5 +1,5 @@
 language: java
-
+sudo: true
 jdk:
   - oraclejdk9
 
@@ -8,8 +8,7 @@ cache:
     - '$HOME/.m2/repository'
 
 before_script:
-  - pwd
-  - chmod a+x mvnw
+  - chmod +x mvnw
 
 script:
   - mvn clean package -DskipTests=true
