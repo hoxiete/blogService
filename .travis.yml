@@ -7,8 +7,8 @@ cache:
   directories:
     - '$HOME/.m2/repository'
 
-#before_install:
-# - chmod +x gradlew
+before_script:
+  - chmod a+x ./mvnw
 
 script:
   - mvn clean package -DskipTests=true
