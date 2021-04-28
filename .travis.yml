@@ -8,7 +8,8 @@ cache:
     - '$HOME/.m2/repository'
 
 before_script:
-  - chmod a+x ./mvnw
+  - pwd
+  - chmod a+x mvnw
 
 script:
   - mvn clean package -DskipTests=true
